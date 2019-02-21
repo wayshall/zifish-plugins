@@ -66,8 +66,9 @@
 	  <profile>
     	<id>release</id>
     	<modules>
-                <module>plugins/parent</module>
-                <module>plugins/swaggerext</module>
+                <module>parent</module>
+                <module>swaggerext</module>
+                <module>web-admin</module>
 	  	</modules>
         <build>
             <plugins>
