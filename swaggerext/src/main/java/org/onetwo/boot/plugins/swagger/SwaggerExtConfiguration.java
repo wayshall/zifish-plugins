@@ -31,7 +31,7 @@ import springfox.documentation.swagger2.web.Swagger2Controller;
  * @author wayshall <br/>
  */
 @Configuration
-@ConditionalOnProperty(name="jfish.swagger.dbstore", havingValue="true")
+@ConditionalOnProperty(name=org.onetwo.boot.core.config.BootJFishConfig.ZIFISH_CONFIG_PREFIX+ ".swagger.dbstore", havingValue="true")
 @ConditionalOnClass(Documentation.class)
 @ComponentScan(basePackageClasses=DatabaseSwaggerResourceService.class)
 @JFishWebPlugin(SwaggerExtPlugin.class)

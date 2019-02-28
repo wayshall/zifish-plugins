@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
 @Data
 public class WebAdminProperties {
 	
-	public static final String PREFIX = "jfish.plugin.web-admin";
+	public static final String PREFIX = org.onetwo.boot.core.config.BootJFishConfig.ZIFISH_CONFIG_PREFIX+ ".plugin.web-admin";
 	
 	CaptchaProps captcha = new CaptchaProps();
 	CaptchaChecker captchaChecker;
