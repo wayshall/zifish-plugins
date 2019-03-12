@@ -3,7 +3,7 @@ package org.onetwo.plugins.admin;
 import org.onetwo.ext.permission.api.PermissionType;
 
 public interface AdminModule {
-	String name = "权限管理系统";
+	String name = "权限管理";
 	String appCode = AdminModule.class.getSimpleName();
 
 	public interface UserProfile {
@@ -11,7 +11,7 @@ public interface AdminModule {
 	}
 	
 	public static interface ApplicationMgr {
-		String name = "应用系统管理";
+		String name = "应用管理";
 		int sort = 3;
 
 		public static interface Create {
