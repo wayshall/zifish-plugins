@@ -52,7 +52,7 @@ public class AdminUser extends BaseEntity {
 
     private Date birthday;
 
-    private String appCode;
+//    private String appCode;
 
 	@JsonSerialize(using = ImageUrlJsonSerializer.class)
     private String avatar;
