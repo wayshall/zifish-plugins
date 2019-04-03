@@ -12,7 +12,7 @@ public class AdminMeController extends WebAdminBaseController {
 	
 	@GetMapping("me")
 	public AdminUserInfo me(){
-		UserDetail userDetail = this.getCurrentLoginUser();
+		UserDetail userDetail = this.checkAndGetCurrentLoginUser();
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)
 										.propertyMapping("nickName", "nickname")
 				 						.toClass(AdminUserInfo.class);
