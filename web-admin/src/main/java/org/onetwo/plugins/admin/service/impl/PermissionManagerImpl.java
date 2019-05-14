@@ -12,7 +12,9 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
 import org.onetwo.common.exception.BaseException;
+import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
 import org.onetwo.ext.permission.api.DataFrom;
@@ -35,6 +37,73 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	private AdminPermissionDao adminPermissionDao;
 	
 	public PermissionManagerImpl() {
+	}
+	
+	public AdminPermission delete(String code) {
+		AdminPermission dbPermission = baseEntityManager.load(AdminPermission.class, code);
+		if (dbPermission.getChildrenSize()>0) {
+			throw new ServiceException("该权限又子节点，无法删除，请先删除子节点！");
+		}
+		if (StringUtils.isNotBlank(dbPermission.getParentCode())) {
+			AdminPermission parent = findByCode(dbPermission.getParentCode());
+			parent.setChildrenSize(parent.getChildrenSize()-1);
+			baseEntityManager.update(parent);
+		}
+		baseEntityManager.remove(dbPermission);
+		return dbPermission;
+	}
+	
+	/*private int countChildrenSize(String code) {
+		return Querys.from(baseEntityManager, AdminPermission.class)
+					.where()
+						.field("parentCode").is(code)
+					.toQuery().count().intValue();
+	}*/
+	
+	public AdminPermission persist(AdminPermission permission) {
+		AdminPermission dbPermission = findByCode(permission.getCode());
+		if (dbPermission!=null) {
+			throw new ServiceException("权限代码重复：" + permission.getCode());
+		}
+		AdminPermission parent = this.checkParent(permission);
+		if (parent!=null) {
+			if (!permission.getCode().startsWith(parent.getCode())) {
+				throw new ServiceException("子权限代码必须以父权限代码为前缀：" + parent.getCode());
+			}
+			parent.setChildrenSize(parent.getChildrenSize()+1);
+			baseEntityManager.update(parent);
+		}
+		this.baseEntityManager.persist(permission);
+		return permission;
+	}
+	
+	public AdminPermission update(AdminPermission permission) {
+		AdminPermission parent = this.checkParent(permission);
+		AdminPermission dbPermission = findByCode(permission.getCode());
+		String oldParentCode = dbPermission.getParentCode();
+		CopyUtils.copyIgnoreNullAndBlank(dbPermission, permission);
+		this.baseEntityManager.update(dbPermission);
+		// 有传parent_code，并且和数据的不同，维护childrenSize
+		if (parent!=null && StringUtils.isNotBlank(oldParentCode) && !parent.getCode().equals(oldParentCode)) {
+			AdminPermission oldParent = findByCode(oldParentCode);
+			oldParent.setChildrenSize(oldParent.getChildrenSize()-1);
+			baseEntityManager.update(oldParent);
+			
+			parent.setChildrenSize(parent.getChildrenSize()+1);
+			baseEntityManager.update(parent);
+		}
+		return dbPermission;
+	}
+	
+	private AdminPermission checkParent(AdminPermission permission) {
+		if (StringUtils.isNotBlank(permission.getParentCode())) {
+			AdminPermission parent = findByCode(permission.getParentCode());
+			if (parent==null) {
+				throw new ServiceException("找不到父节点：" + permission.getParentCode());
+			}
+			return parent;
+		}
+		return null;
 	}
 
 	@Override

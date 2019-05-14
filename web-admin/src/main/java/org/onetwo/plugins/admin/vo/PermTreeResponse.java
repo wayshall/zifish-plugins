@@ -14,5 +14,6 @@ public class PermTreeResponse {
 
 	List<PermTreeModel> treeList;
 	List<Map<String, String>> permissionTypes;
+	List<Map<String, String>> dataFroms;
 }
 
