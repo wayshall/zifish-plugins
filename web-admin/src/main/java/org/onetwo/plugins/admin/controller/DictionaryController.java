@@ -12,7 +12,7 @@ import org.onetwo.common.utils.map.MappableMap;
 import org.onetwo.easyui.EasyDataGrid;
 import org.onetwo.easyui.EasyModel;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
-import org.onetwo.plugins.admin.AdminModule.DictMgr;
+import org.onetwo.plugins.admin.AdminMgr.DictMgr;
 import org.onetwo.plugins.admin.entity.DataDictionary;
 import org.onetwo.plugins.admin.service.impl.DictionaryServiceImpl;
 import org.springframework.stereotype.Controller;

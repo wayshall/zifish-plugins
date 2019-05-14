@@ -7,7 +7,7 @@ import org.onetwo.common.utils.Page;
 import org.onetwo.easyui.EasyDataGrid;
 import org.onetwo.easyui.EasyViews.EasyGridView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
-import org.onetwo.plugins.admin.AdminModule.RoleMgr;
+import org.onetwo.plugins.admin.AdminMgr.RoleMgr;
 import org.onetwo.plugins.admin.entity.AdminRole;
 import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

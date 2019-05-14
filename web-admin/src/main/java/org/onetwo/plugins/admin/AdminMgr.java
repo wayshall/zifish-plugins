@@ -2,9 +2,9 @@ package org.onetwo.plugins.admin;
 
 import org.onetwo.ext.permission.api.PermissionType;
 
-public interface AdminModule {
-	String name = "权限管理";
-	String appCode = AdminModule.class.getSimpleName();
+public interface AdminMgr {
+	String name = "系统管理";
+	String appCode = AdminMgr.class.getSimpleName();
 
 	public interface UserProfile {
 		String name = "修改资料";
@@ -28,6 +28,11 @@ public interface AdminModule {
 			String name = "删除";
 			PermissionType permissionType = PermissionType.FUNCTION;
 		}
+	}
+	
+	public static interface PermMgr {
+		String name = "权限管理";
+		int sort = 4;
 	}
 	
 	public static interface RoleMgr {

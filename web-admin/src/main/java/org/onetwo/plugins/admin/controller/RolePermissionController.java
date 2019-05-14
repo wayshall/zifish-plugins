@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.onetwo.easyui.EasyChildrenTreeModel;
 import org.onetwo.easyui.EasyModel;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
-import org.onetwo.plugins.admin.AdminModule.RoleMgr.AssignPermission;
+import org.onetwo.plugins.admin.AdminMgr.RoleMgr.AssignPermission;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
 import org.springframework.stereotype.Controller;

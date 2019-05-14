@@ -9,19 +9,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
+import org.onetwo.common.jackson.JsonMapper;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.plugins.admin.utils.DataUtils;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.utils.WebConstant.DictKeys;
 import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenNew;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name="admin_user")
@@ -68,6 +72,12 @@ public class AdminUser extends BaseEntity {
     	if(StringUtils.isBlank(status))
     		return "";
     	return UserStatus.of(status).getLabel();
+    }
+    
+    @DateTimeFormat(iso=ISO.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd", timezone=JsonMapper.TIME_ZONE_CHINESE)
+    public Date getBirthday() {
+    	return this.birthday;
     }
 
 }
