@@ -2,8 +2,7 @@ package org.onetwo.plugins.admin.controller;
 
 import java.util.List;
 
-import org.onetwo.common.utils.map.MappableMap;
-import org.onetwo.easyui.EasyModel;
+import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.UserMgr.AssignRole;
 import org.onetwo.plugins.admin.entity.AdminRole;
@@ -12,6 +11,8 @@ import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
 import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
+import org.onetwo.plugins.admin.view.EasyViews.UserRoleView;
+import org.onetwo.plugins.admin.vo.UserRoleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,8 @@ public class UserRoleController extends WebAdminBaseController {
 
 	@ByPermissionClass(AssignRole.class)
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    @XResponseView(value="easyui", wrapper=UserRoleView.class)
+    @XResponseView(value="default")
 	public ModelAndView show(@PathVariable("userId") long userId) {
 		AdminUser user = adminUserServiceImpl.loadById(userId);
 		if(UserStatus.of(user.getStatus())!=UserStatus.NORMAL)
@@ -38,18 +41,16 @@ public class UserRoleController extends WebAdminBaseController {
 		List<AdminRole> roles = adminRoleServiceImpl.findByStatus(CommonStatus.NORMAL, null);
 		List<Long> roleIds = adminRoleServiceImpl.findRoleIdsByUser(userId);
 		
-		List<MappableMap> rolelist = EasyModel.newComboBoxBuilder(AdminRole.class)
-				 .specifyMappedFields()
-				 .mapText("name")
-				 .mapValue("id")
-				 .mapSelected(role->roleIds.contains(role.getId()))
-				 .build(roles);
-		
-		return responseData(rolelist);
+		UserRoleResponse res = UserRoleResponse.builder()
+												.roles(roles)
+												.userRoleIds(roleIds)
+												.build();
+		return responseData(res);
 	}
 
 	@ByPermissionClass(AssignRole.class)
 	@RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+    @XResponseView(value="default")
 	public ModelAndView create(Long[] roleIds, @PathVariable("userId") long userId, RedirectAttributes redirectAttributes) {
 		this.adminRoleServiceImpl.saveUserRoles(userId, roleIds);
 		return messageMv("分配角色成功！");

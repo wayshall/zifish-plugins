@@ -11,6 +11,7 @@ import org.onetwo.common.tree.AbstractTreeModel;
 import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.common.web.utils.RequestUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Maps;
@@ -37,6 +38,10 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	}
 	
 	public String getPath() {
+		// 如果是外部链接，直接返回链接即可
+		if (RequestUtils.isHttpPath(url)) {
+			return url;
+		}
 		String path = (String)getId();
 		/*
 		String parentId = (String)getParentId();
@@ -56,7 +61,17 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return "noredirect";
 	}
 	
+	/****
+	 * 组件的viewPath，即前端组件的路径
+	 * 如果是Layout，则表示这是一个有子节点的菜单
+	 * @author weishao zeng
+	 * @return
+	 */
 	public String getComponentViewPath() {
+		// 如果是外部链接，则不需要返回组件的view路径
+		if (RequestUtils.isHttpPath(url)) {
+			return null;
+		}
 		if(!getChildren().isEmpty()) {
 			return "Layout";
 		}

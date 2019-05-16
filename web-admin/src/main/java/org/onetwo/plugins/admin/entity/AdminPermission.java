@@ -38,7 +38,6 @@ public class AdminPermission implements Serializable, IPermission {
     @NotBlank
     private String ptype;
 
-    @NotNull
     private DataFrom dataFrom;
 
     private String url;

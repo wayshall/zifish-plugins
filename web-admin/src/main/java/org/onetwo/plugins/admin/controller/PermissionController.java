@@ -47,14 +47,7 @@ public class PermissionController extends WebAdminBaseController {
 	@RequestMapping(method=RequestMethod.GET)
 	public PermTreeResponse tree(UserDetail userDetail){
 		List<PermTreeModel> menus = menuItemRepository.findUserPermissions(userDetail, (userPerms, allPerms)->{
-			Function<IPermission, PermTreeModel> treeModelCreater = perm->{
-				AdminPermission adminPerm = (AdminPermission) perm;
-				PermTreeModel tm = new PermTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
-//				tm.setHidden(perm.getPermissionType()==PermissionType.FUNCTION);
-//				tm.addMetas(adminPerm.getMeta());
-				tm.setSort(adminPerm.getSort());
-				return tm;
-			};
+			Function<IPermission, PermTreeModel> treeModelCreater = PermTreeModel.TREE_MODEL_CREATER;
 			TreeBuilder<PermTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
@@ -89,11 +82,12 @@ public class PermissionController extends WebAdminBaseController {
 	
 	@ByPermissionClass(PermMgr.class)
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public AdminPermission create(@Valid AdminPermission perm){
+	public Result create(@Valid AdminPermission perm){
 		if (perm.getDataFrom()==null) {
 			perm.setDataFrom(DataFrom.MANUAL);
 		}
-		return permissionManager.persist(perm);
+		permissionManager.persist(perm);
+		return DataResults.success("添加成功！").build();
 	}
 	
 	@ByPermissionClass(PermMgr.class)
@@ -111,15 +105,22 @@ public class PermissionController extends WebAdminBaseController {
 			perm.setDataFrom(DataFrom.MANUAL);
 		}
 		perm.setCode(code);
-		AdminPermission updated = permissionManager.update(perm);
-		return DataResults.success("更新成功！").data(updated).build();
+		permissionManager.update(perm);
+		return DataResults.success("更新成功！").build();
 	}
 
 	@ByPermissionClass(PermMgr.class)
 	@RequestMapping(value="/{code}", method=RequestMethod.DELETE)
 	public Result delete(@PathVariable("code") String code){
-		AdminPermission deleted =permissionManager.delete(code);
-		return DataResults.success("删除成功！").data(deleted).build();
+		permissionManager.delete(code);
+		return DataResults.success("删除成功！").build();
+	}
+
+	@ByPermissionClass(PermMgr.class)
+	@RequestMapping(value="/refresh", method=RequestMethod.PUT)
+	public Result refresh(){
+		this.permissionManager.refreshSecurityMetadataSource();
+		return DataResults.success("刷新权限缓存成功！").build();
 	}
 	
 }

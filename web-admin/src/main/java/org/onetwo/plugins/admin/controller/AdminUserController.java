@@ -2,12 +2,12 @@ package org.onetwo.plugins.admin.controller;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.utils.Page;
-import org.onetwo.easyui.EasyViews.EasyGridView;
-import org.onetwo.easyui.PageRequest;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.UserMgr;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
+import org.onetwo.plugins.admin.view.PageRequest;
+import org.onetwo.plugins.admin.view.EasyViews.EasyGridView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

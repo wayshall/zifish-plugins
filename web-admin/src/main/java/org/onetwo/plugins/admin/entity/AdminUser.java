@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
 import org.onetwo.common.jackson.JsonMapper;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.plugins.admin.utils.DataUtils;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
@@ -32,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
-public class AdminUser extends BaseEntity {
+public class AdminUser extends BaseEntity implements UserRoot {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -61,6 +62,7 @@ public class AdminUser extends BaseEntity {
 	@JsonSerialize(using = ImageUrlJsonSerializer.class)
     private String avatar;
     
+	
     public String getGenderName(){
     	if(StringUtils.isBlank(gender))
     		return "";
@@ -79,5 +81,10 @@ public class AdminUser extends BaseEntity {
     public Date getBirthday() {
     	return this.birthday;
     }
+
+	@Override
+	public boolean isSystemRootUser() {
+		return getId()!=null && getId().equals(ROOT_USER_ID);
+	}
 
 }

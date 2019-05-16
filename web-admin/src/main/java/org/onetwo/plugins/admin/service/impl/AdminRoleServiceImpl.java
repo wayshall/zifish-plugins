@@ -43,7 +43,10 @@ public class AdminRoleServiceImpl {
 
 	@Transactional(readOnly=true)
 	public List<AdminPermission> findAppPermissions(String appCode){
-		List<AdminPermission> permList = baseEntityManager.findList(AdminPermission.class, "appCode", appCode, K.IF_NULL, IfNull.Ignore, K.ASC, "sort");
+		List<AdminPermission> permList = baseEntityManager.findList(AdminPermission.class, 
+																	"appCode", appCode, 
+																	K.IF_NULL, IfNull.Ignore, 
+																	K.ASC, "sort");
 		if(permList.isEmpty())
 			throw new RuntimeException("没有任何权限……");
 		return permList;

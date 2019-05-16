@@ -42,7 +42,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	public AdminPermission delete(String code) {
 		AdminPermission dbPermission = baseEntityManager.load(AdminPermission.class, code);
 		if (dbPermission.getChildrenSize()>0) {
-			throw new ServiceException("该权限又子节点，无法删除，请先删除子节点！");
+			throw new ServiceException("该权限有子节点，无法删除，请先删除子节点！");
 		}
 		if (StringUtils.isNotBlank(dbPermission.getParentCode())) {
 			AdminPermission parent = findByCode(dbPermission.getParentCode());
@@ -72,6 +72,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			}
 			parent.setChildrenSize(parent.getChildrenSize()+1);
 			baseEntityManager.update(parent);
+			permission.setAppCode(parent.getAppCode());
 		}
 		this.baseEntityManager.persist(permission);
 		return permission;

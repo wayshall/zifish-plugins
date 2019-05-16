@@ -11,10 +11,13 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
 import org.onetwo.common.reflect.ReflectUtils;
+import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.entity.AdminUserBinding;
+import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -107,5 +110,47 @@ public class AdminUserServiceImpl {
         	throw new ServiceException("该用户有角色关联，无法删除！请先清除用户关联的角色！");
         }
         baseEntityManager.remove(adminUser);
+    }
+    
+    /***
+     * 绑定
+     * @author weishao zeng
+     * @param bindingRequest
+     */
+    public AdminUserBinding bindingUser(AdminUserBinding bindingRequest, boolean forceBinding) {
+    	if (bindingRequest.getBindingUserId()==null) {
+    		throw new ServiceException("绑定的用户id不能为空！");
+    	}
+    	AdminUser adminUser = this.loadById(bindingRequest.getAdminUserId());
+    	if (adminUser.isSystemRootUser()) {
+    		throw new ServiceException("终极管理员只做系统维护使用，无法绑定！");
+    	}
+    	AdminUserBinding binding = getBinding(bindingRequest.getAdminUserId());
+    	if (binding!=null) {
+    		if (forceBinding) {
+    			unbinding(binding.getId());
+    		} else {
+    			throw new ServiceException("该后台用户已绑定过其它用户").putAsMap(bindingRequest);
+    		}
+    	}
+    	
+    	binding = CopyUtils.copy(AdminUserBinding.class, bindingRequest);
+    	binding.setBindingAt(new Date());
+    	baseEntityManager.persist(binding);
+    	
+    	adminUser.setNickName(binding.getBindingUserName());
+    	baseEntityManager.update(adminUser);
+    	
+    	return binding;
+    }
+    
+    public AdminUserBinding getBinding(Long adminUserId) {
+    	AdminUserBinding binding = this.baseEntityManager.findUnique(AdminUserBinding.class, "adminUserId", adminUserId);
+    	return binding;
+    }
+    
+    public AdminUserBinding unbinding(BindingUserId id) {
+    	AdminUserBinding binding = this.baseEntityManager.removeById(AdminUserBinding.class, id);
+    	return binding;
     }
 }

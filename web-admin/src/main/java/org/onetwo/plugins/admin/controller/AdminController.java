@@ -53,6 +53,7 @@ public class AdminController extends WebAdminBaseController {
 				tm.setHidden(perm.getPermissionType()==PermissionType.FUNCTION);
 				tm.addMetas(adminPerm.getMeta());
 				tm.setSort(adminPerm.getSort());
+				tm.setUrl(adminPerm.getUrl());
 				return tm;
 			};
 			TreeBuilder<VueRouterTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);

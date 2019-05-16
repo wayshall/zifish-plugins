@@ -1,17 +1,18 @@
 package org.onetwo.plugins.admin.controller;
 
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.onetwo.easyui.EasyChildrenTreeModel;
-import org.onetwo.easyui.EasyModel;
+import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.RoleMgr.AssignPermission;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
+import org.onetwo.plugins.admin.view.EasyViews.RolePermissionView;
+import org.onetwo.plugins.admin.view.RolePermissionTreeView;
+import org.onetwo.plugins.admin.vo.RolePermissionReponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,20 +28,17 @@ public class RolePermissionController extends WebAdminBaseController {
 
 	@ByPermissionClass(AssignPermission.class)
 	@RequestMapping(value="{roleId}", method=RequestMethod.GET)
+	@XResponseView(value="easyui", wrapper=RolePermissionView.class)
+	@XResponseView(value=XResponseView.DEFAULT_VIEW, wrapper=RolePermissionTreeView.class)
 	public ModelAndView show(String appCode, @PathVariable("roleId") long roleId){
 		List<String> rolePerms = this.adminRoleServiceImpl.findAppPermissionCodesByRoleIds(appCode, roleId);
 		List<AdminPermission> allPerms = adminRoleServiceImpl.findAppPermissions(appCode);
-		EasyChildrenTreeModel treeModel = EasyModel.newChildrenTreeBuilder(AdminPermission.class)
-				 .mapId("code")
-				 .mapText("name")
-				 .mapParentId("parentCode")
-				 .mapChecked(src->{
-					 return rolePerms.contains(src.getCode());
-				 })
-				 .mapIsStateOpen(src->true)
-				 .build(allPerms, null);
 		
-		return responseData(Arrays.asList(treeModel));
+		RolePermissionReponse res = RolePermissionReponse.builder()
+								.rolePerms(rolePerms)
+								.allPerms(allPerms)
+								.build();
+		return responseData(res);
 	}
 	
 

@@ -91,6 +91,11 @@ public interface AdminMgr {
 			String name = "分配角色";
 			PermissionType permissionType = PermissionType.FUNCTION;
 		}
+
+		public static interface Binding {
+			String name = "用户绑定";
+			PermissionType permissionType = PermissionType.FUNCTION;
+		}
 	}
 	
 
