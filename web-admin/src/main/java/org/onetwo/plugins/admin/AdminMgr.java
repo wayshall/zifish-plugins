@@ -100,6 +100,6 @@ public interface AdminMgr {
 	
 
 	public interface DictMgr {
-		String name = "字典配置管理";
+		String name = "字典管理";
 	}
 }

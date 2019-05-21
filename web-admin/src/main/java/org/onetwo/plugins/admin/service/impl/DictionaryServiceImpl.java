@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
+import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.tree.TreeModelCreator;
@@ -112,6 +113,9 @@ public class DictionaryServiceImpl {
 		dictionary.setUpdateAt(now);
 //		return dataDictionaryMapper.insert(dictionary);
 		dictionary.setCode(dictionary.getCode().toUpperCase());
+		if (dictionary.getEnumValue()==null) {
+			dictionary.setEnumValue(false);
+		}
 		baseEntityManager.persist(dictionary);
 	}
 	
@@ -142,10 +146,11 @@ public class DictionaryServiceImpl {
 	}
 	
 	public void update(DataDictionary dictionary){
+		DataDictionary entity = this.baseEntityManager.load(DataDictionary.class, dictionary.getCode());
+		CopyUtils.copyIgnoreNullAndBlank(entity, dictionary);
 		this.checkDataDictionary(dictionary);
-		dictionary.setUpdateAt(new Date());
 //		return dataDictionaryMapper.updateByPrimaryKey(dictionary);
-		baseEntityManager.update(dictionary);
+		baseEntityManager.update(entity);
 	}
 	
 	public void deleteByCodes(String... codes){
