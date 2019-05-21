@@ -2,6 +2,7 @@ package org.onetwo.plugins.admin.vo;
 
 import java.util.List;
 
+import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,6 @@ import lombok.NoArgsConstructor;
 public class RolePermissionReponse {
 	List<String> rolePerms;
 	List<AdminPermission> allPerms;
-	List<PermTreeModel> treePerms;
+	List<DefaultTreeModel> treePerms;
 }
 

@@ -21,6 +21,7 @@ import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminRole;
 import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
+import org.onetwo.plugins.admin.vo.RolePermissionReponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,7 @@ public class AdminRoleServiceImpl {
 																	K.IF_NULL, IfNull.Ignore, 
 																	K.ASC, "sort");
 		if(permList.isEmpty())
-			throw new RuntimeException("没有任何权限……");
+			throw new ServiceException("没有任何权限……");
 		return permList;
 	}
 	
@@ -138,18 +139,41 @@ public class AdminRoleServiceImpl {
     	Stream.of(roleIds).forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
     }
     
-
-    public List<String> findAppPermissionCodesByRoleIds(String appCode, long roleId){
+    public RolePermissionReponse findRolePermissionsByRoleId(long roleId) {
     	AdminRole role = loadById(roleId);
     	if(CommonStatus.valueOf(role.getStatus())==CommonStatus.DELETE){
-    		throw new ServiceException("角色已删除，不能分配权限");
+    		throw new ServiceException("角色已删除");
+    	}
+    	List<String> rolePerms = this.adminPermissionDao.findAppPermissionsByRoleIds(role.getAppCode(), roleId)
+    													.stream()
+    													.map(p->p.getCode())
+				 										.collect(Collectors.toList());
+		List<AdminPermission> allPerms = findAppPermissions(role.getAppCode());
+		
+		RolePermissionReponse res = RolePermissionReponse.builder()
+								.rolePerms(rolePerms)
+								.allPerms(allPerms)
+								.build();
+		return res;
+    }
+    
+
+   /* public List<String> findAppPermissionCodesByRoleIds(String appCode, long roleId){
+    	AdminRole role = loadById(roleId);
+    	if(CommonStatus.valueOf(role.getStatus())==CommonStatus.DELETE){
+    		throw new ServiceException("角色已删除");
     	}
     	List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByRoleIds(appCode, roleId);
     	return perms.stream().map(p->p.getCode())
     						 .collect(Collectors.toList());
-	}
+	}*/
     
-    public void saveRolePermission(String appCode, long roleId, String...assignPerms){
+    public void saveRolePermission(long roleId, String...assignPerms){
+    	AdminRole role = loadById(roleId);
+    	if(CommonStatus.valueOf(role.getStatus())==CommonStatus.DELETE){
+    		throw new ServiceException("角色已删除");
+    	}
+    	String appCode = role.getAppCode();
     	if(LangUtils.isEmpty(assignPerms)){
     		this.adminRoleDao.deleteRolePermisssion(appCode, roleId, null);
     		return ;

@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.onetwo.boot.core.web.controller.DateInitBinder;
 import org.onetwo.common.spring.mvc.utils.DataWrapper;
+import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.utils.map.MappableMap;
@@ -16,9 +17,11 @@ import org.onetwo.plugins.admin.service.impl.DictionaryServiceImpl;
 import org.onetwo.plugins.admin.view.EasyDataGrid;
 import org.onetwo.plugins.admin.view.EasyModel;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -42,6 +45,14 @@ public class DictionaryController extends WebAdminBaseController implements Date
 				return easyPage;
 			}
 		);
+	}
+	
+	@ByPermissionClass(DictMgr.class)
+	@GetMapping(path="tree")
+	@ResponseBody
+	public List<DefaultTreeModel> tree(){
+		List<DefaultTreeModel> trees = this.dictionaryServiceImpl.loadAsTree();
+		return trees;
 	}
 	
 	@ByPermissionClass(DictMgr.class)

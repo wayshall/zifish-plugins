@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.data.Result;
 import org.onetwo.common.spring.mvc.utils.DataResults;
+import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.api.DataFrom;
@@ -26,7 +27,7 @@ import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.AdminMgr.PermMgr;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
-import org.onetwo.plugins.admin.vo.PermTreeModel;
+import org.onetwo.plugins.admin.view.RolePermissionTreeView;
 import org.onetwo.plugins.admin.vo.PermTreeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @XResponseView
 public class PermissionController extends WebAdminBaseController {
+	
 	@Resource
 	private MenuItemRepository<PermisstionTreeModel> menuItemRepository;
 	@Autowired
@@ -46,9 +48,9 @@ public class PermissionController extends WebAdminBaseController {
 	@ByPermissionClass(PermMgr.class)
 	@RequestMapping(method=RequestMethod.GET)
 	public PermTreeResponse tree(UserDetail userDetail){
-		List<PermTreeModel> menus = menuItemRepository.findUserPermissions(userDetail, (userPerms, allPerms)->{
-			Function<IPermission, PermTreeModel> treeModelCreater = PermTreeModel.TREE_MODEL_CREATER;
-			TreeBuilder<PermTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
+		List<DefaultTreeModel> menus = menuItemRepository.findUserPermissions(userDetail, (userPerms, allPerms)->{
+			Function<IPermission, DefaultTreeModel> treeModelCreater = RolePermissionTreeView.TREE_MODEL_CREATER;
+			TreeBuilder<DefaultTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
 				return treeModelCreater.apply(p);
