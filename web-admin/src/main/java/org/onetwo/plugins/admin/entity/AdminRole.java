@@ -25,6 +25,8 @@ public class AdminRole extends BaseEntity{
 
     private String name;
 
+    private String code;
+
     private String status;
 
     private String remark;

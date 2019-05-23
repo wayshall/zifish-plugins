@@ -11,7 +11,7 @@
  Target Server Version : 50718
  File Encoding         : 65001
 
- Date: 15/05/2019 22:52:43
+ Date: 22/05/2019 14:11:42
 */
 
 SET NAMES utf8mb4;
@@ -84,6 +84,7 @@ CREATE TABLE `admin_role`  (
   `app_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '应用代码',
   `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '角色代码，可用于某些特殊逻辑判断',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
@@ -118,7 +119,7 @@ CREATE TABLE `admin_user`  (
   `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `avatar` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户头像',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '后台用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 315177099792936961 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '后台用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_user_binding
@@ -126,7 +127,8 @@ CREATE TABLE `admin_user`  (
 DROP TABLE IF EXISTS `admin_user_binding`;
 CREATE TABLE `admin_user_binding`  (
   `admin_user_id` bigint(20) NOT NULL COMMENT '后台用户id',
-  `binding_user_id` bigint(20) NOT NULL COMMENT '前台用户id',
+  `binding_user_id` bigint(20) NOT NULL COMMENT '绑定的用户id',
+  `binding_user_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `binding_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`admin_user_id`, `binding_user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '前后台用户绑定表' ROW_FORMAT = Dynamic;
@@ -141,5 +143,24 @@ CREATE TABLE `admin_user_role`  (
   PRIMARY KEY (`role_id`, `user_id`) USING BTREE,
   INDEX `FK_R_AD_ROLE_USER`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for data_dictionary
+-- ----------------------------
+DROP TABLE IF EXISTS `data_dictionary`;
+CREATE TABLE `data_dictionary`  (
+  `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典代码',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典名',
+  `value` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典值',
+  `parent_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '父代码',
+  `is_valid` tinyint(4) NOT NULL DEFAULT 1 COMMENT '0:无效；\r\n            1:有效；\r\n            默认有效',
+  `is_enum_value` tinyint(4) NULL DEFAULT NULL COMMENT '是否枚举常量',
+  `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  `remark` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '备注',
+  `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`code`) USING BTREE,
+  INDEX `AK_DICT_UNIQUE_CODE`(`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '字典表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
