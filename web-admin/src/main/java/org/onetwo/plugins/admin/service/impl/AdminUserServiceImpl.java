@@ -18,6 +18,7 @@ import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
+import org.onetwo.plugins.admin.vo.UserBindingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -117,7 +118,7 @@ public class AdminUserServiceImpl {
      * @author weishao zeng
      * @param bindingRequest
      */
-    public AdminUserBinding bindingUser(AdminUserBinding bindingRequest, boolean forceBinding) {
+    public AdminUserBinding bindingUser(UserBindingRequest bindingRequest, boolean forceBinding) {
     	if (bindingRequest.getBindingUserId()==null) {
     		throw new ServiceException("绑定的用户id不能为空！");
     	}
@@ -139,6 +140,7 @@ public class AdminUserServiceImpl {
     	baseEntityManager.persist(binding);
     	
     	adminUser.setNickName(binding.getBindingUserName());
+    	adminUser.setAvatar(bindingRequest.getAvatar());
     	baseEntityManager.update(adminUser);
     	
     	return binding;

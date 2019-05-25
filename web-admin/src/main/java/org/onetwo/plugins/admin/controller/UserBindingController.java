@@ -9,6 +9,7 @@ import org.onetwo.plugins.admin.AdminMgr.UserMgr.Binding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
+import org.onetwo.plugins.admin.vo.UserBindingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class UserBindingController extends WebAdminBaseController {
 
 	@ByPermissionClass(Binding.class)
 	@PostMapping(path="")
-	public Result binding(@Valid AdminUserBinding id) {
+	public Result binding(@Valid UserBindingRequest id) {
 		adminUserService.bindingUser(id, true);
 		return DataResults.success("绑定成功！").build();
 	}
