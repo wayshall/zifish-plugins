@@ -9,7 +9,6 @@ import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.PermissionManager;
 import org.onetwo.ext.permission.api.IPermission;
-import org.onetwo.ext.permission.api.PermissionType;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.utils.PermissionUtils;
@@ -50,7 +49,13 @@ public class AdminController extends WebAdminBaseController {
 			Function<IPermission, VueRouterTreeModel> treeModelCreater = perm->{
 				AdminPermission adminPerm = (AdminPermission) perm;
 				VueRouterTreeModel tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
-				tm.setHidden(perm.getPermissionType()==PermissionType.FUNCTION);
+				/*try {
+					tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}*/
+//				tm.setHidden(perm.getPermissionType()==PermissionType.FUNCTION);
+				tm.setHidden(perm.isHidden());
 				tm.addMetas(adminPerm.getMeta());
 				tm.setSort(adminPerm.getSort());
 				tm.setUrl(adminPerm.getUrl());
@@ -58,7 +63,13 @@ public class AdminController extends WebAdminBaseController {
 			};
 			TreeBuilder<VueRouterTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
+				if (node.getParentId()==null) {
+					return null;//node;
+				}
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
+				if (p==null) {
+					return null;//node;
+				}
 				return treeModelCreater.apply(p);
 			});
 			return treebuilder.getRootNodes();

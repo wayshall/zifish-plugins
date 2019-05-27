@@ -29,6 +29,14 @@ public interface AdminPermissionDao {
 	 */
 	List<AdminPermission> findPermissions(@Param("codes")Collection<String> codes);
 	
-	int deleteRolePermissions(@Param("permissionCode")String permissionCode);
+	/****
+	 * 根据代码删除角色权限关联数据
+	 * @author weishao zeng
+	 * @param permissionCode
+	 * @param usePostLike
+	 * @return
+	 */
+	int deleteRolePermissions(@Param("permissionCode")String permissionCode, boolean usePostLike);
+	int deletePermission(@Param("code")String code, boolean usePostLike);
 	
 }

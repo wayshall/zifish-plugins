@@ -128,7 +128,25 @@
  * @parser: template
  * 
  */
-    delete from admin_role_permission where permission_code = :permissionCode
-    
+    delete from admin_role_permission 
+    where
+    [#if usePostLike == true]
+        permission_code like :permissionCode?postlike
+    [#else]
+        permission_code = :permissionCode
+    [/#if]
+
+/***
+ * @name: deletePermission
+ * @parser: template
+ * 
+ */
+    delete from admin_permission 
+    where
+    [#if usePostLike == true]
+        code like :code?postlike
+    [#else]
+        code = :code
+    [/#if]
     
     

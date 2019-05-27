@@ -124,6 +124,14 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 		
 		return dbPermissions;
 	}
+	
+
+	protected Set<String> getDatabaseRootCodes() {
+		return this.baseEntityManager.findAll(AdminApplication.class)
+									.stream()
+									.map(p -> p.getCode())
+									.collect(Collectors.toSet());
+	}
 
 
 	@Override
@@ -151,8 +159,9 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 		logger.info("deletes[{}]: {}", deletes.size(), deletes);
 		deletes.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
-			this.adminPermissionDao.deleteRolePermissions(p.getCode());
-			this.baseEntityManager.remove(p);
+			/*this.adminPermissionDao.deleteRolePermissions(p.getCode());
+			this.baseEntityManager.remove(p);*/
+			this.removePermission(p.getCode(), false);
 		});
 
 		logger.info("updates[{}]: {}", updates.size(), updates);
@@ -163,11 +172,22 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			this.baseEntityManager.update(p);
 		});
 	}
+	
+
+	protected void removeUnusedRootMenu(String rootCode) {
+		baseEntityManager.removeById(AdminApplication.class, rootCode);
+		super.removeUnusedRootMenu(rootCode);
+	}
+	protected void removePermission(String permissionCode, boolean usePostLike) {
+		this.adminPermissionDao.deleteRolePermissions(permissionCode, usePostLike);
+		this.adminPermissionDao.deletePermission(permissionCode, usePostLike);
+	}
 
 	@Override
 	protected void removeRootMenu(MenuInfoParser<AdminPermission> menuInfoParser){
 		String appCode = menuInfoParser.getRootMenuParser().getAppCode();
-		baseEntityManager.removeById(AdminApplication.class, appCode);
+//		baseEntityManager.removeById(AdminApplication.class, appCode);
+		this.removeUnusedRootMenu(appCode);
 	}
 
 	@Override
