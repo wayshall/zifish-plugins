@@ -54,6 +54,10 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return path; 
 	}
 
+	/****
+	 * vue组件命名推荐使用PascalCase，即单词大写开头的风格
+	 * https://cn.vuejs.org/v2/style-guide/index.html#%E6%A8%A1%E6%9D%BF%E4%B8%AD%E7%9A%84%E7%BB%84%E4%BB%B6%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99-%E5%BC%BA%E7%83%88%E6%8E%A8%E8%8D%90
+	 */
 	public String getName() {
 		return super.getName().replace("_", "");
 	}
