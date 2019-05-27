@@ -53,6 +53,10 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		path = "/" + StringUtils.replaceEach(path, "_", "/");
 		return path; 
 	}
+
+	public String getName() {
+		return super.getName().replace("_", "");
+	}
 	
 	public String getRedirect() {
 		if(getChildren().isEmpty()) {
