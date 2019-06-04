@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.onetwo.boot.core.config.BootSiteConfig;
 import org.onetwo.boot.module.security.oauth2.NotEnableOauth2SsoCondition;
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
-import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
 import org.onetwo.common.spring.Springs.SpringsInitEvent;
@@ -21,6 +19,7 @@ import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.service.impl.DefaultMenuItemRepository;
 import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
+import org.onetwo.ext.security.utils.SecurityConfig;
 import org.onetwo.plugins.admin.controller.CaptchaController;
 import org.onetwo.plugins.admin.controller.KindeditorController;
 import org.onetwo.plugins.admin.controller.LoginController;
@@ -43,7 +42,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -67,18 +65,18 @@ public class WebAdminPluginContext implements InitializingBean {
 	
 //	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private BootSiteConfig bootSiteConfig;
+//	@Autowired
+//	private BootSiteConfig bootSiteConfig;
 
 	/****
 	 * trigger baseEntityManager init and load the sql file
 	 */
-	@Autowired
-	private BaseEntityManager baseEntityManager;
-	@Autowired
-	private ApplicationContext applicationContext;
-	@Autowired
-	private WebAdminProperties webAdminProperties;
+//	@Autowired
+//	private BaseEntityManager baseEntityManager;
+//	@Autowired
+//	private ApplicationContext applicationContext;
+//	@Autowired
+//	private WebAdminProperties webAdminProperties;
 	
 	public WebAdminPluginContext(){
 	}
@@ -203,6 +201,8 @@ public class WebAdminPluginContext implements InitializingBean {
 	protected static class CaptchaConfiguration {
 		@Autowired
 		WebAdminProperties webAdminProperties;
+		@Autowired
+		private SecurityConfig securityConfig;
 		
 		@Bean
 		public CaptchaAuthenticationProvider captchaAuthenticationProvider(){
@@ -210,12 +210,14 @@ public class WebAdminPluginContext implements InitializingBean {
 			provider.setCaptchaParameterName(webAdminProperties.getCaptcha().getParameterName());
 			provider.setCaptchaCookieName(webAdminProperties.getCaptcha().getCookieName());
 			provider.setCaptchaChecker(webAdminProperties.getCaptchaChecker());
+			provider.setCookiePath(securityConfig.getCookie().getPath());
 			return provider;
 		}
 		
 		@Bean
 		public CaptchaController captchaController(){
-			return new CaptchaController();
+			CaptchaController captcha = new CaptchaController();
+			return captcha;
 		}
 	}
 

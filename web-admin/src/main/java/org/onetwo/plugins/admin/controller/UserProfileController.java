@@ -31,6 +31,8 @@ public class UserProfileController extends AbstractBaseController {
         return responsePageOrData("user-profile", ()->{
         	AdminUser adminUser = adminUserServiceImpl.loadById(loginUser.getUserId());
             adminUser.setPassword("");
+            adminUser.setCreateAt(null);
+            adminUser.setUpdateAt(null);
             return adminUser;
         });
     }
