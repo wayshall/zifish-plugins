@@ -31,7 +31,7 @@
         admin_role ar on ar.ID = aur.ROLE_ID
     where 
         aur.USER_ID =:userId 
-        and ap.hidden=0 
+--        and ap.hidden=0 
         and  ar.`STATUS`='NORMAL' 
     [#if appCode?has_content]
         and ap.APP_CODE=:appCode
