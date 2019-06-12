@@ -1,5 +1,6 @@
 package org.onetwo.plugins.admin.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.onetwo.common.web.captcha.CaptchaChecker.CaptchaSignedResult;
@@ -27,7 +28,7 @@ public class CaptchaController extends WebAdminBaseController {
 
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseBody
-	public CaptchaResponse captcha(HttpServletResponse response){
+	public CaptchaResponse captcha(HttpServletRequest request, HttpServletResponse response){
 		CaptchaProps props = webAdminProperties.getCaptcha();
 		CaptchaSettings settings = new CaptchaSettings();
 		settings.setCodeColor(props.getColor());
