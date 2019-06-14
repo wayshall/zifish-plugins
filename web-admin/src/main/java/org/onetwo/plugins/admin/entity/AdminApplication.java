@@ -9,15 +9,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.validator.constraints.NotBlank;
+import org.onetwo.common.db.TimeRecordableEntity;
 import org.onetwo.common.db.spi.CrudEntityManager;
 import org.onetwo.dbm.core.BaseModel;
 import org.onetwo.dbm.utils.Dbms;
 import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenEdit;
 import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenNew;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
 /*****
@@ -29,7 +30,7 @@ import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenNew;
 @Table(name="admin_application")
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class AdminApplication extends BaseModel<AdminApplication, String> implements Serializable {
+public class AdminApplication extends BaseModel<AdminApplication, String> implements Serializable, TimeRecordableEntity {
 
 	final public static CrudEntityManager<AdminApplication, String> MANAGER = Dbms.obtainCrudManager(AdminApplication.class);
 

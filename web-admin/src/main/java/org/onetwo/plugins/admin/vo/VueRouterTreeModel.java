@@ -88,8 +88,9 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		if(!getChildren().isEmpty()) {
 			return "Layout";
 		}
-		
-		return url;
+		String viewPath = StringUtils.toCamelWithoutConvert2LowerCase(url, '-', true);
+		viewPath = StringUtils.trimStartWith(viewPath, "/");
+		return viewPath;
 	}
 	
 	public String getComponentViewPath2() {

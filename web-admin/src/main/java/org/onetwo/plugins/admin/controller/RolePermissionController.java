@@ -1,15 +1,19 @@
 package org.onetwo.plugins.admin.controller;
 
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.RoleMgr.AssignPermission;
+import org.onetwo.plugins.admin.service.impl.AdminMenuItemServiceImpl;
 import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
 import org.onetwo.plugins.admin.view.EasyViews.RolePermissionView;
 import org.onetwo.plugins.admin.view.RolePermissionTreeView;
 import org.onetwo.plugins.admin.vo.RolePermissionReponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class RolePermissionController extends WebAdminBaseController {
 	@Resource
 	private AdminRoleServiceImpl adminRoleServiceImpl;
+	@Autowired
+	private AdminMenuItemServiceImpl adminMenuItemService;
 	
 
 	@ByPermissionClass(AssignPermission.class)
@@ -36,7 +42,10 @@ public class RolePermissionController extends WebAdminBaseController {
 								.rolePerms(rolePerms)
 								.allPerms(allPerms)
 								.build();*/
-		RolePermissionReponse res = this.adminRoleServiceImpl.findRolePermissionsByRoleId(roleId);
+//		RolePermissionReponse res = this.adminRoleServiceImpl.findRolePermissionsByRoleId(roleId);
+		List<String> rolePerms = this.adminRoleServiceImpl.findRolePermissionsByRoleId(roleId);
+		RolePermissionReponse res = adminMenuItemService.findUserPermissions(getCurrentLoginUser());
+		res.setRolePerms(rolePerms);
 		return responseData(res);
 	}
 	

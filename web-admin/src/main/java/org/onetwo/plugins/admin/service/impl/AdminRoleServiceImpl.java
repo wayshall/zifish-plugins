@@ -142,7 +142,7 @@ public class AdminRoleServiceImpl {
     	Stream.of(roleIds).forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
     }
     
-    public RolePermissionReponse findRolePermissionsByRoleId(long roleId) {
+    public List<String> findRolePermissionsByRoleId(long roleId) {
     	AdminRole role = loadById(roleId);
     	if(CommonStatus.valueOf(role.getStatus())==CommonStatus.DELETE){
     		throw new ServiceException("角色已删除");
@@ -151,13 +151,13 @@ public class AdminRoleServiceImpl {
     													.stream()
     													.map(p->p.getCode())
 				 										.collect(Collectors.toList());
-		List<AdminPermission> allPerms = findAppPermissions(role.getAppCode());
+		/*List<AdminPermission> allPerms = findAppPermissions(role.getAppCode());
 		
 		RolePermissionReponse res = RolePermissionReponse.builder()
 								.rolePerms(rolePerms)
 								.allPerms(allPerms)
-								.build();
-		return res;
+								.build();*/
+		return rolePerms;
     }
     
 
