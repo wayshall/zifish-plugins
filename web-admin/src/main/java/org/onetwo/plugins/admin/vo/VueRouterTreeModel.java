@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.onetwo.common.tree.AbstractTreeModel;
 import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
@@ -15,6 +12,9 @@ import org.onetwo.common.web.utils.RequestUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Maps;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author wayshall
@@ -59,6 +59,11 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * https://cn.vuejs.org/v2/style-guide/index.html#%E6%A8%A1%E6%9D%BF%E4%B8%AD%E7%9A%84%E7%BB%84%E4%BB%B6%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99-%E5%BC%BA%E7%83%88%E6%8E%A8%E8%8D%90
 	 */
 	public String getName() {
+		if (StringUtils.isNotBlank(url)) {
+			String componentName = StringUtils.toCamelWithoutConvert2LowerCase(url, '/', true);
+			componentName = StringUtils.toCamelWithoutConvert2LowerCase(componentName, '-', true);
+			return componentName;
+		}
 		return super.getName().replace("_", "");
 	}
 	
@@ -84,8 +89,18 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			return "Layout";
 		}
 		
-//		String viewPath = (String) getId();
-//		viewPath = viewPath.replace('_', '/');
+		return url;
+	}
+	
+	public String getComponentViewPath2() {
+		// 如果是外部链接，则不需要返回组件的view路径
+		if (RequestUtils.isHttpPath(url)) {
+			return null;
+		}
+		if(!getChildren().isEmpty()) {
+			return "Layout";
+		}
+		
 		List<String> viewPaths = GuavaUtils.splitAsStream((String) getId(), "_")
 										.map(str->StringUtils.uncapitalize(str))
 										.collect(Collectors.toList());
