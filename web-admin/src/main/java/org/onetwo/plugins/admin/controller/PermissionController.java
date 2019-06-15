@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.data.Result;
+import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.spring.mvc.utils.DataResults;
 import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.tree.TreeBuilder;
@@ -52,7 +53,13 @@ public class PermissionController extends WebAdminBaseController {
 			Function<IPermission, DefaultTreeModel> treeModelCreater = RolePermissionTreeView.TREE_MODEL_CREATER;
 			TreeBuilder<DefaultTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
+				if (node.getParentId()==null) {
+					return null;
+				}
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
+				if (p==null) {
+					throw new ServiceException("找不到节点[" + node.getId() + "]的父节点：" + node.getParentId());
+				}
 				return treeModelCreater.apply(p);
 			});
 			return treebuilder.getRootNodes();
