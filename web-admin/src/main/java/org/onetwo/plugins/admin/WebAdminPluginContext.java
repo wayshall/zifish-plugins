@@ -26,6 +26,7 @@ import org.onetwo.plugins.admin.controller.LoginController;
 import org.onetwo.plugins.admin.controller.WebAdminBaseController;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
 import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
@@ -91,9 +92,15 @@ public class WebAdminPluginContext implements InitializingBean {
 		return new WebAdminPlugin();
 	}*/
 	
+	
 	@Bean
 	static public ApplicationListener<SpringsInitEvent> webAdminApplicationListener(){
 		return new WebAdminApplicationListener();
+	}
+	
+	@Bean
+	public CreateOrUpdateAdminUserListenner createOrUpdateAdminUserListenner() {
+		return new CreateOrUpdateAdminUserListenner();
 	}
 	
 	@Bean

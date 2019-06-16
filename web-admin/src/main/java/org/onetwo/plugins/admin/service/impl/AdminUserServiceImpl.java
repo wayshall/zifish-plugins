@@ -76,6 +76,14 @@ public class AdminUserServiceImpl {
     	return user;
     }
     
+    public AdminUser findByUserName(String userName) {
+    	return baseEntityManager.from(AdminUser.class)
+    				.where()
+    					.field("userName").is(userName)
+    				.toQuery()
+    				.unique();
+    }
+    
     public void update(AdminUser adminUser){
         Assert.notNull(adminUser.getId(), "参数不能为null");
         AdminUser dbAdminUser = loadById(adminUser.getId());
@@ -139,9 +147,18 @@ public class AdminUserServiceImpl {
     	binding.setBindingAt(new Date());
     	baseEntityManager.persist(binding);
     	
-    	adminUser.setNickName(binding.getBindingUserName());
-    	adminUser.setAvatar(bindingRequest.getAvatar());
-    	baseEntityManager.update(adminUser);
+    	boolean userUpdated = false;
+    	if (StringUtils.isBlank(adminUser.getNickName())) {
+        	adminUser.setNickName(binding.getBindingUserName());
+        	userUpdated = true;
+    	}
+    	if (StringUtils.isNotBlank(bindingRequest.getAvatar())) {
+    		adminUser.setAvatar(bindingRequest.getAvatar());
+        	userUpdated = true;
+    	}
+    	if(userUpdated) {
+    		baseEntityManager.update(adminUser);
+    	}
     	
     	return binding;
     }
