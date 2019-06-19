@@ -1,12 +1,13 @@
 package org.onetwo.plugins.admin.utils;
 
-import lombok.Data;
-
 import org.onetwo.common.web.captcha.CaptchaChecker;
 import org.onetwo.common.web.captcha.Captchas;
+import org.onetwo.common.web.captcha.SimpleCaptchaGenerator.CaptchaSettings;
 import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
+
+import lombok.Data;
 
 /**
  * @author wayshall
@@ -42,7 +43,7 @@ public class WebAdminProperties {
 		private String parameterName = CaptchaAuthenticationProvider.PARAMS_VERIFY_CODE;
 		private String cookieName = CaptchaAuthenticationProvider.COOKIES_VERIFY_CODE;
 		
-		private String color;
+		CaptchaSettings settings = new CaptchaSettings();
 
 		public void setSalt(String salt) {
 			this.salt = salt;
