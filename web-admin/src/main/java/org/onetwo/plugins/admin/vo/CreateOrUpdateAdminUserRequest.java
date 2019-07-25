@@ -1,6 +1,7 @@
 package org.onetwo.plugins.admin.vo;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.onetwo.common.spring.copier.BeanCloneable;
 
@@ -34,4 +35,6 @@ public class CreateOrUpdateAdminUserRequest implements BeanCloneable {
     private String avatar;
     
     private Long bindingUserId;
+    
+    private Set<Long> roleIds;
 }

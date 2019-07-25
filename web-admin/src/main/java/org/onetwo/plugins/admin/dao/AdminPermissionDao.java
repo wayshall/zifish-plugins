@@ -1,6 +1,7 @@
 
 package org.onetwo.plugins.admin.dao;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import org.onetwo.plugins.admin.entity.AdminPermission;
 public interface AdminPermissionDao {
 
 	List<AdminPermission> findAppPermissionsByUserId(@Param("appCode")String appCode, @Param("userId")long userId);
-	List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleId")long roleId);
+	
+	default List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleId")long roleId) {
+		return findAppPermissionsByRoleIds(appCode, Arrays.asList(roleId));
+	}
+	
+	List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleIds")Collection<Long> roleIds);
 	
 	/***
 	 * 根据appcode查找权限

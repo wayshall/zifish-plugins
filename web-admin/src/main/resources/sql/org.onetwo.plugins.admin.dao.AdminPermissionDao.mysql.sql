@@ -116,7 +116,7 @@
     left join
         admin_role ar on ar.ID = arp.ROLE_ID
     where 
-        arp.ROLE_ID = :roleId 
+        arp.ROLE_ID in ( :roleIds ) 
         and ap.hidden=0 
         and  ar.`STATUS`='NORMAL' 
     [#if appCode?has_content]

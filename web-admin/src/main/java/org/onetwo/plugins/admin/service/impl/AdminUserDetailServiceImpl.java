@@ -55,7 +55,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	
 	protected List<GrantedAuthority> fetchUserGrantedAuthorities(T user){
 		List<GrantedAuthority> authes = Collections.emptyList();
-		if(user.getId().longValue()==LoginUserDetails.ROOT_USER_ID){
+		if(user.isSystemRootUser()){
 			List<AdminPermission> perms = adminPermissionDao.findAppPermissions(null);
 			authes = perms.stream().map(perm->new SimpleGrantedAuthority(perm.getCode()))
 						.collect(Collectors.toList());
