@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.reflect.ReflectUtils;
+import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
@@ -28,6 +29,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
     protected BaseEntityManager baseEntityManager;
 	@Autowired
 	protected AdminPermissionDao adminPermissionDao;
+	@Autowired
+	private PermissionManagerImpl permissionManager;
 	
 	protected Class<T> userDetailClass;
 
@@ -61,6 +64,20 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 						.collect(Collectors.toList());
 		}else{
 			List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByUserId(null, user.getId());
+			
+			// 若分配权限的时候，半选中的父节点没有保存（保存父节点会知道前端ui问题），所以这里通过构建树的方式把版选中的父菜单也查找出来
+			// 若分配全新啊时已保存半选中的父节点，则不需要下面的逻辑
+			PermissionUtils.createMenuTreeBuilder(perms).buidTree(node -> {
+				if (node.getParentId()==null) {
+					return null;//node;
+				}
+				AdminPermission p = permissionManager.findByCode((String)node.getParentId());
+				if (p!=null) {
+					perms.add(p);
+				} 
+				return null;
+			});
+			
 			authes = perms.stream().map(perm->new SimpleGrantedAuthority(perm.getCode()))
 						.collect(Collectors.toList());
 		}

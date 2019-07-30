@@ -215,9 +215,14 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	}
 
 	@Override
-	public List<AdminPermission> findUserAppMenus(String appCode, UserDetail userDetail) {
+	public List<AdminPermission> findUserAppPerms(String appCode, UserDetail userDetail) {
 		List<AdminPermission> adminPermissions = this.adminPermissionDao.findAppPermissionsByUserId(appCode, userDetail.getUserId());
-		List<AdminPermission> permList = adminPermissions.stream()
+		return adminPermissions;
+	}
+
+	@Override
+	public List<AdminPermission> findUserAppMenus(String appCode, UserDetail userDetail) {
+		List<AdminPermission> permList = findUserAppPerms(appCode, userDetail).stream()
 				.filter(p->PermissionUtils.isMenu(p))
 				.collect(Collectors.toList());
 		return permList;

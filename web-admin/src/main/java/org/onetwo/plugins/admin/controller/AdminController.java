@@ -48,6 +48,10 @@ public class AdminController extends WebAdminBaseController {
 		List<VueRouterTreeModel> menus = menuItemRepository.findUserMenus(userDetail, (userPerms, allPerms)->{
 			Function<IPermission, VueRouterTreeModel> treeModelCreater = perm->{
 				AdminPermission adminPerm = (AdminPermission) perm;
+				/*if(!PermissionUtils.isMenu(adminPerm)) {
+					return null;
+				}*/
+				
 				VueRouterTreeModel tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
 				/*try {
 					tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
@@ -56,11 +60,16 @@ public class AdminController extends WebAdminBaseController {
 				}*/
 //				tm.setHidden(perm.getPermissionType()==PermissionType.FUNCTION);
 				tm.setHidden(perm.isHidden());
+				if(!PermissionUtils.isMenu(perm)) {
+					// 非菜单节点设置为隐藏
+					tm.setHidden(true);
+				}
 				tm.addMetas(adminPerm.getMeta());
 				tm.setSort(adminPerm.getSort());
 				tm.setUrl(adminPerm.getUrl());
 				return tm;
 			};
+			
 			TreeBuilder<VueRouterTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
 				if (node.getParentId()==null) {
