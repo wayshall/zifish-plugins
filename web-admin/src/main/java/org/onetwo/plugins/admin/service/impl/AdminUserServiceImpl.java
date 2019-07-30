@@ -2,6 +2,7 @@
 package org.onetwo.plugins.admin.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -15,9 +16,11 @@ import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
+import org.onetwo.plugins.admin.dao.AdminUserDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
+import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
 import org.onetwo.plugins.admin.vo.UserBindingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,8 +41,19 @@ public class AdminUserServiceImpl {
     private AdminRoleDao adminRoleDao;
     @Autowired
     private BootCommonService bootCommonService;
+    @Autowired
+    private AdminUserDao adminUserDao;
 
-    
+    /***
+     * 根据用户id和名称查找用户
+     * @author weishao zeng
+     * @param query
+     * @return
+     */
+    public List<AdminUser> findUserByRole(FindUserByRoleQuery query) {
+		return adminUserDao.findUserByRole(query);
+	}
+	
     public void findPage(Page<AdminUser> page, AdminUser adminUser){
         Querys.from(baseEntityManager, AdminUser.class)
         		.where()
