@@ -78,8 +78,8 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 
 	public List<VueRouterTreeModel> getChildren() {
 		// 过滤所有隐藏节点（非菜单节点）, 非菜单节点均设置为了隐藏
-		List<VueRouterTreeModel> children = super.getChildren().stream().filter(p -> !p.isHidden()).collect(Collectors.toList());
-		return children;
+//		List<VueRouterTreeModel> children = super.getChildren().stream().filter(p -> !p.isHidden()).collect(Collectors.toList());
+		return super.getChildren();
 	}
 	
 	/****
