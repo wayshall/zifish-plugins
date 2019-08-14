@@ -40,7 +40,7 @@ final public class Enums {
 		public static UserStatus of(String status){
 			return Stream.of(values()).filter(s->s.name().equals(status))
 										.findAny()
-										.orElseThrow(()->new IllegalArgumentException("status: " + status));
+										.orElseThrow(()->new IllegalArgumentException("error user status: " + status));
 		}
 		
 	}

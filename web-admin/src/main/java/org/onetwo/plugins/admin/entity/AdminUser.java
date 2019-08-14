@@ -9,26 +9,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
+import org.onetwo.common.jackson.JsonMapper;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.plugins.admin.utils.DataUtils;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.utils.WebConstant.DictKeys;
 import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenNew;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name="admin_user")
 @Data
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
-public class AdminUser extends BaseEntity {
+public class AdminUser extends BaseEntity implements UserRoot {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -52,11 +57,12 @@ public class AdminUser extends BaseEntity {
 
     private Date birthday;
 
-    private String appCode;
+//    private String appCode;
 
 	@JsonSerialize(using = ImageUrlJsonSerializer.class)
     private String avatar;
     
+	
     public String getGenderName(){
     	if(StringUtils.isBlank(gender))
     		return "";
@@ -69,5 +75,16 @@ public class AdminUser extends BaseEntity {
     		return "";
     	return UserStatus.of(status).getLabel();
     }
+    
+    @DateTimeFormat(iso=ISO.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd", timezone=JsonMapper.TIME_ZONE_CHINESE)
+    public Date getBirthday() {
+    	return this.birthday;
+    }
+
+	@Override
+	public boolean isSystemRootUser() {
+		return getId()!=null && getId().equals(ROOT_USER_ID);
+	}
 
 }

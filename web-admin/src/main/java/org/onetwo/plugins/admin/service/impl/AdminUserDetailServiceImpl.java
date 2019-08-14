@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.reflect.ReflectUtils;
+import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
@@ -28,6 +29,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
     protected BaseEntityManager baseEntityManager;
 	@Autowired
 	protected AdminPermissionDao adminPermissionDao;
+	@Autowired
+	private PermissionManagerImpl permissionManager;
 	
 	protected Class<T> userDetailClass;
 
@@ -55,12 +58,26 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	
 	protected List<GrantedAuthority> fetchUserGrantedAuthorities(T user){
 		List<GrantedAuthority> authes = Collections.emptyList();
-		if(user.getId().longValue()==LoginUserDetails.ROOT_USER_ID){
+		if(user.isSystemRootUser()){
 			List<AdminPermission> perms = adminPermissionDao.findAppPermissions(null);
 			authes = perms.stream().map(perm->new SimpleGrantedAuthority(perm.getCode()))
 						.collect(Collectors.toList());
 		}else{
 			List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByUserId(null, user.getId());
+			
+			// 若分配权限的时候，半选中的父节点没有保存（保存父节点会导致前端回显的时候，因为父节点选中而导致未选择的子节点也会选中问题），所以这里通过构建树的方式把版选中的父菜单也查找出来
+			// 若分配权限时已保存半选中的父节点，则不需要下面的逻辑
+			PermissionUtils.createMenuTreeBuilder(perms).buidTree(node -> {
+				if (node.getParentId()==null) {
+					return null;//node;
+				}
+				AdminPermission p = permissionManager.findByCode((String)node.getParentId());
+				if (p!=null) {
+					perms.add(p);
+				} 
+				return null;
+			});
+			
 			authes = perms.stream().map(perm->new SimpleGrantedAuthority(perm.getCode()))
 						.collect(Collectors.toList());
 		}

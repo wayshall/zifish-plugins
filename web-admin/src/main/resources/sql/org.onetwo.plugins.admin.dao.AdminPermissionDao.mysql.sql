@@ -31,7 +31,7 @@
         admin_role ar on ar.ID = aur.ROLE_ID
     where 
         aur.USER_ID =:userId 
-        and ap.hidden=0 
+--        and ap.hidden=0 
         and  ar.`STATUS`='NORMAL' 
     [#if appCode?has_content]
         and ap.APP_CODE=:appCode
@@ -116,7 +116,7 @@
     left join
         admin_role ar on ar.ID = arp.ROLE_ID
     where 
-        arp.ROLE_ID = :roleId 
+        arp.ROLE_ID in ( :roleIds ) 
         and ap.hidden=0 
         and  ar.`STATUS`='NORMAL' 
     [#if appCode?has_content]
@@ -128,7 +128,25 @@
  * @parser: template
  * 
  */
-    delete from admin_role_permission where permission_code = :permissionCode
-    
+    delete from admin_role_permission 
+    where
+    [#if usePostLike == true]
+        permission_code like :permissionCode?postlike
+    [#else]
+        permission_code = :permissionCode
+    [/#if]
+
+/***
+ * @name: deletePermission
+ * @parser: template
+ * 
+ */
+    delete from admin_permission 
+    where
+    [#if usePostLike == true]
+        code like :code?postlike
+    [#else]
+        code = :code
+    [/#if]
     
     

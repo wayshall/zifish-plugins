@@ -11,9 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.dbm.annotation.DbmJsonField;
 import org.onetwo.ext.permission.api.DataFrom;
@@ -28,8 +30,12 @@ import org.onetwo.ext.permission.utils.PermissionUtils;
 public class AdminPermission implements Serializable, IPermission {
 	
 	@Id
+    @NotNull
+    @NotBlank
 	private String code;
 
+    @NotNull
+    @NotBlank
     private String ptype;
 
     private DataFrom dataFrom;
@@ -40,6 +46,8 @@ public class AdminPermission implements Serializable, IPermission {
 
     private String parentCode;
 
+    @NotNull
+    @NotBlank
     private String name;
 
     private Integer sort;

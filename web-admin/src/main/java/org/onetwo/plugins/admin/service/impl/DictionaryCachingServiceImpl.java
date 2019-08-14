@@ -78,7 +78,7 @@ public class DictionaryCachingServiceImpl {
 		dictList.stream().forEach(dict->{
 			this.codeCaches.put(dict.getCode(), dict);
 		});
-		Map<String, List<DataDictionary>> dictGroups = dictList.stream().collect(Collectors.groupingBy(d->d.getParentCode()));
+		Map<String, List<DataDictionary>> dictGroups = dictList.stream().collect(Collectors.groupingBy(d->d.getParentCode()==null?"":d.getParentCode()));
 		dictGroups.entrySet().forEach(g->{
 			this.typeCaches.put(g.getKey(), g.getValue());
 		});
