@@ -65,8 +65,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		}else{
 			List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByUserId(null, user.getId());
 			
-			// 若分配权限的时候，半选中的父节点没有保存（保存父节点会知道前端ui问题），所以这里通过构建树的方式把版选中的父菜单也查找出来
-			// 若分配全新啊时已保存半选中的父节点，则不需要下面的逻辑
+			// 若分配权限的时候，半选中的父节点没有保存（保存父节点会导致前端回显的时候，因为父节点选中而导致未选择的子节点也会选中问题），所以这里通过构建树的方式把版选中的父菜单也查找出来
+			// 若分配权限时已保存半选中的父节点，则不需要下面的逻辑
 			PermissionUtils.createMenuTreeBuilder(perms).buidTree(node -> {
 				if (node.getParentId()==null) {
 					return null;//node;
