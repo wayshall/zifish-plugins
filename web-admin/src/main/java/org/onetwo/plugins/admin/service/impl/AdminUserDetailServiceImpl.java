@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.ext.permission.utils.PermissionUtils;
-import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
+import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -91,7 +91,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	}
 	
 	protected UserDetails buildUserDetail(T user, List<GrantedAuthority> authes){
-		LoginUserDetails userDetail = new LoginUserDetails(user.getId(), user.getUserName(), user.getPassword(), authes);
+		AdminLoginUserInfo userDetail = new AdminLoginUserInfo(user.getId(), user.getUserName(), user.getPassword(), authes);
 		userDetail.setNickname(user.getNickName());
 		userDetail.setAvatar(user.getAvatar());
 		return userDetail;
