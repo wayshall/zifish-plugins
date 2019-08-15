@@ -18,11 +18,14 @@ import org.onetwo.common.utils.StringUtils;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
+import org.onetwo.plugins.admin.entity.AdminOrgan;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
 import org.onetwo.plugins.admin.vo.UserBindingRequest;
+import org.onetwo.plugins.admin.vo.UserOrganBindingRequest;
+import org.onetwo.plugins.admin.vo.UserOrganBindingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,8 @@ public class AdminUserServiceImpl {
     private BootCommonService bootCommonService;
     @Autowired
     private AdminUserDao adminUserDao;
+    @Autowired
+    private AdminOrganServiceImpl adminOrganService;
 
     /***
      * 根据用户id和名称查找用户
@@ -83,6 +88,7 @@ public class AdminUserServiceImpl {
         Date now = new Date();
         adminUser.setCreateAt(now);
         adminUser.setUpdateAt(now);
+        adminUser.setOrganId(0L);
         baseEntityManager.save(adminUser);
     }
     
@@ -185,6 +191,42 @@ public class AdminUserServiceImpl {
     
     public AdminUserBinding unbinding(BindingUserId id) {
     	AdminUserBinding binding = this.baseEntityManager.removeById(AdminUserBinding.class, id);
+    	return binding;
+    }
+    
+    public UserOrganBindingVO getBindingOrgan(Long adminUserId) {
+    	AdminUser user = this.loadById(adminUserId);
+    	UserOrganBindingVO binding = new UserOrganBindingVO();
+    	binding.setDataId(user.getId());
+    	binding.setBindingId(user.getOrganId());
+    	if (user.getOrganId()!=null && user.getOrganId()>0) {
+    		AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
+    		binding.setBindingName(organ.getName());
+    	}
+    	return binding;
+    }
+    
+
+    public UserOrganBindingVO bindingOrgan(UserOrganBindingRequest bindingRequest, boolean forceBinding) {
+    	if (bindingRequest.getDataId()==null) {
+    		throw new ServiceException("绑定的用户id不能为空！");
+    	}
+    	
+    	AdminUser adminUser = this.loadById(bindingRequest.getDataId());
+    	if (adminUser.isSystemRootUser()) {
+    		throw new ServiceException("终极管理员只做系统维护使用，无法绑定！");
+    	}
+    	
+		AdminOrgan organ = this.adminOrganService.load(bindingRequest.getBindingId());
+		
+    	UserOrganBindingVO binding = getBindingOrgan(bindingRequest.getDataId());
+    	if (binding!=null && !forceBinding){
+    		throw new ServiceException("该后台用户已绑定过其它用户").putAsMap(bindingRequest);
+    	}
+
+		adminUser.setOrganId(organ.getId());
+    	this.baseEntityManager.update(adminUser);
+    	
     	return binding;
     }
 }

@@ -6,19 +6,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.onetwo.common.utils.StringUtils;
+import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import org.onetwo.common.utils.StringUtils;
-import org.onetwo.dbm.jpa.BaseEntity;
-import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name="admin_role")
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class AdminRole extends BaseEntity{
+public class AdminRole extends AdminOrganable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

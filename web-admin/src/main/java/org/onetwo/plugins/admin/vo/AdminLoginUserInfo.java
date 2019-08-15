@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -16,12 +15,21 @@ import lombok.Setter;
 public class AdminLoginUserInfo extends LoginUserDetails {
 
 	@Setter
-	@Getter
-	private Long tenantId;
+	private Long organId;
+	@Setter
+	private Long bindingUserId;
 	
 	public AdminLoginUserInfo(long userId, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(userId, username, password, authorities);
+	}
+
+	public Long getOrganId() {
+		return organId;
+	}
+
+	public Long getBindingUserId() {
+		return bindingUserId;
 	}
 
 }

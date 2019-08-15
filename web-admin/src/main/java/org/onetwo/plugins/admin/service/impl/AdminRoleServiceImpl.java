@@ -66,8 +66,11 @@ public class AdminRoleServiceImpl {
 		.page(page);
     }
     
-    public List<AdminRole> findByStatus(CommonStatus status, String appCode){
-    	return baseEntityManager.findList(AdminRole.class, "status", status, "appCode", appCode, K.IF_NULL, IfNull.Ignore);
+    public List<AdminRole> findByStatus(CommonStatus status, Long organId){
+    	return baseEntityManager.findList(AdminRole.class, 
+    								"status", status, 
+    								"organId", organId, 
+    								K.IF_NULL, IfNull.Ignore);
     }
     
     public void save(AdminRole adminRole){
@@ -80,6 +83,9 @@ public class AdminRoleServiceImpl {
         Date now = new Date();
         adminRole.setCreateAt(now);
         adminRole.setUpdateAt(now);
+        if (adminRole.getOrganId()==null) {
+        	adminRole.setOrganId(0L);
+        }
         baseEntityManager.save(adminRole);
     }
     

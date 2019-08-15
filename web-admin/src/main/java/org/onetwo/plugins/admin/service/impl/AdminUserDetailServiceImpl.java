@@ -8,8 +8,10 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
+import org.onetwo.plugins.admin.entity.AdminOrgan;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,10 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	protected AdminPermissionDao adminPermissionDao;
 	@Autowired
 	private PermissionManagerImpl permissionManager;
+	@Autowired
+	private AdminOrganServiceImpl adminOrganService;
+	@Autowired
+	private AdminUserServiceImpl adminUserService;
 	
 	protected Class<T> userDetailClass;
 
@@ -94,9 +100,17 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		AdminLoginUserInfo userDetail = new AdminLoginUserInfo(user.getId(), user.getUserName(), user.getPassword(), authes);
 		userDetail.setNickname(user.getNickName());
 		userDetail.setAvatar(user.getAvatar());
+		if (user.getOrganId()!=null) {
+			AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
+			userDetail.setOrganId(organ.getId());
+		}
+
+        AdminUserBinding binding = adminUserService.getBinding(user.getId());
+        if (binding!=null) {
+        	userDetail.setBindingUserId(binding.getBindingUserId());
+        }
+        
 		return userDetail;
 	}
 	
-	
-
 }
