@@ -100,7 +100,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		AdminLoginUserInfo userDetail = new AdminLoginUserInfo(user.getId(), user.getUserName(), user.getPassword(), authes);
 		userDetail.setNickname(user.getNickName());
 		userDetail.setAvatar(user.getAvatar());
-		if (user.getOrganId()!=null) {
+		if (user.getOrganId()!=null && user.getOrganId()>0) {
 			AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
 			userDetail.setOrganId(organ.getId());
 		}
