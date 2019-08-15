@@ -14,7 +14,6 @@ import org.onetwo.boot.utils.ImageUrlJsonSerializer;
 import org.onetwo.common.jackson.JsonMapper;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserRoot;
-import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.plugins.admin.utils.DataUtils;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.utils.WebConstant.DictKeys;
@@ -33,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
-public class AdminUser extends BaseEntity implements UserRoot {
+public class AdminUser extends AdminOrganable implements UserRoot {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

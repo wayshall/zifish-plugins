@@ -18,6 +18,9 @@ public class AdminMeController extends WebAdminBaseController {
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)
 										.propertyMapping("nickName", "nickname")
 				 						.toClass(AdminUserInfo.class);
+		/*if (userDetail instanceof UserRoot) {
+			user.setSystemRootUser(((UserRoot)userDetail).isSystemRootUser());
+		}*/
 		return user;
 	}
 	
@@ -28,6 +31,8 @@ public class AdminMeController extends WebAdminBaseController {
 		String userName;
 		String avatar;
 		List<String> roles;
+		Long organId;
+		boolean systemRootUser;
 	}
 
 }

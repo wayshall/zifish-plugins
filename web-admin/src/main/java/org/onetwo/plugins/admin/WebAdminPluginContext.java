@@ -30,6 +30,7 @@ import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
 import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
+import org.onetwo.plugins.admin.utils.AdminTenantContextVariable;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig.AdminPermissionConfigListAdapetor;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig.RootMenuClassListProvider;
@@ -186,6 +187,11 @@ public class WebAdminPluginContext implements InitializingBean {
 		@ConditionalOnMissingBean(UserDetailsService.class)
 		public UserDetailsService userDetailsService(){
 			return new AdminUserDetailServiceImpl<AdminUser>(AdminUser.class);
+		}
+		
+		@Bean
+		public AdminTenantContextVariable adminTenantContextVariable() {
+			return new AdminTenantContextVariable();
 		}
 		
 		@Bean
