@@ -12,7 +12,9 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
 import org.onetwo.common.exception.BaseException;
+import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
 import org.onetwo.ext.permission.api.DataFrom;
@@ -36,6 +38,74 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	
 	public PermissionManagerImpl() {
 	}
+	
+	public AdminPermission delete(String code) {
+		AdminPermission dbPermission = baseEntityManager.load(AdminPermission.class, code);
+		if (dbPermission.getChildrenSize()>0) {
+			throw new ServiceException("该权限有子节点，无法删除，请先删除子节点！");
+		}
+		if (StringUtils.isNotBlank(dbPermission.getParentCode())) {
+			AdminPermission parent = findByCode(dbPermission.getParentCode());
+			parent.setChildrenSize(parent.getChildrenSize()-1);
+			baseEntityManager.update(parent);
+		}
+		baseEntityManager.remove(dbPermission);
+		return dbPermission;
+	}
+	
+	/*private int countChildrenSize(String code) {
+		return Querys.from(baseEntityManager, AdminPermission.class)
+					.where()
+						.field("parentCode").is(code)
+					.toQuery().count().intValue();
+	}*/
+	
+	public AdminPermission persist(AdminPermission permission) {
+		AdminPermission dbPermission = findByCode(permission.getCode());
+		if (dbPermission!=null) {
+			throw new ServiceException("权限代码重复：" + permission.getCode());
+		}
+		AdminPermission parent = this.checkParent(permission);
+		if (parent!=null) {
+			if (!permission.getCode().startsWith(parent.getCode())) {
+				throw new ServiceException("子权限代码必须以父权限代码为前缀：" + parent.getCode());
+			}
+			parent.setChildrenSize(parent.getChildrenSize()+1);
+			baseEntityManager.update(parent);
+			permission.setAppCode(parent.getAppCode());
+		}
+		this.baseEntityManager.persist(permission);
+		return permission;
+	}
+	
+	public AdminPermission update(AdminPermission permission) {
+		AdminPermission parent = this.checkParent(permission);
+		AdminPermission dbPermission = findByCode(permission.getCode());
+		String oldParentCode = dbPermission.getParentCode();
+		CopyUtils.copyIgnoreNullAndBlank(dbPermission, permission);
+		this.baseEntityManager.update(dbPermission);
+		// 有传parent_code，并且和数据的不同，维护childrenSize
+		if (parent!=null && StringUtils.isNotBlank(oldParentCode) && !parent.getCode().equals(oldParentCode)) {
+			AdminPermission oldParent = findByCode(oldParentCode);
+			oldParent.setChildrenSize(oldParent.getChildrenSize()-1);
+			baseEntityManager.update(oldParent);
+			
+			parent.setChildrenSize(parent.getChildrenSize()+1);
+			baseEntityManager.update(parent);
+		}
+		return dbPermission;
+	}
+	
+	private AdminPermission checkParent(AdminPermission permission) {
+		if (StringUtils.isNotBlank(permission.getParentCode())) {
+			AdminPermission parent = findByCode(permission.getParentCode());
+			if (parent==null) {
+				throw new ServiceException("找不到父节点：" + permission.getParentCode());
+			}
+			return parent;
+		}
+		return null;
+	}
 
 	@Override
     public AdminPermission findByCode(String code) {
@@ -53,6 +123,14 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 													.collect(Collectors.toMap(p->p.getCode(), p->p));
 		
 		return dbPermissions;
+	}
+	
+
+	protected Set<String> getDatabaseRootCodes() {
+		return this.baseEntityManager.findAll(AdminApplication.class)
+									.stream()
+									.map(p -> p.getCode())
+									.collect(Collectors.toSet());
 	}
 
 
@@ -81,8 +159,9 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 		logger.info("deletes[{}]: {}", deletes.size(), deletes);
 		deletes.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
-			this.adminPermissionDao.deleteRolePermissions(p.getCode());
-			this.baseEntityManager.remove(p);
+			/*this.adminPermissionDao.deleteRolePermissions(p.getCode());
+			this.baseEntityManager.remove(p);*/
+			this.removePermission(p.getCode(), false);
 		});
 
 		logger.info("updates[{}]: {}", updates.size(), updates);
@@ -93,11 +172,22 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			this.baseEntityManager.update(p);
 		});
 	}
+	
+
+	protected void removeUnusedRootMenu(String rootCode) {
+		baseEntityManager.removeById(AdminApplication.class, rootCode);
+		super.removeUnusedRootMenu(rootCode);
+	}
+	protected void removePermission(String permissionCode, boolean usePostLike) {
+		this.adminPermissionDao.deleteRolePermissions(permissionCode, usePostLike);
+		this.adminPermissionDao.deletePermission(permissionCode, usePostLike);
+	}
 
 	@Override
 	protected void removeRootMenu(MenuInfoParser<AdminPermission> menuInfoParser){
 		String appCode = menuInfoParser.getRootMenuParser().getAppCode();
-		baseEntityManager.removeById(AdminApplication.class, appCode);
+//		baseEntityManager.removeById(AdminApplication.class, appCode);
+		this.removeUnusedRootMenu(appCode);
 	}
 
 	@Override
@@ -125,9 +215,14 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	}
 
 	@Override
-	public List<AdminPermission> findUserAppMenus(String appCode, UserDetail userDetail) {
+	public List<AdminPermission> findUserAppPerms(String appCode, UserDetail userDetail) {
 		List<AdminPermission> adminPermissions = this.adminPermissionDao.findAppPermissionsByUserId(appCode, userDetail.getUserId());
-		List<AdminPermission> permList = adminPermissions.stream()
+		return adminPermissions;
+	}
+
+	@Override
+	public List<AdminPermission> findUserAppMenus(String appCode, UserDetail userDetail) {
+		List<AdminPermission> permList = findUserAppPerms(appCode, userDetail).stream()
 				.filter(p->PermissionUtils.isMenu(p))
 				.collect(Collectors.toList());
 		return permList;

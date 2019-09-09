@@ -1,10 +1,13 @@
 package org.onetwo.plugins.admin.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.onetwo.common.exception.NotLoginException;
+import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.common.web.userdetails.UserRoot;
@@ -14,9 +17,13 @@ import org.onetwo.ext.permission.service.impl.DefaultMenuItemRepository;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
+import org.onetwo.plugins.admin.view.RolePermissionTreeView;
+import org.onetwo.plugins.admin.vo.RolePermissionReponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Lists;
 
 @Service
 @Transactional
@@ -26,6 +33,29 @@ public class AdminMenuItemServiceImpl extends DefaultMenuItemRepository {
 	private AdminPermissionDao adminPermissionDao;
 	
 	public AdminMenuItemServiceImpl(){
+	}
+	
+	/***
+	 * 根据用户权限构造菜单树
+	 * @author weishao zeng
+	 * @param userDetail
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public RolePermissionReponse findUserPermissions(UserDetail userDetail) {
+		RolePermissionReponse res = new RolePermissionReponse();
+		List<DefaultTreeModel> menus = findUserPermissions(userDetail, (userPerms, allPerms)->{
+			res.setAllPerms(Lists.newArrayList((Collection<AdminPermission>)allPerms.values()));
+			Function<IPermission, DefaultTreeModel> treeModelCreater = RolePermissionTreeView.TREE_MODEL_CREATER;
+			TreeBuilder<DefaultTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
+			treebuilder.buidTree(node->{
+				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
+				return treeModelCreater.apply(p);
+			});
+			return treebuilder.getRootNodes();
+		});
+		res.setTreePerms(menus);
+		return res;
 	}
 
 	/***

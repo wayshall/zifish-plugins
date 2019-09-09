@@ -1,148 +1,166 @@
 /*
-Navicat MySQL Data Transfer
+ Navicat Premium Data Transfer
 
-Source Server         : 腾讯云-测试
-Source Server Version : 50628
-Source Host           : 596f0c823c306.gz.cdb.myqcloud.com:5034
-Source Database       : lego
+ Source Server         : 腾讯云-新测试服务器
+ Source Server Type    : MySQL
+ Source Server Version : 50718
+ Source Host           : gz-cdb-ll3xmnv3.sql.tencentcdb.com:61575
+ Source Schema         : party
 
-Target Server Type    : MYSQL
-Target Server Version : 50628
-File Encoding         : 65001
+ Target Server Type    : MySQL
+ Target Server Version : 50718
+ File Encoding         : 65001
 
-Date: 2017-11-30 18:20:39
+ Date: 22/05/2019 14:11:42
 */
 
-SET FOREIGN_KEY_CHECKS=0;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for admin_application
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_application`;
-CREATE TABLE `admin_application` (
-  `CODE` varchar(20) COLLATE utf8_bin NOT NULL,
-  `NAME` varchar(100) COLLATE utf8_bin DEFAULT NULL,
-  `BASE_URL` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `CREATE_AT` datetime DEFAULT NULL,
-  `UPDATE_AT` datetime DEFAULT NULL,
-  PRIMARY KEY (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='系统模块表';
+CREATE TABLE `admin_application`  (
+  `code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '代码',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '名称',
+  `base_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '基础url',
+  `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '系统模块表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_login_log
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_login_log`;
-CREATE TABLE `admin_login_log` (
+CREATE TABLE `admin_login_log`  (
   `ID` bigint(20) NOT NULL,
-  `USER_ID` bigint(20) DEFAULT NULL COMMENT '用户ID',
-  `USER_NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `NICK_NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `NGID` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `OPERATION_TYE` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `OPERATION_TIME` datetime DEFAULT NULL COMMENT '操作时间',
-  `IS_SUCCESS` bit(1) DEFAULT NULL COMMENT '是否成功',
-  `USER_IP` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `BROWSER` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `USER_AGENT` varchar(500) COLLATE utf8_bin DEFAULT NULL,
-  `SESSION_ID` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `SECURITY_TOKEN` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `ERROR_MSG` varchar(500) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '用户ID',
+  `user_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户名称',
+  `nick_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户昵称',
+  `operation_code` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '操作代码',
+  `operation_at` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
+  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '操作方法',
+  `request_url` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '操作的url',
+  `is_success` smallint(6) NULL DEFAULT NULL COMMENT '是否成功',
+  `user_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户ip',
+  `browser` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户浏览器',
+  `user_agent` varchar(2000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户agent',
+  `error_msg` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '错误信息',
+  PRIMARY KEY (`ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '后台登陆日志' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_permission`;
-CREATE TABLE `admin_permission` (
-  `CODE` varchar(255) COLLATE utf8_bin NOT NULL,
-  `PTYPE` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `DATA_FROM` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `URL` varchar(500) COLLATE utf8_bin DEFAULT NULL,
-  `METHOD` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_CODE` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `SORT` int(11) DEFAULT NULL,
-  `HIDDEN` smallint(6) DEFAULT NULL,
-  `CHILDREN_SIZE` int(11) DEFAULT NULL COMMENT '子节点数量',
-  `APP_CODE` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `RESOURCES_PATTERN` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+CREATE TABLE `admin_permission`  (
+  `code` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '权限代码',
+  `ptype` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT 'MENU(\"菜单\"),\r\n            FUNCTION(\"功能\"),\r\n            RESOURCE(\"资源\");',
+  `data_from` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT 'SYNC(\"同步\"),\r\n            MANUAL(\"手动\")',
+  `url` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '菜单url',
+  `method` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '请求方法',
+  `parent_code` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '上级权限代码',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '权限名称',
+  `sort` int(11) NULL DEFAULT NULL COMMENT '排序',
+  `hidden` smallint(6) NULL DEFAULT NULL COMMENT '是否隐藏',
+  `children_size` int(11) NULL DEFAULT NULL COMMENT '子节点数量',
+  `app_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `resources_pattern` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '拦截的资源路径模式',
+  `META` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '元数据，json格式',
+  PRIMARY KEY (`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '用户权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_role
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_role`;
-CREATE TABLE `admin_role` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `STATUS` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `REMARK` varchar(500) COLLATE utf8_bin DEFAULT NULL,
-  `CREATE_AT` datetime DEFAULT NULL,
-  `UPDATE_AT` datetime DEFAULT NULL,
-  `APP_CODE` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色表';
+CREATE TABLE `admin_role`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `status` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'NORMAL' COMMENT '状态\r\n            NORMAL：正常\r\n            DELETE：删除',
+  `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '备注',
+  `app_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '应用代码',
+  `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `code` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '角色代码，可用于某些特殊逻辑判断',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_role_permission`;
-CREATE TABLE `admin_role_permission` (
-  `ROLE_ID` decimal(8,0) NOT NULL,
-  `PERMISSION_CODE` varchar(255) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`ROLE_ID`,`PERMISSION_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色权限表';
+CREATE TABLE `admin_role_permission`  (
+  `role_id` bigint(20) NOT NULL COMMENT '角色id',
+  `permission_code` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '权限代码',
+  PRIMARY KEY (`role_id`, `permission_code`) USING BTREE,
+  INDEX `FK_ref_adm_role_perm`(`permission_code`) USING BTREE,
+  CONSTRAINT `FK_ref_adm_perm_role` FOREIGN KEY (`role_id`) REFERENCES `admin_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_ref_adm_role_perm` FOREIGN KEY (`permission_code`) REFERENCES `admin_permission` (`code`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '角色权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_user
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_user`;
-CREATE TABLE `admin_user` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `USER_NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `NICK_NAME` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `PASSWORD` varchar(512) COLLATE utf8_bin DEFAULT NULL,
-  `EMAIL` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `MOBILE` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `GENDER` varchar(30) COLLATE utf8_bin DEFAULT NULL,
-  `STATUS` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `BIRTHDAY` datetime DEFAULT NULL COMMENT '出生日期',
-  `CREATE_AT` datetime DEFAULT NULL COMMENT '创建时间',
-  `UPDATE_AT` datetime DEFAULT NULL COMMENT '最后更新时间',
-  `APP_CODE` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
+CREATE TABLE `admin_user`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户名',
+  `nick_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
+  `password` varchar(512) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '用户密码',
+  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '电子邮件',
+  `mobile` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '手机',
+  `gender` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '性别\r\n            男性：MALE\r\n            女性：FEMALE',
+  `status` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '状态:\r\n            NORMAL-正常\r\n            STOP-停用\r\n                        ',
+  `birthday` date NULL DEFAULT NULL COMMENT '出生年月',
+  `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `avatar` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '用户头像',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 315177099792936961 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '后台用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for admin_user_binding
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_user_binding`;
+CREATE TABLE `admin_user_binding`  (
+  `admin_user_id` bigint(20) NOT NULL COMMENT '后台用户id',
+  `binding_user_id` bigint(20) NOT NULL COMMENT '绑定的用户id',
+  `binding_user_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `binding_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`admin_user_id`, `binding_user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '前后台用户绑定表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_user_role`;
-CREATE TABLE `admin_user_role` (
-  `ROLE_ID` bigint(20) NOT NULL COMMENT '角色主键',
-  `USER_ID` bigint(20) NOT NULL COMMENT '用户主键',
-  PRIMARY KEY (`ROLE_ID`,`USER_ID`),
-  KEY `FK_R_AD_ROLE_USER` (`USER_ID`),
-  CONSTRAINT `FK_R_AD_ROLE_USER` FOREIGN KEY (`USER_ID`) REFERENCES `admin_user` (`ID`),
-  CONSTRAINT `FK_R_AD_USER_ROLE` FOREIGN KEY (`ROLE_ID`) REFERENCES `admin_role` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色关联表';
+CREATE TABLE `admin_user_role`  (
+  `role_id` bigint(20) NOT NULL COMMENT '角色id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  PRIMARY KEY (`role_id`, `user_id`) USING BTREE,
+  INDEX `FK_R_AD_ROLE_USER`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for data_dictionary
 -- ----------------------------
 DROP TABLE IF EXISTS `data_dictionary`;
-CREATE TABLE `data_dictionary` (
-  `CODE` varchar(50) COLLATE utf8_bin NOT NULL,
-  `NAME` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `VALUE` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_CODE` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `IS_VALID` tinyint(1) DEFAULT NULL COMMENT '是否有效\r\n            0:无效\r\n            1:有效\r\n            默认有效\r\n            ',
-  `IS_ENUM_VALUE` tinyint(1) DEFAULT NULL COMMENT '是否枚举常量',
-  `SORT` int(11) DEFAULT NULL COMMENT '排序',
-  `REMARK` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
-  `CREATE_AT` datetime DEFAULT NULL COMMENT '创建日期',
-  `UPDATE_AT` datetime DEFAULT NULL COMMENT '最后更新日期',
-  PRIMARY KEY (`CODE`),
-  KEY `AK_DICT_UNIQUE_CODE` (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='数据字典表';
+CREATE TABLE `data_dictionary`  (
+  `code` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典代码',
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典名',
+  `value` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '字典值',
+  `parent_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '父代码',
+  `is_valid` tinyint(4) NOT NULL DEFAULT 1 COMMENT '0:无效；\r\n            1:有效；\r\n            默认有效',
+  `is_enum_value` tinyint(4) NULL DEFAULT NULL COMMENT '是否枚举常量',
+  `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  `remark` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '备注',
+  `create_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`code`) USING BTREE,
+  INDEX `AK_DICT_UNIQUE_CODE`(`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '字典表' ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

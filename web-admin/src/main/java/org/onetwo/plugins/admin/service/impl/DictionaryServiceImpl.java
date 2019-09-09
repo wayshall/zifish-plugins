@@ -8,6 +8,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
+import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.common.tree.DefaultTreeModel;
+import org.onetwo.common.tree.TreeBuilder;
+import org.onetwo.common.tree.TreeModelCreator;
+import org.onetwo.common.tree.TreeUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.plugins.admin.entity.DataDictionary;
@@ -19,6 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class DictionaryServiceImpl {
+	private static TreeModelCreator<DefaultTreeModel, DataDictionary> TREE_MODEL_CREATER = dataDict -> {
+		DefaultTreeModel tm = new DefaultTreeModel(dataDict.getCode(), dataDict.getName(), dataDict.getParentCode());
+		tm.setSort(dataDict.getSort());
+		return tm;
+	};
 	
 	@Autowired
 	private BaseEntityManager baseEntityManager;
@@ -26,13 +36,19 @@ public class DictionaryServiceImpl {
 	@Transactional(readOnly=true)
 	public List<DataDictionary> loadAll(){
 		List<DataDictionary> dictList = Querys.from(baseEntityManager, DataDictionary.class)
-												.where()
+												/*.where()
 													.field("valid").equalTo(true)
-												.end()
+												.end()*/
 												.asc("sort")
 												.toQuery()
 												.list();
 		return dictList;
+	}
+	
+	public List<DefaultTreeModel> loadAsTree() {
+		List<DataDictionary> dictList = this.loadAll();
+		TreeBuilder<DefaultTreeModel> treeBuilder = TreeUtils.newBuilder(dictList, TREE_MODEL_CREATER);
+		return treeBuilder.buidTree();
 	}
 	
 	public Page<DataDictionary> findPage(Page<DataDictionary> page, String parentCode){
@@ -97,6 +113,9 @@ public class DictionaryServiceImpl {
 		dictionary.setUpdateAt(now);
 //		return dataDictionaryMapper.insert(dictionary);
 		dictionary.setCode(dictionary.getCode().toUpperCase());
+		if (dictionary.getEnumValue()==null) {
+			dictionary.setEnumValue(false);
+		}
 		baseEntityManager.persist(dictionary);
 	}
 	
@@ -127,10 +146,11 @@ public class DictionaryServiceImpl {
 	}
 	
 	public void update(DataDictionary dictionary){
+		DataDictionary entity = this.baseEntityManager.load(DataDictionary.class, dictionary.getCode());
+		CopyUtils.copyIgnoreNullAndBlank(entity, dictionary);
 		this.checkDataDictionary(dictionary);
-		dictionary.setUpdateAt(new Date());
 //		return dataDictionaryMapper.updateByPrimaryKey(dictionary);
-		baseEntityManager.update(dictionary);
+		baseEntityManager.update(entity);
 	}
 	
 	public void deleteByCodes(String... codes){

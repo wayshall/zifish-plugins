@@ -4,7 +4,7 @@ import org.onetwo.boot.core.web.controller.AbstractBaseController;
 import org.onetwo.common.spring.validator.ValidatorUtils;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.ext.security.utils.LoginUserDetails;
-import org.onetwo.plugins.admin.AdminModule.UserProfile;
+import org.onetwo.plugins.admin.AdminMgr.UserProfile;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
 import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidAnyTime;
@@ -31,6 +31,8 @@ public class UserProfileController extends AbstractBaseController {
         return responsePageOrData("user-profile", ()->{
         	AdminUser adminUser = adminUserServiceImpl.loadById(loginUser.getUserId());
             adminUser.setPassword("");
+            adminUser.setCreateAt(null);
+            adminUser.setUpdateAt(null);
             return adminUser;
         });
     }

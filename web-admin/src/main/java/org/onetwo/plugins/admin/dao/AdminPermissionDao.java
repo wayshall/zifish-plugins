@@ -1,6 +1,7 @@
 
 package org.onetwo.plugins.admin.dao;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import org.onetwo.plugins.admin.entity.AdminPermission;
 public interface AdminPermissionDao {
 
 	List<AdminPermission> findAppPermissionsByUserId(@Param("appCode")String appCode, @Param("userId")long userId);
-	List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleId")long roleId);
+	
+	default List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleId")long roleId) {
+		return findAppPermissionsByRoleIds(appCode, Arrays.asList(roleId));
+	}
+	
+	List<AdminPermission> findAppPermissionsByRoleIds(@Param("appCode")String appCode, @Param("roleIds")Collection<Long> roleIds);
 	
 	/***
 	 * 根据appcode查找权限
@@ -29,6 +35,14 @@ public interface AdminPermissionDao {
 	 */
 	List<AdminPermission> findPermissions(@Param("codes")Collection<String> codes);
 	
-	int deleteRolePermissions(@Param("permissionCode")String permissionCode);
+	/****
+	 * 根据代码删除角色权限关联数据
+	 * @author weishao zeng
+	 * @param permissionCode
+	 * @param usePostLike
+	 * @return
+	 */
+	int deleteRolePermissions(@Param("permissionCode")String permissionCode, boolean usePostLike);
+	int deletePermission(@Param("code")String code, boolean usePostLike);
 	
 }

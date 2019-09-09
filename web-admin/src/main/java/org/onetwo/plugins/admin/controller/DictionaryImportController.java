@@ -37,7 +37,7 @@ public class DictionaryImportController extends WebAdminBaseController {
 
 	@RequestMapping(method=RequestMethod.POST)
 	public ModelAndView importDatas(HttpServletRequest request){
-		Assert.hasText(dataXmlPath);
+		Assert.hasText(dataXmlPath, "dataXmlPath must has text");
 		int count = this.dictionaryService.importDatas(dataXmlPath);
 		return messageMv("已同步"+count+"条字典数据！");
 	}

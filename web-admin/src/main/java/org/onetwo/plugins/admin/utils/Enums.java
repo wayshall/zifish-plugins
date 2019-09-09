@@ -2,11 +2,15 @@ package org.onetwo.plugins.admin.utils;
 
 import java.util.stream.Stream;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 
 final public class Enums {
 
 	public static enum CommonStatus {
 		NORMAL("正常"),
+		DISABLED("禁用"),
 		DELETE("已删除");
 		
 		final private String label;
@@ -17,6 +21,22 @@ final public class Enums {
 
 		public String getLabel() {
 			return label;
+		}
+		
+	}
+	
+	@AllArgsConstructor
+	public static enum OrganStatus {
+		NORMAL("正常"),
+		FREEZE("冻结");
+		
+		@Getter
+		final private String label;
+		
+		public static OrganStatus of(String status){
+			return Stream.of(values()).filter(s->s.name().equals(status))
+										.findAny()
+										.orElseThrow(()->new IllegalArgumentException("error organ status: " + status));
 		}
 		
 	}
@@ -40,7 +60,7 @@ final public class Enums {
 		public static UserStatus of(String status){
 			return Stream.of(values()).filter(s->s.name().equals(status))
 										.findAny()
-										.orElseThrow(()->new IllegalArgumentException("status: " + status));
+										.orElseThrow(()->new IllegalArgumentException("error user status: " + status));
 		}
 		
 	}
