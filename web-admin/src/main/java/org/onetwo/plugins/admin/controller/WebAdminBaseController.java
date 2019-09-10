@@ -4,6 +4,7 @@ import org.onetwo.boot.core.web.controller.DateInitBinder;
 import org.onetwo.boot.plugin.core.WebPlugin;
 import org.onetwo.boot.plugin.mvc.PluginBaseController;
 import org.onetwo.plugins.admin.WebAdminPlugin;
+import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //@PluginContext(contextPath="/web-admin")
@@ -16,6 +17,9 @@ abstract public class WebAdminBaseController extends PluginBaseController implem
 	protected WebPlugin getPlugin() {
 		return webAdminPlugin;
 	}
-	
+
+	protected AdminLoginUserInfo checkAndGetCurrentLoginUser(){
+		return checkAndGetCurrentLoginUser(AdminLoginUserInfo.class, true);
+	}
 	
 }
