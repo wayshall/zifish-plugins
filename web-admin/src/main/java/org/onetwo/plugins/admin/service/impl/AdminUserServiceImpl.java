@@ -43,7 +43,7 @@ public class AdminUserServiceImpl {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AdminRoleDao adminRoleDao;
-    @Autowired
+    @Autowired(required=false)
     private BootCommonService bootCommonService;
     @Autowired
     private AdminUserDao adminUserDao;
