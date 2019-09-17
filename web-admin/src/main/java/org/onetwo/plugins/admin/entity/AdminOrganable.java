@@ -55,7 +55,13 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
         	if (!adminUser.isPresent()) {
         		newValue = fieldValue;
         	} else {
-        		newValue = adminUser.map(d -> d.getOrganId()).orElse((Long)fieldValue);
+        		newValue = adminUser.map(d -> {
+        			Long organId = d.getOrganId();
+        			if (organId!=null && organId>0) {
+        				return organId;
+        			}
+        			return null;
+        		}).orElse((Long)fieldValue);
         	}
         	newValue = newValue==null?0:newValue;
 			return newValue;
