@@ -198,10 +198,11 @@ public class AdminUserServiceImpl {
     
     public UserOrganBindingVO getBindingOrgan(Long adminUserId) {
     	AdminUser user = this.loadById(adminUserId);
-    	UserOrganBindingVO binding = new UserOrganBindingVO();
-    	binding.setDataId(user.getId());
-    	binding.setBindingId(user.getOrganId());
+    	UserOrganBindingVO binding = null;
     	if (user.getOrganId()!=null && user.getOrganId()>0) {
+        	binding = new UserOrganBindingVO();
+        	binding.setDataId(user.getId());
+        	binding.setBindingId(user.getOrganId());
     		AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
     		binding.setBindingName(organ.getName());
     	}
@@ -219,6 +220,7 @@ public class AdminUserServiceImpl {
     		throw new ServiceException("终极管理员只做系统维护使用，无法绑定！");
     	}
     	
+    	
 		AdminOrgan organ = this.adminOrganService.load(bindingRequest.getBindingId());
 		
     	UserOrganBindingVO binding = getBindingOrgan(bindingRequest.getDataId());
@@ -228,7 +230,21 @@ public class AdminUserServiceImpl {
 
 		adminUser.setOrganId(organ.getId());
     	this.baseEntityManager.update(adminUser);
+    	binding = new UserOrganBindingVO();
+    	binding.setDataId(adminUser.getId());
+    	binding.setBindingId(organ.getId());
+    	binding.setBindingName(organ.getName());
     	
     	return binding;
+    }
+
+    public void unBindingOrgan(Long adminUserId) {
+    	if (adminUserId==null) {
+    		throw new ServiceException("解绑的用户id不能为空！");
+    	}
+
+    	AdminUser adminUser = this.loadById(adminUserId);
+		adminUser.setOrganId(0L);
+    	this.baseEntityManager.update(adminUser);
     }
 }

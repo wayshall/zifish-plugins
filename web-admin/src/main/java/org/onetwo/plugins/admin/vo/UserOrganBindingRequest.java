@@ -12,7 +12,7 @@ import lombok.Data;
 public class UserOrganBindingRequest {
 	@NotNull
 	Long dataId;
-	@NotNull
+//	@NotNull
 	Long bindingId;
 }
 
