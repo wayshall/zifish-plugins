@@ -88,7 +88,7 @@ public class AdminUserServiceImpl {
         Date now = new Date();
         adminUser.setCreateAt(now);
         adminUser.setUpdateAt(now);
-        if (adminUser.getOrganId()!=null) {
+        if (adminUser.getOrganId()==null) {
         	adminUser.setOrganId(0L);
         }
         baseEntityManager.save(adminUser);

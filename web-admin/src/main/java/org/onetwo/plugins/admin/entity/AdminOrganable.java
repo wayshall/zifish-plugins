@@ -63,7 +63,7 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
         			return null;
         		}).orElse((Long)fieldValue);
         	}
-        	newValue = newValue==null?0:newValue;
+        	newValue = newValue==null?0L:newValue;
 			return newValue;
 		}
 
@@ -79,7 +79,7 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
                 return Collections.emptyMap();
         	}
         	Long organId = adminUser.get().getOrganId();
-        	if (organId==null || organId==0 || query.getParams().containsKey("organId")) {
+        	if (organId==null || organId.intValue()==0 || query.getParams().containsKey("organId")) {
                 return Collections.emptyMap();
         	}
             return ImmutableMap.of("organId", adminUser.get().getOrganId());
