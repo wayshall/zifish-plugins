@@ -2,10 +2,8 @@ package org.onetwo.plugins.admin.vo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.onetwo.common.tree.AbstractTreeModel;
-import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.utils.RequestUtils;
@@ -101,7 +99,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return viewPath;
 	}
 	
-	public String getComponentViewPath2() {
+	/*public String getComponentViewPath2() {
 		// 如果是外部链接，则不需要返回组件的view路径
 		if (RequestUtils.isHttpPath(url)) {
 			return null;
@@ -116,7 +114,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		String viewPath = StringUtils.join(viewPaths, "/");
 		viewPath = StringUtils.trimStartWith(viewPath, "/");
 		return viewPath;
-	}
+	}*/
 
 	public boolean isHidden() {
 		return hidden;
