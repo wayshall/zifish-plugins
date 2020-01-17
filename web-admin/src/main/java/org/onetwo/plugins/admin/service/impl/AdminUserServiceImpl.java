@@ -13,8 +13,10 @@ import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
 import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.dbm.dialet.DBDialect.LockInfo;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
@@ -22,6 +24,7 @@ import org.onetwo.plugins.admin.entity.AdminOrgan;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
+import org.onetwo.plugins.admin.vo.CreateOrUpdateAdminUserRequest;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
 import org.onetwo.plugins.admin.vo.UserBindingRequest;
 import org.onetwo.plugins.admin.vo.UserOrganBindingRequest;
@@ -29,10 +32,14 @@ import org.onetwo.plugins.admin.vo.UserOrganBindingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @Transactional
 public class AdminUserServiceImpl {
@@ -49,6 +56,8 @@ public class AdminUserServiceImpl {
     private AdminUserDao adminUserDao;
     @Autowired
     private AdminOrganServiceImpl adminOrganService;
+	@Autowired
+	private AdminRoleServiceImpl adminRoleService;
 
     /***
      * 根据用户id和名称查找用户
@@ -101,6 +110,15 @@ public class AdminUserServiceImpl {
     
     public AdminUser findByUserName(String userName) {
     	return baseEntityManager.from(AdminUser.class)
+    				.where()
+    					.field("userName").is(userName)
+    				.toQuery()
+    				.unique();
+    }
+    
+    public AdminUser lockByUserName(String userName) {
+    	return baseEntityManager.from(AdminUser.class)
+    				.lock(LockInfo.write())
     				.where()
     					.field("userName").is(userName)
     				.toQuery()
@@ -247,4 +265,28 @@ public class AdminUserServiceImpl {
 		adminUser.setOrganId(0L);
     	this.baseEntityManager.update(adminUser);
     }
+    
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public AdminUser createOrUpdateAdminUser(CreateOrUpdateAdminUserRequest adminUser) {
+		AdminUser dbUser = lockByUserName(adminUser.getUserName());
+		if (dbUser==null) {
+			log.info("create new admin user: {}", adminUser);
+			dbUser = adminUser.asBean(AdminUser.class);
+			save(dbUser, null);
+			
+			UserBindingRequest binding = new UserBindingRequest();
+			binding.setAdminUserId(dbUser.getId());
+			binding.setAvatar(adminUser.getAvatar());
+			binding.setBindingUserName(dbUser.getUserName());
+			binding.setBindingUserId(adminUser.getBindingUserId());
+			bindingUser(binding, true);
+		} else {
+			log.info("admin user[{}] has exists!", adminUser.getUserName());
+//			continue;
+		}
+		if (LangUtils.isNotEmpty(adminUser.getRoleIds())) {
+			adminRoleService.saveUserRoles(dbUser.getId(), adminUser.getRoleIds().toArray(new Long[0]));
+		}
+		return dbUser;
+	}
 }
