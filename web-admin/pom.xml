@@ -32,6 +32,11 @@
     
     <dependency>
       <groupId>org.onetwo4j</groupId>
+      <artifactId>onetwo-dui</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.onetwo4j</groupId>
       <artifactId>onetwo-jackson</artifactId>
     </dependency>
 	
