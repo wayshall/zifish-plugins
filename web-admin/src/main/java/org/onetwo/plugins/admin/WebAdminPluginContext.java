@@ -124,7 +124,13 @@ public class WebAdminPluginContext implements InitializingBean {
 		Logger logger = JFishLoggerFactory.getCommonLogger();
 		if(logger.isInfoEnabled()){
 			providerMap.forEach((k, v)->{
-				logger.info("loading RootMenuClassProvider: {} -> {}", k, v);
+				Object rootMenuClass = null;
+				if(v instanceof RootMenuClassListProvider){
+					rootMenuClass = ((RootMenuClassListProvider)v).rootMenuClassList();
+				}else{
+					rootMenuClass = v.rootMenuClass();
+				}
+				logger.info("loading RootMenuClassProvider: {} -> {}", k, rootMenuClass);
 			});
 		}
 		Collection<RootMenuClassProvider> providers = providerMap.values();

@@ -11,7 +11,10 @@ import org.onetwo.common.web.utils.RequestUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Maps;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -26,13 +29,23 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	private String url;
 	//menu is false, permission is true
 	private boolean hidden;
-	@Getter
-	@Setter
-	private Map<String, Object> meta = Maps.newHashMap();
+	private Map<String, Object> meta;
+	private RouteData router;
 
 	public VueRouterTreeModel(String id, String title, String parentId) {
 		super(id, id, parentId);
-		meta.put("title", title);
+		getMeta().put("title", title);
+	}
+	
+	public void setMeta(Map<String, Object> meta) {
+		this.meta = meta;
+	}
+	
+	public Map<String, Object> getMeta() {
+		if (meta==null) {
+			meta = Maps.newHashMap();
+		}
+		return meta;
 	}
 	
 	public String getPath() {
@@ -87,6 +100,10 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * @return
 	 */
 	public String getComponentViewPath() {
+		String componentViewPath = router==null?"":router.getComponentViewPath();
+		if (StringUtils.isNotBlank(componentViewPath)) {
+			return componentViewPath;
+		}
 		// 如果是外部链接，则不需要返回组件的view路径
 		if (RequestUtils.isHttpPath(url)) {
 			return null;
@@ -98,6 +115,11 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		viewPath = StringUtils.trimStartWith(viewPath, "/");
 		return viewPath;
 	}
+	
+	public Map<String, Object> getProps() {
+		return router==null?null:router.getProps();
+	}
+	
 	
 	/*public String getComponentViewPath2() {
 		// 如果是外部链接，则不需要返回组件的view路径
@@ -136,6 +158,16 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			this.meta = Maps.newHashMap();
 		}
 		this.meta.putAll(meta);
+		this.router = (RouteData)this.meta.remove("router");
 	}
+	
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class RouteData {
+		String componentViewPath;
+		Map<String, Object> props;
+	}
+	
 
 }

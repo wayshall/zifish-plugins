@@ -60,7 +60,7 @@ public class AdminPermission implements Serializable, IPermission {
 
     private String resourcesPattern;
     
-    @DbmJsonField
+    @DbmJsonField(storeTyping=true)
     private Map<String, Object> meta;
     
     @Transient
