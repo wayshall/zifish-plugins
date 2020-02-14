@@ -111,7 +111,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		if(!getChildren().isEmpty()) {
 			return "Layout";
 		}
-		String viewPath = StringUtils.toCamelWithoutConvert2LowerCase(url, '-', true);
+		String viewPath = StringUtils.toCamelWithoutConvert2LowerCase(url, '-', false);
 		viewPath = StringUtils.trimStartWith(viewPath, "/");
 		return viewPath;
 	}
