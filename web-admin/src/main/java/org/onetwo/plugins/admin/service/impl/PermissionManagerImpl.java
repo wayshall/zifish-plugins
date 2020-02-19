@@ -143,7 +143,8 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			app.setName(rootPermission.getName());
 			app.setCreateAt(new Date());
 			app.setUpdateAt(new Date());
-			this.baseEntityManager.persist(app);
+//			this.baseEntityManager.persist(app);
+			this.baseEntityManager.save(app);
 		}else{
 			app.setName(rootPermission.getName());
 			app.setUpdateAt(new Date());
