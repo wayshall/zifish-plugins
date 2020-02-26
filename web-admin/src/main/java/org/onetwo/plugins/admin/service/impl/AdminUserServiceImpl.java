@@ -13,9 +13,11 @@ import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
 import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.common.utils.Assert;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.dbm.dialet.DBDialect.LockInfo;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
@@ -34,7 +36,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,8 @@ public class AdminUserServiceImpl {
     private AdminOrganServiceImpl adminOrganService;
 	@Autowired
 	private AdminRoleServiceImpl adminRoleService;
+	@Autowired
+	private AdminUserAuditServiceImpl adminAuditService;
 
     /***
      * 根据用户id和名称查找用户
@@ -92,7 +95,7 @@ public class AdminUserServiceImpl {
     	
     	if(avatarFile!=null){
     		FileStoredMeta meta = bootCommonService.uploadFile("web-admin", avatarFile);
-    		adminUser.setAvatar(meta.getAccessablePath());
+    		adminUser.setAvatar(meta.getFullAccessablePath());
     	}
         Date now = new Date();
         adminUser.setCreateAt(now);
@@ -125,7 +128,7 @@ public class AdminUserServiceImpl {
     				.unique();
     }
     
-    public void update(AdminUser adminUser){
+    public void update(UserDetail loginUser, AdminUser adminUser){
         Assert.notNull(adminUser.getId(), "参数不能为null");
         AdminUser dbAdminUser = loadById(adminUser.getId());
         if(dbAdminUser==null){
@@ -139,12 +142,15 @@ public class AdminUserServiceImpl {
         adminUser.setUserName(null);
         ReflectUtils.copyIgnoreBlank(adminUser, dbAdminUser);
         
+        Date now = new Date();
         //如果密码不为空，修改密码
     	if(StringUtils.isNotBlank(newPwd)){
     		dbAdminUser.setPassword(passwordEncoder.encode(newPwd));
+//    		dbAdminUser.setLastChangePwdAt(now);
+    		this.adminAuditService.saveChangePwdAudit(loginUser);
     	}
     	
-        dbAdminUser.setUpdateAt(new Date());
+        dbAdminUser.setUpdateAt(now);
         baseEntityManager.update(dbAdminUser);
     }
     

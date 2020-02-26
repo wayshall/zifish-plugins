@@ -27,6 +27,7 @@ import org.onetwo.plugins.admin.controller.WebAdminBaseController;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
+import org.onetwo.plugins.admin.listener.LoginSuccessListener;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
 import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
@@ -63,6 +64,7 @@ import com.google.common.collect.Sets;
 @Order(value=Ordered.LOWEST_PRECEDENCE)
 @JFishWebPlugin(WebAdminPlugin.class)
 @EnableConfigurationProperties(WebAdminProperties.class)
+@ComponentScan(basePackageClasses= {LoginSuccessListener.class})
 public class WebAdminPluginContext implements InitializingBean {
 	
 //	final private Logger logger = LoggerFactory.getLogger(this.getClass());

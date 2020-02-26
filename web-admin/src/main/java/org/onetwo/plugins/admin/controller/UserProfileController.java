@@ -44,7 +44,7 @@ public class UserProfileController extends AbstractBaseController {
     	LoginUserDetails loginUser = checkAndGetCurrentLoginUser(LoginUserDetails.class, true);
         adminUser.setId(loginUser.getUserId());
         adminUser.setUserName(loginUser.getUserName());
-        adminUserServiceImpl.update(adminUser);
+        adminUserServiceImpl.update(loginUser, adminUser);
         return messageMv("更新成功！");
     }
     
