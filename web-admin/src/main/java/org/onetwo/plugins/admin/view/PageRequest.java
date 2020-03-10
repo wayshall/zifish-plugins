@@ -1,8 +1,8 @@
 package org.onetwo.plugins.admin.view;
 
-import lombok.Data;
-
 import org.onetwo.common.utils.Page;
+
+import lombok.Data;
 
 /**
  * @author wayshall
@@ -12,9 +12,12 @@ import org.onetwo.common.utils.Page;
 public class PageRequest {
 	protected int page = 1;
 	protected int rows = Page.getDefaultPageSize();
+	protected boolean pagination = true;
 	
 	public <E> Page<E> toPageObject(){
-		return Page.create(page, rows);
+		Page<E> pageObj = Page.create(page, rows);
+		pageObj.setPagination(pagination);
+		return pageObj;
 	}
 
 }

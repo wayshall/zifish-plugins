@@ -6,11 +6,12 @@ spring-boot技术交流群：  604158262
 
 
 ## 环境要求
-JDK8+
+- JDK8+
+- 对应版本的[zifish](https://github.com/wayshall/onetwo)
 
 
 ## maven   
-当前snapshot版本：**4.7.2-SNAPSHOT**   
+当前snapshot版本：**4.7.4-SNAPSHOT**   
 
 若使用snapshot版本，请添加snapshotRepository仓储：   
 ```xml   

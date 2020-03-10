@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.onetwo4j</groupId>
 		<artifactId>zifish-plugin-parent</artifactId>
-        <version>4.7.3-SNAPSHOT</version>
+        <version>4.7.4-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
 	
@@ -28,6 +28,11 @@
     <dependency>
       <groupId>org.onetwo4j</groupId>
       <artifactId>onetwo-dbm</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.onetwo4j</groupId>
+      <artifactId>onetwo-dui</artifactId>
     </dependency>
     
     <dependency>
@@ -64,6 +69,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
+    
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    
     <!-- 
     <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -99,6 +110,11 @@
     <dependency>
        <groupId>junit</groupId>
        <artifactId>junit</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-test</artifactId>
        <scope>test</scope>
      </dependency>
 

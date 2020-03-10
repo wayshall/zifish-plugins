@@ -3,7 +3,7 @@
 
   <groupId>org.onetwo4j</groupId>
   <artifactId>zifish-plugins</artifactId>
-  <version>4.7.2-SNAPSHOT</version>
+  <version>4.7.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>zifish-plugins</name>
@@ -18,7 +18,7 @@
        <url>https://github.com/wayshall/zifish-plugins</url>
        <connection>scm:git:ssh://git@github.com/wayshall/zifish-plugins.git</connection>
        <developerConnection>scm:git:ssh://git@github.com/wayshall/zifish-plugins.git</developerConnection>
-       <tag>zifish-plugins-4.7.2</tag>
+       <tag>zifish-plugins-4.7.4</tag>
    </scm>
   <licenses>
     <license>
@@ -41,6 +41,7 @@
 			<modules>
                 <module>parent</module>
                 <module>swaggerext</module>
+                <module>swagger-ui</module>
                 <module>web-admin</module>
 			</modules>
            <build>

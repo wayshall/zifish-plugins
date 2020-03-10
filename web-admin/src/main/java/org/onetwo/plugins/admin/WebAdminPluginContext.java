@@ -27,9 +27,11 @@ import org.onetwo.plugins.admin.controller.WebAdminBaseController;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
+import org.onetwo.plugins.admin.listener.LoginSuccessListener;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
 import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
+import org.onetwo.plugins.admin.utils.AdminTenantContextVariable;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig.AdminPermissionConfigListAdapetor;
 import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig.RootMenuClassListProvider;
@@ -62,6 +64,7 @@ import com.google.common.collect.Sets;
 @Order(value=Ordered.LOWEST_PRECEDENCE)
 @JFishWebPlugin(WebAdminPlugin.class)
 @EnableConfigurationProperties(WebAdminProperties.class)
+@ComponentScan(basePackageClasses= {LoginSuccessListener.class})
 public class WebAdminPluginContext implements InitializingBean {
 	
 //	final private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -123,7 +126,13 @@ public class WebAdminPluginContext implements InitializingBean {
 		Logger logger = JFishLoggerFactory.getCommonLogger();
 		if(logger.isInfoEnabled()){
 			providerMap.forEach((k, v)->{
-				logger.info("loading RootMenuClassProvider: {} -> {}", k, v);
+				Object rootMenuClass = null;
+				if(v instanceof RootMenuClassListProvider){
+					rootMenuClass = ((RootMenuClassListProvider)v).rootMenuClassList();
+				}else{
+					rootMenuClass = v.rootMenuClass();
+				}
+				logger.info("loading RootMenuClassProvider: {} -> {}", k, rootMenuClass);
 			});
 		}
 		Collection<RootMenuClassProvider> providers = providerMap.values();
@@ -186,6 +195,11 @@ public class WebAdminPluginContext implements InitializingBean {
 		@ConditionalOnMissingBean(UserDetailsService.class)
 		public UserDetailsService userDetailsService(){
 			return new AdminUserDetailServiceImpl<AdminUser>(AdminUser.class);
+		}
+		
+		@Bean
+		public AdminTenantContextVariable adminTenantContextVariable() {
+			return new AdminTenantContextVariable();
 		}
 		
 		@Bean

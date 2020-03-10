@@ -5,6 +5,7 @@ import org.onetwo.ext.permission.api.PermissionType;
 public interface AdminMgr {
 	String name = "系统管理";
 	String appCode = AdminMgr.class.getSimpleName();
+	int sort = Integer.MAX_VALUE;
 
 	public interface UserProfile {
 		String name = "修改资料";

@@ -5,6 +5,7 @@
  */
     select 
       ap.code,
+      ap.meta,
       ap.ptype,
       ap.data_from,
       case 

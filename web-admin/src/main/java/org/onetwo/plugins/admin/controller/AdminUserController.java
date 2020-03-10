@@ -6,8 +6,8 @@ import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.UserMgr;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
-import org.onetwo.plugins.admin.view.PageRequest;
 import org.onetwo.plugins.admin.view.EasyViews.EasyGridView;
+import org.onetwo.plugins.admin.view.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +62,7 @@ public class AdminUserController extends WebAdminBaseController {
     @RequestMapping(value="{id}", method=RequestMethod.PUT)
     public ModelAndView update(@PathVariable("id") Long id, AdminUser adminUser){
         adminUser.setId(id);
-        adminUserServiceImpl.update(adminUser);
+        adminUserServiceImpl.update(getCurrentLoginUser(), adminUser);
         return messageMv("更新成功！");
     }
     

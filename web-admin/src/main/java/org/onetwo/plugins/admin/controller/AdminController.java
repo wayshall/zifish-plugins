@@ -67,6 +67,7 @@ public class AdminController extends WebAdminBaseController {
 				tm.addMetas(adminPerm.getMeta());
 				tm.setSort(adminPerm.getSort());
 				tm.setUrl(adminPerm.getUrl());
+//				tm.setComponentViewPath(adminPerm.getComponentViewPath());
 				return tm;
 			};
 			
