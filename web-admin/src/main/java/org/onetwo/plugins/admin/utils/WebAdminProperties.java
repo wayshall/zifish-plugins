@@ -1,10 +1,12 @@
 package org.onetwo.plugins.admin.utils;
 
+import org.onetwo.common.spring.Springs;
 import org.onetwo.common.web.captcha.AESCaptchaChecker;
 import org.onetwo.common.web.captcha.CaptchaChecker;
 import org.onetwo.common.web.captcha.Captchas;
 import org.onetwo.common.web.captcha.SimpleCaptchaGenerator.CaptchaSettings;
 import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
+import org.onetwo.plugins.admin.captcha.RedisCaptchaChecker;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
 
@@ -71,6 +73,15 @@ public class WebAdminProperties {
 			@Override
 			public CaptchaChecker createChecker(CaptchaProps props) {
 				return new AESCaptchaChecker(props.getSalt(), props.getExpireInSeconds());
+			}
+		},
+		
+		REDIS {
+			@Override
+			public CaptchaChecker createChecker(CaptchaProps props) {
+				RedisCaptchaChecker checker = new RedisCaptchaChecker(props.getExpireInSeconds());
+				Springs.getInstance().autoInject(checker);
+				return checker;
 			}
 		};
 		
