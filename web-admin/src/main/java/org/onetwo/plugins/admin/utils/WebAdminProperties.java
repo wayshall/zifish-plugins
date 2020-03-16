@@ -22,6 +22,12 @@ public class WebAdminProperties {
 	
 	public static final String PREFIX = "jfish.plugin.web-admin";
 	
+	/****
+	 * 是否强制初始用户修改密码
+	 * 默认为false，不强制
+	 */
+	boolean forceModifyPassword;
+	
 	CaptchaProps captcha = new CaptchaProps();
 	CaptchaChecker captchaChecker;
 	
