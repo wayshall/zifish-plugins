@@ -30,12 +30,12 @@ public class AdminMeController extends WebAdminBaseController {
 	@GetMapping("me")
 	public AdminUserInfo me(){
 		UserDetail userDetail = this.checkAndGetCurrentLoginUser();
-		AdminUserAudit audit = adminAuditService.findById(userDetail.getUserId());
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)
 										.propertyMapping("nickName", "nickname")
 				 						.toClass(AdminUserInfo.class);
 		
 		if (webAdminProperties.isForceModifyPassword()) {
+			AdminUserAudit audit = adminAuditService.findById(userDetail.getUserId());
 			user.setChangedPassword(audit.getLastChangePwdAt()!=null);
 		} else {
 			user.setChangedPassword(true);
