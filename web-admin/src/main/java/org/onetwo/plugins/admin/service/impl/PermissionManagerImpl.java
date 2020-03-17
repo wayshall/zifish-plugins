@@ -26,6 +26,8 @@ import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
+
 //@Service
 @Transactional
 public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermission> {
@@ -118,8 +120,18 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 	@Override
 	protected Map<String, AdminPermission> findExistsPermission(String rootCode) {
-		List<AdminPermission> adminPermissions = this.baseEntityManager.findList(AdminPermission.class, "code:like", rootCode+"%");
-		Map<String, AdminPermission> dbPermissions = adminPermissions.stream()
+		List<AdminPermission> permissions = Lists.newArrayList();
+		AdminPermission root = this.baseEntityManager.findById(AdminPermission.class, rootCode);
+		if (root!=null) {
+			permissions.add(root);
+		}
+		// FIX：code后要加下划线区分，并且要要转义
+		List<AdminPermission> adminPermissions = this.baseEntityManager.findList(AdminPermission.class, "code:like", rootCode+"\\_%");
+		if (!adminPermissions.isEmpty()) {
+			permissions.addAll(adminPermissions);
+		}
+		
+		Map<String, AdminPermission> dbPermissions = permissions.stream()
 													.collect(Collectors.toMap(p->p.getCode(), p->p));
 		
 		return dbPermissions;
