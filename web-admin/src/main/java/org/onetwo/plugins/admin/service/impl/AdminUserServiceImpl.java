@@ -61,6 +61,16 @@ public class AdminUserServiceImpl {
 	private AdminRoleServiceImpl adminRoleService;
 	@Autowired
 	private AdminUserAuditServiceImpl adminAuditService;
+	
+	/****
+	 * 根据用户id查找用户数据
+	 * @author weishao zeng
+	 * @param ids
+	 * @return
+	 */
+    public List<AdminUser> findUserByIds(List<Long> ids) {
+		return adminUserDao.findUserByIds(ids);
+	}
 
     /***
      * 根据用户id和名称查找用户

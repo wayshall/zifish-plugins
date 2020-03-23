@@ -15,3 +15,17 @@ where
     [#if query.roleNames??]
         and r.`name` in ( :query.roleNames )
     [/#if]
+
+/***
+ * @name: findUserByIds
+ */
+select
+ u.user_Name,
+ u.nick_Name,
+ u.mobile,
+ u.status,
+ u.email
+from
+    admin_user u
+where 
+    u.id in (:ids)

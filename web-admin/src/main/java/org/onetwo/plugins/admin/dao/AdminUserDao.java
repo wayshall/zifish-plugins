@@ -18,4 +18,8 @@ public interface AdminUserDao {
 	 */
 	List<AdminUser> findUserByRole(FindUserByRoleQuery query);
 	
+
+	List<AdminUser> findUserByIds(List<Long> ids);
+	
+	
 }
