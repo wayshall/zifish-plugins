@@ -34,6 +34,11 @@ public interface AdminMgr {
 	public static interface PermMgr {
 		String name = "权限管理";
 		int sort = 4;
+		
+		public interface Refresh {
+			String name = "刷新权限";
+			PermissionType permissionType = PermissionType.FUNCTION;
+		}
 	}
 	
 	public static interface RoleMgr {
