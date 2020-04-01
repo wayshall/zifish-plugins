@@ -13,6 +13,7 @@ import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
 import org.onetwo.common.spring.Springs.SpringsInitEvent;
 import org.onetwo.dbm.spring.EnableDbmRepository;
+import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.parser.DefaultMenuInfoParser;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
@@ -135,6 +136,7 @@ public class WebAdminPluginContext implements InitializingBean {
 				logger.info("loading RootMenuClassProvider: {} -> {}", k, rootMenuClass);
 			});
 		}
+		
 		Collection<RootMenuClassProvider> providers = providerMap.values();
 		AdminPermissionConfigListAdapetor list = new AdminPermissionConfigListAdapetor();
 		providers.forEach(provider->{
@@ -151,6 +153,10 @@ public class WebAdminPluginContext implements InitializingBean {
 				list.add(config);
 			});
 		});
+		
+		WebAdminPermissionConfig config = new WebAdminPermissionConfig();
+		config.setRootMenuClass(FullyAuthenticated.class);
+		list.add(config);
 		return list;
 	}
 	

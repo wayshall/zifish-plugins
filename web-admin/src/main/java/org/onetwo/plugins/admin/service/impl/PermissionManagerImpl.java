@@ -18,6 +18,7 @@ import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
 import org.onetwo.ext.permission.api.DataFrom;
+import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
@@ -150,13 +151,15 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	protected void updatePermissions(AdminPermission rootPermission, Map<String, AdminPermission> dbPermissionMap, Set<AdminPermission> adds, Set<AdminPermission> deletes, Set<AdminPermission> updates) {
 		AdminApplication app = this.baseEntityManager.findById(AdminApplication.class, rootPermission.getAppCode());
 		if(app==null){
-			app = new AdminApplication();
-			app.setCode(rootPermission.getAppCode());
-			app.setName(rootPermission.getName());
-			app.setCreateAt(new Date());
-			app.setUpdateAt(new Date());
-//			this.baseEntityManager.persist(app);
-			this.baseEntityManager.save(app);
+			if (!rootPermission.getAppCode().equals(FullyAuthenticated.AUTH_CODE)) {
+				app = new AdminApplication();
+				app.setCode(rootPermission.getAppCode());
+				app.setName(rootPermission.getName());
+				app.setCreateAt(new Date());
+				app.setUpdateAt(new Date());
+	//			this.baseEntityManager.persist(app);
+				this.baseEntityManager.save(app);
+			}
 		}else{
 			app.setName(rootPermission.getName());
 			app.setUpdateAt(new Date());
