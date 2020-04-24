@@ -126,6 +126,11 @@ public class AdminUserServiceImpl {
     	return user;
     }
     
+    public AdminUser findById(Long id){
+    	AdminUser user = baseEntityManager.findById(AdminUser.class, id);
+    	return user;
+    }
+    
     public AdminUser findByUserName(String userName) {
     	return baseEntityManager.from(AdminUser.class)
     				.where()
