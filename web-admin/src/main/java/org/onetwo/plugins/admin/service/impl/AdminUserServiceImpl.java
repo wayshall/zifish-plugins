@@ -103,6 +103,11 @@ public class AdminUserServiceImpl {
     	}
     	adminUser.setPassword(passwordEncoder.encode(adminUser.getPassword()));
     	
+    	AdminUser existUser = findByUserName(adminUser.getUserName());
+    	if (existUser!=null) {
+    		throw new ServiceException("用户名已被占用：" + adminUser.getUserName());
+    	}
+    	
     	if(avatarFile!=null){
     		FileStoredMeta meta = bootCommonService.uploadFile("web-admin", avatarFile);
     		adminUser.setAvatar(meta.getFullAccessablePath());
