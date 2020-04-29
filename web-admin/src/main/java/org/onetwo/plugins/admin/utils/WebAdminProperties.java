@@ -29,6 +29,8 @@ public class WebAdminProperties {
 	boolean forceModifyPassword;
 	
 	CaptchaProps captcha = new CaptchaProps();
+	UserLogProps userlog = new UserLogProps();
+	
 	CaptchaChecker captchaChecker;
 	
 	public CaptchaChecker getCaptchaChecker(){
@@ -39,6 +41,11 @@ public class WebAdminProperties {
 		return captchaChecker;
 	}
 
+	@Data
+	public static class UserLogProps {
+		boolean logByPermission;
+	}
+	
 	@Data
 	public static class CaptchaProps {
 		public static final String ENABLED_KEY = PREFIX+".captcha.enabled";

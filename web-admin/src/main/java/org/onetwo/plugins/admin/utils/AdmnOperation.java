@@ -4,4 +4,6 @@ public interface AdmnOperation {
 	
 	String getCode();
 	
+	String getName();
+	
 }

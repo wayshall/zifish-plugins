@@ -3,6 +3,7 @@ package org.onetwo.plugins.admin.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.SafeHtml;
+import org.onetwo.dbm.annotation.DbmJsonField;
 import org.onetwo.dbm.annotation.SnowflakeId;
 import org.onetwo.dbm.ui.annotation.DUIEntity;
 import org.onetwo.dbm.ui.annotation.DUIField;
@@ -22,14 +24,16 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name="admin_login_log")
+@Table(name="admin_user_log")
 @Data
 //@EqualsAndHashCode(callSuper=true)
 @DUIEntity(
         name = "AdminLoginLog", 
-        label = "后台登陆日志"
+        label = "后台用户操作日志"
 )
-public class AdminLoginLogEntity implements Serializable {
+public class AdminUserLogEntity implements Serializable {
+	
+	public static final String ANONYMOUS_USER = "ANONYMOUS";
 
     @SnowflakeId
     @NotNull
@@ -66,6 +70,14 @@ public class AdminLoginLogEntity implements Serializable {
     @SafeHtml
     @DUIField(label = "用户名称", order = 4)
     String userName;
+    
+    /***
+     * 操作名称
+     */
+    @Length(max=50)
+    @SafeHtml
+    @DUIField(label = "操作名称", order = 5)
+    String operationName;
     
     /***
      * 操作代码
@@ -127,5 +139,8 @@ public class AdminLoginLogEntity implements Serializable {
      */
     @Length(max=2000)
     String userAgent;
+    
+    @DbmJsonField
+    Map<String, ?> requestParameters;
     
 }
