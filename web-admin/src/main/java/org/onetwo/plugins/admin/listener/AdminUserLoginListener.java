@@ -1,5 +1,6 @@
 package org.onetwo.plugins.admin.listener;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.onetwo.boot.core.web.mvc.log.OperatorLogEvent;
@@ -47,14 +48,20 @@ public class AdminUserLoginListener {
 			adminLoginLogService.save(userLog);
 			
 		} else if (userlogProps.isLogByPermission()) {
-			List<IPermission> perms = (List<IPermission>)permissionManager.getMethodPermissionMapping().get(operatorLog.getHandlerMethod().getMethod());
-//			userLog.setOperationCode(operationCode);
-			if (LangUtils.isNotEmpty(perms)) {
-				IPermission perm = perms.get(0);
-				userLog.setOperationName(perm.getName());
-				userLog.setOperationCode(perm.getCode());
-				adminLoginLogService.save(userLog);
+			if (userlogProps.isLogRequestMethod(operatorLog.getRequestMethod())) {
+				logMethod(operatorLog.getHandlerMethod().getMethod(), userLog);
 			}
+		}
+	}
+	
+	private void logMethod(Method method, AdminUserLogEntity userLog) {
+		List<IPermission> perms = (List<IPermission>)permissionManager.getMethodPermissionMapping().get(method);
+//		userLog.setOperationCode(operationCode);
+		if (LangUtils.isNotEmpty(perms)) {
+			IPermission perm = perms.get(0);
+			userLog.setOperationName(perm.getName());
+			userLog.setOperationCode(perm.getCode());
+			adminLoginLogService.save(userLog);
 		}
 	}
 	

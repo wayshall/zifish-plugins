@@ -1,5 +1,7 @@
 package org.onetwo.plugins.admin.utils;
 
+import java.util.List;
+
 import org.onetwo.common.spring.Springs;
 import org.onetwo.common.web.captcha.AESCaptchaChecker;
 import org.onetwo.common.web.captcha.CaptchaChecker;
@@ -9,6 +11,8 @@ import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
 import org.onetwo.plugins.admin.captcha.RedisCaptchaChecker;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
+
+import com.google.common.collect.Lists;
 
 import lombok.Data;
 
@@ -44,6 +48,14 @@ public class WebAdminProperties {
 	@Data
 	public static class UserLogProps {
 		boolean logByPermission;
+		/****
+		 * 只记录put, post, delete方法
+		 */
+		List<String> requestMethods = Lists.newArrayList("put", "post", "delete");
+		
+		public boolean isLogRequestMethod(String method) {
+			return requestMethods.contains(method.toLowerCase());
+		}
 	}
 	
 	@Data
