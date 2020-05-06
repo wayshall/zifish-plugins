@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.Setter;
 
 /**
+ * 默认使用admin_organ的规则，admin_organ实际上是租户，此时企业id和租户id是相同的
+ * 
  * @author weishao zeng
  * <br/>
  */
@@ -15,9 +17,12 @@ import lombok.Setter;
 public class AdminLoginUserInfo extends LoginUserDetails {
 
 	@Setter
+	private Long bindingUserId;
+	
+	@Setter
 	private Long organId;
 	@Setter
-	private Long bindingUserId;
+	private Long tenantId;
 	
 	public AdminLoginUserInfo(long userId, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
@@ -30,6 +35,10 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 
 	public Long getBindingUserId() {
 		return bindingUserId;
+	}
+
+	public Long getTenantId() {
+		return tenantId;
 	}
 
 }

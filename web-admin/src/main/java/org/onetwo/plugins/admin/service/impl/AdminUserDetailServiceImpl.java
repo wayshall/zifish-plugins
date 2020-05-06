@@ -103,6 +103,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		if (user.getOrganId()!=null && user.getOrganId()>0) {
 			AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
 			userDetail.setOrganId(organ.getId());
+			userDetail.setTenantId(organ.getId());
 		}
 
         AdminUserBinding binding = adminUserService.getBinding(user.getId());
