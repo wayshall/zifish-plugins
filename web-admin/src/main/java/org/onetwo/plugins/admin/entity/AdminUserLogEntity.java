@@ -59,7 +59,7 @@ public class AdminUserLogEntity implements Serializable {
      */
     @Length(max=500)
     @SafeHtml
-    @DUIInput(type=DUIInput.InputTypes.TEXT_AREA)
+    @DUIInput(type=DUIInput.InputTypes.TEXTAREA)
     @DUIField(label = "错误信息", order = 3)
     String errorMsg;
     

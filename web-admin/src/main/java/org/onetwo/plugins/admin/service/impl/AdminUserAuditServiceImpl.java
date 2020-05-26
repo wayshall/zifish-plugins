@@ -7,8 +7,8 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.dbm.core.internal.DbmCrudServiceImpl;
-import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
+import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
 import org.onetwo.plugins.admin.utils.AdminOperationCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
     }
     
     public void saveChangePwdAudit(UserDetail loginUser) {
-    	AdminUserAudit userAuit = baseEntityManager.load(entityClass, loginUser.getUserId());
+    	AdminUserAudit userAuit = getBaseEntityManager().load(entityClass, loginUser.getUserId());
     	userAuit.setLastChangePwdAt(new Date());
     	save(userAuit);
 		AdminUserLogEntity log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, loginUser);
@@ -47,13 +47,13 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
     }
 
     public AdminUserAudit findById(Long userId) {
-    	AdminUserAudit userAuit = baseEntityManager.findById(entityClass, userId);
+    	AdminUserAudit userAuit = getBaseEntityManager().findById(entityClass, userId);
     	return userAuit;
     }
     
     @Transactional(readOnly=true)
     public Page<AdminUserAudit> findPage(Page<AdminUserAudit> page, AdminUserAudit example) {
-        return baseEntityManager.from(entityClass)
+        return getBaseEntityManager().from(entityClass)
                                 .where()
                                     .addFields(example)
                                     .ignoreIfNull()
