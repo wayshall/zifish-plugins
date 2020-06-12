@@ -36,7 +36,7 @@ public class AdminMeController extends WebAdminBaseController {
 		
 		if (webAdminProperties.isForceModifyPassword()) {
 			AdminUserAudit audit = adminAuditService.findById(userDetail.getUserId());
-			user.setChangedPassword(audit.getLastChangePwdAt()!=null);
+			user.setChangedPassword(audit!=null && audit.getLastChangePwdAt()!=null);
 		} else {
 			user.setChangedPassword(true);
 		}
