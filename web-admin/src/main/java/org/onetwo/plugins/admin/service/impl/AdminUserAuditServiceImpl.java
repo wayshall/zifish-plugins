@@ -27,9 +27,15 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
     }
     
     public void saveChangePwdAudit(UserDetail loginUser) {
-    	AdminUserAudit userAuit = getBaseEntityManager().load(entityClass, loginUser.getUserId());
+    	AdminUserAudit userAuit = this.findById(loginUser.getUserId());
+    	if (userAuit==null) {
+    		userAuit = new AdminUserAudit();
+    		userAuit.setUserId(loginUser.getUserId());
+    		userAuit.setUserName(loginUser.getUserName());
+    	}
     	userAuit.setLastChangePwdAt(new Date());
     	save(userAuit);
+    	
 		AdminUserLogEntity log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, loginUser);
 		adminLoginLogService.save(log);
     }
