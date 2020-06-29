@@ -27,12 +27,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/***
+ * 保留机构id，用于业务扩展
+ * @author way
+ *
+ */
 @Entity
 @Table(name="admin_user")
 @Data
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
-public class AdminUser extends AdminOrganable implements UserRoot {
+public class AdminUser extends AdminTenantable implements UserRoot {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -60,6 +65,11 @@ public class AdminUser extends AdminOrganable implements UserRoot {
 
 	@JsonSerialize(using = ImageUrlJsonSerializer.class)
     private String avatar;
+	
+	/****
+	 * 保留机构id，用于业务扩展
+	 */
+	private Long organId;
     
 	
     public String getGenderName(){

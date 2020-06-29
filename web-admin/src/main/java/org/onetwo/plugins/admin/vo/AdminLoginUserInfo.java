@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.Setter;
 
 /**
- * 默认使用admin_organ的规则，admin_organ实际上是租户，此时企业id和租户id是相同的
+ * 移除admin_organ，用户表增加tenant_id和保留organId用于业务扩展
  * 
  * @author weishao zeng
  * <br/>
@@ -29,8 +29,9 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 		super(userId, username, password, authorities);
 	}
 
-	public Long getOrganId() {
-		return organId;
+	
+	public Long getOrganId() { 
+		return organId; 
 	}
 
 	public Long getBindingUserId() {

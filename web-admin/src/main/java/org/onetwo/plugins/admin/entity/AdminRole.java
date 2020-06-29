@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @Table(name="admin_role")
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class AdminRole extends AdminOrganable {
+public class AdminRole extends AdminTenantable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

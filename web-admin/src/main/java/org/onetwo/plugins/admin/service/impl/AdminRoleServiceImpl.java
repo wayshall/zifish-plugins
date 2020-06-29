@@ -13,7 +13,6 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
 import org.onetwo.common.exception.ServiceException;
-import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
@@ -22,7 +21,6 @@ import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminRole;
 import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
-import org.onetwo.plugins.admin.vo.RolePermissionReponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,10 +64,10 @@ public class AdminRoleServiceImpl {
 		.page(page);
     }
     
-    public List<AdminRole> findByStatus(CommonStatus status, Long organId){
+    public List<AdminRole> findByStatus(CommonStatus status, Long tenantId){
     	return baseEntityManager.findList(AdminRole.class, 
     								"status", status, 
-    								"organId", organId, 
+    								"tenantId", tenantId, 
     								K.IF_NULL, IfNull.Ignore);
     }
     
@@ -83,8 +81,11 @@ public class AdminRoleServiceImpl {
         Date now = new Date();
         adminRole.setCreateAt(now);
         adminRole.setUpdateAt(now);
-        if (adminRole.getOrganId()==null) {
-        	adminRole.setOrganId(0L);
+//        if (adminRole.getOrganId()==null) {
+//        	adminRole.setOrganId(0L);
+//        }
+        if (adminRole.getTenantId()==null) {
+        	adminRole.setTenantId(0L);
         }
         baseEntityManager.save(adminRole);
     }

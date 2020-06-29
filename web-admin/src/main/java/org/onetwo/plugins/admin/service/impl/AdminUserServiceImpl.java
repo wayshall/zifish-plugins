@@ -22,15 +22,12 @@ import org.onetwo.dbm.dialet.DBDialect.LockInfo;
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
-import org.onetwo.plugins.admin.entity.AdminOrgan;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.entity.AdminUserBinding.BindingUserId;
 import org.onetwo.plugins.admin.vo.CreateOrUpdateAdminUserRequest;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
 import org.onetwo.plugins.admin.vo.UserBindingRequest;
-import org.onetwo.plugins.admin.vo.UserOrganBindingRequest;
-import org.onetwo.plugins.admin.vo.UserOrganBindingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,8 +52,8 @@ public class AdminUserServiceImpl {
     private BootCommonService bootCommonService;
     @Autowired
     private AdminUserDao adminUserDao;
-    @Autowired
-    private AdminOrganServiceImpl adminOrganService;
+//    @Autowired
+//    private AdminOrganServiceImpl adminOrganService;
 	@Autowired
 	private AdminRoleServiceImpl adminRoleService;
 	@Autowired
@@ -115,8 +112,11 @@ public class AdminUserServiceImpl {
         Date now = new Date();
         adminUser.setCreateAt(now);
         adminUser.setUpdateAt(now);
-        if (adminUser.getOrganId()==null) {
-        	adminUser.setOrganId(0L);
+//        if (adminUser.getOrganId()==null) {
+//        	adminUser.setOrganId(0L);
+//        }
+        if (adminUser.getTenantId()==null) {
+        	adminUser.setTenantId(0L);
         }
         baseEntityManager.save(adminUser);
     }
@@ -240,57 +240,57 @@ public class AdminUserServiceImpl {
     	return binding;
     }
     
-    public UserOrganBindingVO getBindingOrgan(Long adminUserId) {
-    	AdminUser user = this.loadById(adminUserId);
-    	UserOrganBindingVO binding = null;
-    	if (user.getOrganId()!=null && user.getOrganId()>0) {
-        	binding = new UserOrganBindingVO();
-        	binding.setDataId(user.getId());
-        	binding.setBindingId(user.getOrganId());
-    		AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
-    		binding.setBindingName(organ.getName());
-    	}
-    	return binding;
-    }
-    
-
-    public UserOrganBindingVO bindingOrgan(UserOrganBindingRequest bindingRequest, boolean forceBinding) {
-    	if (bindingRequest.getDataId()==null) {
-    		throw new ServiceException("绑定的用户id不能为空！");
-    	}
-    	
-    	AdminUser adminUser = this.loadById(bindingRequest.getDataId());
-    	if (adminUser.isSystemRootUser()) {
-    		throw new ServiceException("终极管理员只做系统维护使用，无法绑定！");
-    	}
-    	
-    	
-		AdminOrgan organ = this.adminOrganService.load(bindingRequest.getBindingId());
-		
-    	UserOrganBindingVO binding = getBindingOrgan(bindingRequest.getDataId());
-    	if (binding!=null && !forceBinding){
-    		throw new ServiceException("该后台用户已绑定过其它用户").putAsMap(bindingRequest);
-    	}
-
-		adminUser.setOrganId(organ.getId());
-    	this.baseEntityManager.update(adminUser);
-    	binding = new UserOrganBindingVO();
-    	binding.setDataId(adminUser.getId());
-    	binding.setBindingId(organ.getId());
-    	binding.setBindingName(organ.getName());
-    	
-    	return binding;
-    }
-
-    public void unBindingOrgan(Long adminUserId) {
-    	if (adminUserId==null) {
-    		throw new ServiceException("解绑的用户id不能为空！");
-    	}
-
-    	AdminUser adminUser = this.loadById(adminUserId);
-		adminUser.setOrganId(0L);
-    	this.baseEntityManager.update(adminUser);
-    }
+//    public UserOrganBindingVO getBindingOrgan(Long adminUserId) {
+//    	AdminUser user = this.loadById(adminUserId);
+//    	UserOrganBindingVO binding = null;
+//    	if (user.getOrganId()!=null && user.getOrganId()>0) {
+//        	binding = new UserOrganBindingVO();
+//        	binding.setDataId(user.getId());
+//        	binding.setBindingId(user.getOrganId());
+//    		AdminOrgan organ = this.adminOrganService.load(user.getOrganId());
+//    		binding.setBindingName(organ.getName());
+//    	}
+//    	return binding;
+//    }
+//    
+//
+//    public UserOrganBindingVO bindingOrgan(UserOrganBindingRequest bindingRequest, boolean forceBinding) {
+//    	if (bindingRequest.getDataId()==null) {
+//    		throw new ServiceException("绑定的用户id不能为空！");
+//    	}
+//    	
+//    	AdminUser adminUser = this.loadById(bindingRequest.getDataId());
+//    	if (adminUser.isSystemRootUser()) {
+//    		throw new ServiceException("终极管理员只做系统维护使用，无法绑定！");
+//    	}
+//    	
+//    	
+//		AdminOrgan organ = this.adminOrganService.load(bindingRequest.getBindingId());
+//		
+//    	UserOrganBindingVO binding = getBindingOrgan(bindingRequest.getDataId());
+//    	if (binding!=null && !forceBinding){
+//    		throw new ServiceException("该后台用户已绑定过其它用户").putAsMap(bindingRequest);
+//    	}
+//
+//		adminUser.setOrganId(organ.getId());
+//    	this.baseEntityManager.update(adminUser);
+//    	binding = new UserOrganBindingVO();
+//    	binding.setDataId(adminUser.getId());
+//    	binding.setBindingId(organ.getId());
+//    	binding.setBindingName(organ.getName());
+//    	
+//    	return binding;
+//    }
+//
+//    public void unBindingOrgan(Long adminUserId) {
+//    	if (adminUserId==null) {
+//    		throw new ServiceException("解绑的用户id不能为空！");
+//    	}
+//
+//    	AdminUser adminUser = this.loadById(adminUserId);
+//		adminUser.setOrganId(0L);
+//    	this.baseEntityManager.update(adminUser);
+//    }
     
     @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public AdminUser createOrUpdateAdminUser(CreateOrUpdateAdminUserRequest adminUser) {
