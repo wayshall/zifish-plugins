@@ -3,10 +3,10 @@ package org.onetwo.plugins.admin.controller;
 import java.util.List;
 
 import org.onetwo.common.spring.copier.CopyUtils;
-import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.service.impl.AdminUserAuditServiceImpl;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
+import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +29,7 @@ public class AdminMeController extends WebAdminBaseController {
 	 */
 	@GetMapping("me")
 	public AdminUserInfo me(){
-		UserDetail userDetail = this.checkAndGetCurrentLoginUser();
+		AdminLoginUserInfo userDetail = this.checkAndGetCurrentLoginUser();
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)
 										.propertyMapping("nickName", "nickname")
 				 						.toClass(AdminUserInfo.class);
@@ -59,6 +59,7 @@ public class AdminMeController extends WebAdminBaseController {
 		 * 是否有修改过密码
 		 */
 		boolean changedPassword;
+		Long tenantId;
 	}
 
 }
