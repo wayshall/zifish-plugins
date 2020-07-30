@@ -55,18 +55,22 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		}
 		
 		List<GrantedAuthority> authes = fetchUserGrantedAuthorities(user);
-		UserDetails userDetail = buildUserDetail(user, authes);
+		AdminLoginUserInfo userDetail = buildUserDetail(user, authes);
 		return userDetail;
 	}
 	
 	protected List<GrantedAuthority> fetchUserGrantedAuthorities(T user){
+		return fetchUserGrantedAuthorities(user.getId(), user.isSystemRootUser());
+	}
+	
+	protected List<GrantedAuthority> fetchUserGrantedAuthorities(Long userId, boolean isSystemRoot){
 		List<GrantedAuthority> authes = Collections.emptyList();
-		if(user.isSystemRootUser()){
+		if(isSystemRoot){
 			List<AdminPermission> perms = adminPermissionDao.findAppPermissions(null);
 			authes = perms.stream().map(perm->new SimpleGrantedAuthority(perm.getCode()))
 						.collect(Collectors.toList());
 		}else{
-			List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByUserId(null, user.getId());
+			List<AdminPermission> perms = this.adminPermissionDao.findAppPermissionsByUserId(null, userId);
 			
 			// 若分配权限的时候，半选中的父节点没有保存（保存父节点会导致前端回显的时候，因为父节点选中而导致未选择的子节点也会选中问题），所以这里通过构建树的方式把版选中的父菜单也查找出来
 			// 若分配权限时已保存半选中的父节点，则不需要下面的逻辑
@@ -93,7 +97,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		return user;
 	}
 	
-	protected UserDetails buildUserDetail(T user, List<GrantedAuthority> authes){
+	protected AdminLoginUserInfo buildUserDetail(T user, List<GrantedAuthority> authes){
 		AdminLoginUserInfo userDetail = new AdminLoginUserInfo(user.getId(), user.getUserName(), user.getPassword(), authes);
 		userDetail.setNickname(user.getNickName());
 		userDetail.setAvatar(user.getAvatar());
