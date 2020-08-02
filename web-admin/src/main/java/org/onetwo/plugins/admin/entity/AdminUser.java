@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
 import org.onetwo.common.jackson.JsonMapper;
+import org.onetwo.common.spring.validator.annotation.Mobile;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.plugins.admin.utils.DataUtils;
@@ -53,6 +54,7 @@ public class AdminUser extends AdminTenantable implements UserRoot {
 
     private String email;
 
+    @Mobile
     private String mobile;
 
     private String gender;
