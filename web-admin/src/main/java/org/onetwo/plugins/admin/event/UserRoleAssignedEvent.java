@@ -14,10 +14,10 @@ import lombok.Data;
 /***
  * 
  * class UserRoleAssignedListener {
- * 		@TransactionalEventListener
- * 		void onAssign(UserRoleAssignedEvent event) {
- * 		}
- * }
+  		@TransactionalEventListener
+  		void onAssign(UserRoleAssignedEvent event) {
+  		}
+  }
  * 
  * @author way
  *
