@@ -10,7 +10,6 @@ import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
-import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,10 +108,10 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		userDetail.setOrganId(user.getOrganId());
 		userDetail.setTenantId(user.getTenantId());
 
-        AdminUserBinding binding = adminUserService.getBinding(user.getId());
-        if (binding!=null) {
-        	userDetail.setBindingUserId(binding.getBindingUserId());
-        }
+//        AdminUserBinding binding = adminUserService.getBinding(user.getId());
+//        if (binding!=null) {
+//        	userDetail.setBindingUserId(binding.getBindingUserId());
+//        }
         
 		return userDetail;
 	}
