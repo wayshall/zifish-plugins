@@ -59,7 +59,7 @@ import com.google.common.collect.Sets;
 
 
 //@Configuration
-//@ConditionalOnProperty(name="jfish.plugins.web-admin.enable", havingValue="true", matchIfMissing=true)
+//@ConditionalOnProperty(name="jfish.plugins.webAdmin.enabled", havingValue="true", matchIfMissing=true)
 //@DbmPackages("org.onetwo.plugins.admin.dao")
 @EnableDbmRepository("org.onetwo.plugins.admin.dao")
 @Order(value=Ordered.LOWEST_PRECEDENCE)
