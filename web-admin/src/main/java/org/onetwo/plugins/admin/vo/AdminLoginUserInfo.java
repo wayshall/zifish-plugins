@@ -1,6 +1,7 @@
 package org.onetwo.plugins.admin.vo;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +27,7 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 	
 	public AdminLoginUserInfo(long userId, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(userId, username, password, authorities);
+		super(userId, username, password, authorities==null?Collections.emptyList():authorities);
 	}
 
 	
