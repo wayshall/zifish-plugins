@@ -195,16 +195,23 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		this.router = (RouteData)this.meta.remove("router");
 	}
 	
-	public String getTemplate() {
-		return this.router.getTemplate();
-	}
+//	public String getTemplate() {
+//		if (this.router==null) {
+//			return null;
+//		}
+//		return this.router.getTemplate();
+//	}
+//	
+//	public boolean hasTemplate() {
+//		String template = getTemplate();
+//		return StringUtils.isNotBlank(template);
+//	}
 	
 	@Data
 	@NoArgsConstructor
 	public static class RouteData {
 		String componentViewPath;
 		Map<String, Object> props;
-		String template;
 		public RouteData(String componentViewPath, Map<String, Object> props) {
 			super();
 			this.componentViewPath = componentViewPath;

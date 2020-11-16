@@ -21,18 +21,17 @@ abstract public class VueRouteDatas {
 	}
 	
 	/***
-	 * 创建多级菜单时，为了避免重复嵌套侧栏和顶栏，父菜单不能使用Layout，需要重写一个模板页：
+	 * 创建多级菜单时，为了避免重复嵌套侧栏和顶栏，父菜单的路由component属性（componentViewPath）不能使用Layout，需要重写一个模板页：
 	 * <template>
   		<router-view/>
 	   </template>
+	   此页模板在根目录 /routerView.vue
 	 * @author weishao zeng
 	 * @return
 	 */
 	final public static RouteData routerView() {
-		RouteData menuNote = new RouteData("", null);
-		menuNote.setTemplate("<template>" + 
-							 "  <router-view/>" + 
-							 "</template>");
+		RouteData menuNote = new RouteData("routerView", null);
+//		menuNote.setTemplate("<router-view/>");
 		return menuNote;
 	}
 	
