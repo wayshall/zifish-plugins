@@ -30,9 +30,7 @@ abstract public class VueRouteDatas {
 	 * @return
 	 */
 	final public static RouteData routerView() {
-		RouteData menuNote = new RouteData("routerView", null);
-//		menuNote.setTemplate("<router-view/>");
-		return menuNote;
+		return componentView("routerView");
 	}
 	
 	final public static RouteData componentView(String componentViewPath) {
