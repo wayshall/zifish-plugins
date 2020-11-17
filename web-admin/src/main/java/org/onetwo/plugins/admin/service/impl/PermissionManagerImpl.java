@@ -52,6 +52,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			parent.setChildrenSize(parent.getChildrenSize()-1);
 			baseEntityManager.update(parent);
 		}
+		adminPermissionDao.deleteRolePermissions(dbPermission.getCode(), false);
 		baseEntityManager.remove(dbPermission);
 		return dbPermission;
 	}
