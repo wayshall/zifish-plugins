@@ -31,8 +31,6 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	protected AdminPermissionDao adminPermissionDao;
 	@Autowired
 	private PermissionManagerImpl permissionManager;
-	@Autowired
-	private AdminUserServiceImpl adminUserService;
 	
 	protected Class<T> userDetailClass;
 
