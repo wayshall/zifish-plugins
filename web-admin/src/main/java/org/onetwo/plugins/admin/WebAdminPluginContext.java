@@ -42,7 +42,6 @@ import org.onetwo.plugins.admin.utils.WebAdminProperties.CaptchaProps;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -121,9 +120,13 @@ public class WebAdminPluginContext implements InitializingBean {
 	}*/
 	
 	@Bean
-	@Autowired
-	@ConditionalOnBean(RootMenuClassProvider.class)
-	public AdminPermissionConfigListAdapetor adminPermissionConfigListAdapetor(Map<String, RootMenuClassProvider> providerMap){
+//	@Autowired
+//	@ConditionalOnBean(RootMenuClassProvider.class)
+	public AdminPermissionConfigListAdapetor adminPermissionConfigListAdapetor(@Autowired(required = false) Map<String, RootMenuClassProvider> providerMap){
+		AdminPermissionConfigListAdapetor list = new AdminPermissionConfigListAdapetor();
+		if (providerMap==null) {
+			return list;
+		}
 		Logger logger = JFishLoggerFactory.getCommonLogger();
 		if(logger.isInfoEnabled()){
 			providerMap.forEach((k, v)->{
@@ -138,7 +141,6 @@ public class WebAdminPluginContext implements InitializingBean {
 		}
 		
 		Collection<RootMenuClassProvider> providers = providerMap.values();
-		AdminPermissionConfigListAdapetor list = new AdminPermissionConfigListAdapetor();
 		providers.forEach(provider->{
 			Collection<Class<?>> rooMenuClassList = new HashSet<>();
 			if(provider instanceof RootMenuClassListProvider){
