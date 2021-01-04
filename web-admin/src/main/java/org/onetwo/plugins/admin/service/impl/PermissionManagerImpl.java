@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
-import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.StringUtils;
@@ -222,7 +221,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	public List<AdminPermission> findAppPermissions(String appCode){
 		List<AdminPermission> permList = baseEntityManager.findList(AdminPermission.class, "appCode", appCode, K.IF_NULL, IfNull.Ignore, K.ASC, "sort");
 		if(permList.isEmpty())
-			throw new BaseException("没有任何权限……");
+			throw new ServiceException("没有任何权限……");
 		return permList;
 	}
 
