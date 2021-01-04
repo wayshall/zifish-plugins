@@ -7,6 +7,8 @@ import org.onetwo.common.tree.AbstractTreeModel;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.utils.RequestUtils;
+import org.onetwo.ext.permission.utils.PermissionUtils;
+import org.onetwo.plugins.admin.entity.AdminPermission;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -60,10 +62,27 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	private boolean hidden;
 	private Map<String, Object> meta;
 	private RouteData router;
+	@JsonIgnore
+	private AdminPermission permission;
+
+	public VueRouterTreeModel(AdminPermission permission) {
+		this(permission.getCode(), permission.getName(), permission.getParentCode());
+		this.permission = permission;
+	}
 
 	public VueRouterTreeModel(String id, String title, String parentId) {
 		super(id, id, parentId);
 		getMeta().put("title", title);
+	}
+	
+
+	@Override
+	public void addChild(VueRouterTreeModel node) {
+		// 构建树形菜单时，非菜单节点，不添加到子菜单节点
+		if (!PermissionUtils.isMenu(node.permission)) {
+			return ;
+		}
+		super.addChild(node);
 	}
 	
 	public void setMeta(Map<String, Object> meta) {

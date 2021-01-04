@@ -52,7 +52,7 @@ public class AdminController extends WebAdminBaseController {
 					return null;
 				}*/
 				
-				VueRouterTreeModel tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
+				VueRouterTreeModel tm = new VueRouterTreeModel(adminPerm);
 				/*try {
 					tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
 				} catch (Exception e) {
@@ -76,6 +76,9 @@ public class AdminController extends WebAdminBaseController {
 				if (node.getParentId()==null) {
 					return null;//node;
 				}
+//				if (node.getId().toString().startsWith("OrganBffMgr")) {
+//					System.out.println("for deubg");
+//				}
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
 				if (p==null) {
 					return null;//node;
