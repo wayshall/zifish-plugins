@@ -7,6 +7,7 @@ import org.onetwo.boot.core.web.mvc.log.OperatorLogEvent;
 import org.onetwo.boot.core.web.mvc.log.OperatorLogInfo;
 import org.onetwo.common.log.JFishLoggerFactory;
 import org.onetwo.common.utils.LangUtils;
+import org.onetwo.common.utils.StringUtils;
 import org.onetwo.ext.permission.PermissionManager;
 import org.onetwo.ext.permission.api.IPermission;
 import org.onetwo.plugins.admin.annotation.UserLog;
@@ -44,7 +45,11 @@ public class AdminUserLoginListener {
 		UserLog userLogAnno = operatorLog.getHandlerMethod()!=null?operatorLog.getHandlerMethod().getMethodAnnotation(UserLog.class):null;
 		if (userLogAnno!=null) {
 			userLog.setOperationName(userLogAnno.value());
-			userLog.setOperationCode(userLogAnno.operationCode());
+			if (StringUtils.isNotBlank(userLogAnno.operationCode())) {
+				userLog.setOperationCode(userLogAnno.operationCode());
+			} else if (userLogAnno.operationClass()!=Void.class) {
+				userLog.setOperationCode(userLogAnno.operationClass().getSimpleName());
+			}
 			adminLoginLogService.save(userLog);
 			
 		} else if (userlogProps.isLogByPermission()) {

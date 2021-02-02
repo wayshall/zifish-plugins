@@ -21,4 +21,11 @@ public @interface UserLog {
 	 * @return
 	 */
 	String operationCode() default "";
+	
+	/***
+	 * 若operationCode为空，则使用operationClass的simpleName作为operationCode
+	 * @author weishao zeng
+	 * @return
+	 */
+	Class<?> operationClass() default Void.class;
 }
