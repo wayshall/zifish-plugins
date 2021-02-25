@@ -9,6 +9,7 @@ import org.onetwo.plugins.admin.vo.VueRouterTreeModel.RouteData;
  */
 
 abstract public class VueRouteDatas {
+	public static final String FIELD_ROUTER = "router";
 	private static final RouteData Layout = new RouteData("Layout", null);
 	
 	/***

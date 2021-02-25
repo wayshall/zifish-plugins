@@ -211,7 +211,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			this.meta = Maps.newHashMap();
 		}
 		this.meta.putAll(meta);
-		this.router = (RouteData)this.meta.remove("router");
+		this.router = (RouteData)this.meta.remove(VueRouteDatas.FIELD_ROUTER);
 	}
 	
 //	public String getTemplate() {
