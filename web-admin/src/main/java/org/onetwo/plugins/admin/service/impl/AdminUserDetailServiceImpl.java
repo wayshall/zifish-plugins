@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("unchecked")
-@Transactional(readOnly=true)
 public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDetailsService {
 
     @Autowired
@@ -45,6 +44,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		T user = fetUserByUserName(username);
 		if(!UserStatus.NORMAL.name().equals(user.getStatus())){
@@ -60,7 +60,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		return fetchUserGrantedAuthorities(user.getId(), user.isSystemRootUser());
 	}
 	
-	protected List<GrantedAuthority> fetchUserGrantedAuthorities(Long userId, boolean isSystemRoot){
+	@Transactional
+	public List<GrantedAuthority> fetchUserGrantedAuthorities(Long userId, boolean isSystemRoot){
 		List<GrantedAuthority> authes = Collections.emptyList();
 		if(isSystemRoot){
 			List<AdminPermission> perms = adminPermissionDao.findAppPermissions(null);

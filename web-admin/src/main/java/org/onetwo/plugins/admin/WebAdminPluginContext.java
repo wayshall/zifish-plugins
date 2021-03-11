@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.onetwo.boot.module.security.oauth2.NotEnableOauth2SsoCondition;
+import org.onetwo.boot.module.oauth2.ssoclient.DisabledOauth2SsoCondition;
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
@@ -193,7 +193,7 @@ public class WebAdminPluginContext implements InitializingBean {
 	 */
 	@ComponentScan(basePackageClasses={WebAdminBaseController.class, DictionaryImportService.class, WebAdminPermissionConfig.class})
 	@Configuration
-	@Conditional(NotEnableOauth2SsoCondition.class)
+//	@Conditional(NotEnableOauth2SsoCondition.class)
 	protected static class WebAdminManagerModule {
 		
 		public WebAdminManagerModule(){

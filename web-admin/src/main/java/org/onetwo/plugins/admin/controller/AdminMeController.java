@@ -2,6 +2,7 @@ package org.onetwo.plugins.admin.controller;
 
 import java.util.List;
 
+import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.service.impl.AdminUserAuditServiceImpl;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Data;
 
 @RestController
+@XResponseView
 public class AdminMeController extends WebAdminBaseController {
 	
 	@Autowired
