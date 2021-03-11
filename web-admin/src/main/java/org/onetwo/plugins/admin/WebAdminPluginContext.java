@@ -7,10 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
-import org.onetwo.boot.module.oauth2.ssoclient.DisabledOauth2SsoCondition;
-=======
->>>>>>> f35d452e60ae728f774a8b4f809888e19b2ac924
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
