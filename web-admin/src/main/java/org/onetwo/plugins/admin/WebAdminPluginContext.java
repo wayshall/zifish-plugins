@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
-import org.onetwo.common.spring.Springs.SpringsInitEvent;
 import org.onetwo.dbm.spring.EnableDbmRepository;
 import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
@@ -44,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -94,10 +92,10 @@ public class WebAdminPluginContext implements InitializingBean {
 	}*/
 	
 	
-	@Bean
-	static public ApplicationListener<SpringsInitEvent> webAdminApplicationListener(){
-		return new WebAdminApplicationListener();
-	}
+//	@Bean
+//	static public ApplicationListener<SpringsInitEvent> webAdminApplicationListener(){
+//		return new WebAdminApplicationListener();
+//	}
 	
 	@Bean
 	public CreateOrUpdateAdminUserListenner createOrUpdateAdminUserListenner() {
