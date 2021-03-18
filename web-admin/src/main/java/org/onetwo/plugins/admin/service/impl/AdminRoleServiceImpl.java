@@ -1,6 +1,7 @@
 
 package org.onetwo.plugins.admin.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
 import org.onetwo.common.exception.ServiceException;
-import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
@@ -21,9 +21,11 @@ import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminRole;
+import org.onetwo.plugins.admin.event.UserRoleAssignedEvent;
 import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
-import org.onetwo.plugins.admin.vo.RolePermissionReponse;
+import org.onetwo.plugins.admin.vo.RoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -41,7 +43,8 @@ public class AdminRoleServiceImpl {
     
     @Autowired
     private AdminPermissionDao adminPermissionDao;
-    
+    @Autowired
+    private ApplicationContext applicationContext;
 
 	@Transactional(readOnly=true)
 	public List<AdminPermission> findAppPermissions(String appCode){
@@ -66,10 +69,10 @@ public class AdminRoleServiceImpl {
 		.page(page);
     }
     
-    public List<AdminRole> findByStatus(CommonStatus status, Long organId){
+    public List<AdminRole> findByStatus(CommonStatus status, Long tenantId){
     	return baseEntityManager.findList(AdminRole.class, 
     								"status", status, 
-    								"organId", organId, 
+    								"tenantId", tenantId, 
     								K.IF_NULL, IfNull.Ignore);
     }
     
@@ -83,8 +86,11 @@ public class AdminRoleServiceImpl {
         Date now = new Date();
         adminRole.setCreateAt(now);
         adminRole.setUpdateAt(now);
-        if (adminRole.getOrganId()==null) {
-        	adminRole.setOrganId(0L);
+//        if (adminRole.getOrganId()==null) {
+//        	adminRole.setOrganId(0L);
+//        }
+        if (adminRole.getTenantId()==null) {
+        	adminRole.setTenantId(0L);
         }
         baseEntityManager.save(adminRole);
     }
@@ -145,7 +151,20 @@ public class AdminRoleServiceImpl {
     	if(LangUtils.isEmpty(roleIds)){
     		return ;
     	}
+    	
+    	UserRoleAssignedEvent event = new UserRoleAssignedEvent();
+    	event.setUserId(userId);
+    	List<RoleVO> assignedRoles = new ArrayList<>();
+    	for (Long roleId : roleIds) {
+    		AdminRole role = loadById(roleId);
+    		RoleVO roleVo = CopyUtils.copy(RoleVO.class, role);
+    		assignedRoles.add(roleVo);
+    	}
+    	event.setRoles(assignedRoles);
+    	
     	Stream.of(roleIds).forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
+    	
+    	this.applicationContext.publishEvent(event);
     }
     
     public List<String> findRolePermissionsByRoleId(long roleId) {

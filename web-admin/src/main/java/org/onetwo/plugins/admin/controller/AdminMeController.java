@@ -2,10 +2,12 @@ package org.onetwo.plugins.admin.controller;
 
 import java.util.List;
 
+import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.spring.copier.CopyUtils;
-import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.service.impl.AdminUserAuditServiceImpl;
+import org.onetwo.plugins.admin.utils.WebAdminProperties;
+import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Data;
 
 @RestController
+@XResponseView
 public class AdminMeController extends WebAdminBaseController {
 	
 	@Autowired
 	private AdminUserAuditServiceImpl adminAuditService;
+	@Autowired
+	private WebAdminProperties webAdminProperties;
 	
 	/*****
 	 * 注意，这里获取当前登录用户信息的时候写死了类型为AdminLoginUserInfo，
@@ -26,12 +31,17 @@ public class AdminMeController extends WebAdminBaseController {
 	 */
 	@GetMapping("me")
 	public AdminUserInfo me(){
-		UserDetail userDetail = this.checkAndGetCurrentLoginUser();
-		AdminUserAudit audit = adminAuditService.findById(userDetail.getUserId());
+		AdminLoginUserInfo userDetail = this.checkAndGetCurrentLoginUser();
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)
 										.propertyMapping("nickName", "nickname")
 				 						.toClass(AdminUserInfo.class);
-		user.setChangedPassword(audit.getLastChangePwdAt()!=null);
+		
+		if (webAdminProperties.isForceModifyPassword()) {
+			AdminUserAudit audit = adminAuditService.findById(userDetail.getUserId());
+			user.setChangedPassword(audit!=null && audit.getLastChangePwdAt()!=null);
+		} else {
+			user.setChangedPassword(true);
+		}
 		/*if (userDetail instanceof UserRoot) {
 			user.setSystemRootUser(((UserRoot)userDetail).isSystemRootUser());
 		}*/
@@ -51,6 +61,7 @@ public class AdminMeController extends WebAdminBaseController {
 		 * 是否有修改过密码
 		 */
 		boolean changedPassword;
+		Long tenantId;
 	}
 
 }

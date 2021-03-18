@@ -34,7 +34,7 @@ public class CreateOrUpdateAdminUserRequest implements BeanCloneable {
 
     private String avatar;
     
-    private Long bindingUserId;
+//    private Long bindingUserId;
     
     private Set<Long> roleIds;
 }

@@ -2,8 +2,8 @@ package org.onetwo.plugins.admin.listener;
 
 import org.onetwo.common.log.JFishLoggerFactory;
 import org.onetwo.common.web.userdetails.UserDetail;
-import org.onetwo.plugins.admin.entity.AdminLoginLogEntity;
-import org.onetwo.plugins.admin.service.impl.AdminLoginLogServiceImpl;
+import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
+import org.onetwo.plugins.admin.service.impl.AdminUserLogServiceImpl;
 import org.onetwo.plugins.admin.service.impl.AdminUserAuditServiceImpl;
 import org.onetwo.plugins.admin.utils.AdminOperationCodes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 public class LoginSuccessListener {
 	
 	@Autowired
-	private AdminLoginLogServiceImpl adminLoginLogService;
+	private AdminUserLogServiceImpl adminLoginLogService;
 	@Autowired
 	private AdminUserAuditServiceImpl adminAuditService;
     
 	@EventListener
 	public void onAuthenticationSuccess(InteractiveAuthenticationSuccessEvent event){
 		try {
-			AdminLoginLogEntity log = buildLog(event.getAuthentication());
+			AdminUserLogEntity log = buildLog(event.getAuthentication());
 			log.setIsSuccess(true);
 			adminLoginLogService.save(log);
 			if (log.getUserId()!=null && log.getUserId()>0) {
@@ -38,14 +38,14 @@ public class LoginSuccessListener {
 		}
 	}
 
-	public static AdminLoginLogEntity buildLog(Authentication authentication) {
-		AdminLoginLogEntity log = null;
+	public static AdminUserLogEntity buildLog(Authentication authentication) {
+		AdminUserLogEntity log = null;
 		Object details = authentication.getPrincipal();
 		if (details instanceof UserDetail) {
 			UserDetail userDetail = (UserDetail) details;
-			log = AdminLoginLogServiceImpl.buildLog(AdminOperationCodes.LOGIN, userDetail);
+			log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.LOGIN, userDetail);
 		} else {
-			log = AdminLoginLogServiceImpl.buildLog(AdminOperationCodes.LOGIN, null);
+			log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.LOGIN, null);
 		}
 		return log;
 	}

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
 import org.onetwo.common.jackson.JsonMapper;
+import org.onetwo.common.spring.validator.annotation.Mobile;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.plugins.admin.utils.DataUtils;
@@ -27,12 +28,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/***
+ * 保留机构id，用于业务扩展
+ * @author way
+ *
+ */
 @Entity
 @Table(name="admin_user")
 @Data
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
-public class AdminUser extends AdminOrganable implements UserRoot {
+public class AdminUser extends AdminTenantable implements UserRoot {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -48,6 +54,7 @@ public class AdminUser extends AdminOrganable implements UserRoot {
 
     private String email;
 
+    @Mobile
     private String mobile;
 
     private String gender;
@@ -60,6 +67,11 @@ public class AdminUser extends AdminOrganable implements UserRoot {
 
 	@JsonSerialize(using = ImageUrlJsonSerializer.class)
     private String avatar;
+	
+	/****
+	 * 保留机构id，用于业务扩展
+	 */
+	private Long organId;
     
 	
     public String getGenderName(){

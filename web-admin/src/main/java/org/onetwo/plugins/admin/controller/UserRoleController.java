@@ -38,7 +38,7 @@ public class UserRoleController extends WebAdminBaseController {
 		if(UserStatus.of(user.getStatus())!=UserStatus.NORMAL)
 			return messageMv("用户非正常状态，不能分配角色！");
 		
-		List<AdminRole> roles = adminRoleServiceImpl.findByStatus(CommonStatus.NORMAL, user.getOrganId());
+		List<AdminRole> roles = adminRoleServiceImpl.findByStatus(CommonStatus.NORMAL, user.getTenantId());
 		List<Long> roleIds = adminRoleServiceImpl.findRoleIdsByUser(userId);
 		
 		UserRoleResponse res = UserRoleResponse.builder()

@@ -7,8 +7,8 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.dbm.core.internal.DbmCrudServiceImpl;
-import org.onetwo.plugins.admin.entity.AdminLoginLogEntity;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
+import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
 import org.onetwo.plugins.admin.utils.AdminOperationCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit, Long> {
 
 	@Autowired
-	private AdminLoginLogServiceImpl adminLoginLogService;
+	private AdminUserLogServiceImpl adminLoginLogService;
 	
     @Autowired
     public AdminUserAuditServiceImpl(BaseEntityManager baseEntityManager) {
@@ -27,14 +27,20 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
     }
     
     public void saveChangePwdAudit(UserDetail loginUser) {
-    	AdminUserAudit userAuit = baseEntityManager.load(entityClass, loginUser.getUserId());
+    	AdminUserAudit userAuit = this.findById(loginUser.getUserId());
+    	if (userAuit==null) {
+    		userAuit = new AdminUserAudit();
+    		userAuit.setUserId(loginUser.getUserId());
+    		userAuit.setUserName(loginUser.getUserName());
+    	}
     	userAuit.setLastChangePwdAt(new Date());
     	save(userAuit);
-		AdminLoginLogEntity log = AdminLoginLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, loginUser);
+    	
+		AdminUserLogEntity log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, loginUser);
 		adminLoginLogService.save(log);
     }
     
-    public void saveUserLoginAudit(AdminLoginLogEntity log) {
+    public void saveUserLoginAudit(AdminUserLogEntity log) {
     	AdminUserAudit userAudit = findById(log.getUserId());
     	if (userAudit==null) {
     		userAudit = new AdminUserAudit();
@@ -47,13 +53,13 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
     }
 
     public AdminUserAudit findById(Long userId) {
-    	AdminUserAudit userAuit = baseEntityManager.findById(entityClass, userId);
+    	AdminUserAudit userAuit = getBaseEntityManager().findById(entityClass, userId);
     	return userAuit;
     }
     
     @Transactional(readOnly=true)
     public Page<AdminUserAudit> findPage(Page<AdminUserAudit> page, AdminUserAudit example) {
-        return baseEntityManager.from(entityClass)
+        return getBaseEntityManager().from(entityClass)
                                 .where()
                                     .addFields(example)
                                     .ignoreIfNull()

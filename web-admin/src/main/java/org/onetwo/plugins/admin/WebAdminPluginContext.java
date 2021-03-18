@@ -7,12 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.onetwo.boot.module.security.oauth2.NotEnableOauth2SsoCondition;
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.log.JFishLoggerFactory;
-import org.onetwo.common.spring.Springs.SpringsInitEvent;
 import org.onetwo.dbm.spring.EnableDbmRepository;
+import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.parser.DefaultMenuInfoParser;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
@@ -41,14 +40,11 @@ import org.onetwo.plugins.admin.utils.WebAdminProperties.CaptchaProps;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -58,7 +54,7 @@ import com.google.common.collect.Sets;
 
 
 //@Configuration
-//@ConditionalOnProperty(name="jfish.plugins.web-admin.enable", havingValue="true", matchIfMissing=true)
+//@ConditionalOnProperty(name="jfish.plugins.webAdmin.enabled", havingValue="true", matchIfMissing=true)
 //@DbmPackages("org.onetwo.plugins.admin.dao")
 @EnableDbmRepository("org.onetwo.plugins.admin.dao")
 @Order(value=Ordered.LOWEST_PRECEDENCE)
@@ -96,10 +92,10 @@ public class WebAdminPluginContext implements InitializingBean {
 	}*/
 	
 	
-	@Bean
-	static public ApplicationListener<SpringsInitEvent> webAdminApplicationListener(){
-		return new WebAdminApplicationListener();
-	}
+//	@Bean
+//	static public ApplicationListener<SpringsInitEvent> webAdminApplicationListener(){
+//		return new WebAdminApplicationListener();
+//	}
 	
 	@Bean
 	public CreateOrUpdateAdminUserListenner createOrUpdateAdminUserListenner() {
@@ -120,9 +116,13 @@ public class WebAdminPluginContext implements InitializingBean {
 	}*/
 	
 	@Bean
-	@Autowired
-	@ConditionalOnBean(RootMenuClassProvider.class)
-	public AdminPermissionConfigListAdapetor adminPermissionConfigListAdapetor(Map<String, RootMenuClassProvider> providerMap){
+//	@Autowired
+//	@ConditionalOnBean(RootMenuClassProvider.class)
+	public AdminPermissionConfigListAdapetor adminPermissionConfigListAdapetor(@Autowired(required = false) Map<String, RootMenuClassProvider> providerMap){
+		AdminPermissionConfigListAdapetor list = new AdminPermissionConfigListAdapetor();
+		if (providerMap==null) {
+			return list;
+		}
 		Logger logger = JFishLoggerFactory.getCommonLogger();
 		if(logger.isInfoEnabled()){
 			providerMap.forEach((k, v)->{
@@ -135,8 +135,8 @@ public class WebAdminPluginContext implements InitializingBean {
 				logger.info("loading RootMenuClassProvider: {} -> {}", k, rootMenuClass);
 			});
 		}
+		
 		Collection<RootMenuClassProvider> providers = providerMap.values();
-		AdminPermissionConfigListAdapetor list = new AdminPermissionConfigListAdapetor();
 		providers.forEach(provider->{
 			Collection<Class<?>> rooMenuClassList = new HashSet<>();
 			if(provider instanceof RootMenuClassListProvider){
@@ -151,6 +151,10 @@ public class WebAdminPluginContext implements InitializingBean {
 				list.add(config);
 			});
 		});
+		
+		WebAdminPermissionConfig config = new WebAdminPermissionConfig();
+		config.setRootMenuClass(FullyAuthenticated.class);
+		list.add(config);
 		return list;
 	}
 	
@@ -185,7 +189,7 @@ public class WebAdminPluginContext implements InitializingBean {
 	 */
 	@ComponentScan(basePackageClasses={WebAdminBaseController.class, DictionaryImportService.class, WebAdminPermissionConfig.class})
 	@Configuration
-	@Conditional(NotEnableOauth2SsoCondition.class)
+//	@Conditional(NotEnableOauth2SsoCondition.class)
 	protected static class WebAdminManagerModule {
 		
 		public WebAdminManagerModule(){
