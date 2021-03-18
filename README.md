@@ -1,7 +1,7 @@
 # zifish 插件项目
 ------
 zifish 快速开发框架的插件   
-spring-boot技术交流群：  604158262
+spring-boot技术联系邮箱：  wayshall@qq.com
 
 
 
