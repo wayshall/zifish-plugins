@@ -139,7 +139,7 @@ public class AdminUserLogEntity implements Serializable {
     @Length(max=2000)
     String userAgent;
     
-    @DbmJsonField(storeTyping=true)
+    @DbmJsonField
     Object requestParameters;
     
 }
