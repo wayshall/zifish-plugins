@@ -11,7 +11,6 @@ import org.onetwo.common.utils.Page;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.common.web.utils.RequestUtils;
 import org.onetwo.common.web.utils.WebHolder;
-import org.onetwo.dbm.core.internal.DbmCrudServiceImpl;
 import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
 import org.onetwo.plugins.admin.utils.AdmnOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +19,44 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class AdminUserLogServiceImpl extends DbmCrudServiceImpl<AdminUserLogEntity, Long> {
+public class AdminUserLogServiceImpl {
+	
+	@Autowired
+	private BaseEntityManager baseEntityManager;
 	
     @Autowired
-    public AdminUserLogServiceImpl(BaseEntityManager baseEntityManager) {
-        super(baseEntityManager);
+    public AdminUserLogServiceImpl() {
     }
     
     @Transactional(readOnly=true)
     public Page<AdminUserLogEntity> findPage(Page<AdminUserLogEntity> page, AdminUserLogEntity example) {
-        return baseEntityManager.from(entityClass)
+        return baseEntityManager.from(AdminUserLogEntity.class)
                                 .where()
                                     .addFields(example)
                                     .ignoreIfNull()
                                 .end()
                                 .toQuery()
                                 .page(page);
+    }
+
+    @Transactional
+    public AdminUserLogEntity save(AdminUserLogEntity log) {
+    	return baseEntityManager.save(log);
+    }
+    
+    /****
+     * 记录用户操作日志
+     * @author weishao zeng
+     * @param userDetail
+     * @param admnOperation
+     * @return
+     */
+    @Transactional
+    public AdminUserLogEntity logUserOperation(UserDetail userDetail, AdmnOperation admnOperation, Object request) {
+    	AdminUserLogEntity log = buildLog(admnOperation, userDetail);
+    	log.setRequestParameters(request);
+    	save(log);
+    	return log;
     }
     
     public static AdminUserLogEntity buildLog(OperatorLogInfo operatorLog) {

@@ -3,7 +3,6 @@ package org.onetwo.plugins.admin.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -140,7 +139,7 @@ public class AdminUserLogEntity implements Serializable {
     @Length(max=2000)
     String userAgent;
     
-    @DbmJsonField
-    Map<String, ?> requestParameters;
+    @DbmJsonField(storeTyping=true)
+    Object requestParameters;
     
 }
