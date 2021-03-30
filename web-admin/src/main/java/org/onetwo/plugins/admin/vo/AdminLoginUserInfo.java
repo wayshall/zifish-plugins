@@ -2,6 +2,7 @@ package org.onetwo.plugins.admin.vo;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,12 +26,17 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 	@Setter
 	private Long tenantId;
 	
+	private List<String> roles;
+	
 	public AdminLoginUserInfo(long userId, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(userId, username, password, authorities==null?Collections.emptyList():authorities);
 	}
-
 	
+	public boolean isAdminRole() {
+		return this.roles!=null && this.roles.contains("ADMIN");
+	}
+
 	public Long getOrganId() { 
 		return organId; 
 	}
@@ -41,6 +47,14 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 
 	public Long getTenantId() {
 		return tenantId;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 
 }

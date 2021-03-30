@@ -29,7 +29,9 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	@Autowired
 	protected AdminPermissionDao adminPermissionDao;
 	@Autowired
-	private PermissionManagerImpl permissionManager;
+	protected PermissionManagerImpl permissionManager;
+	@Autowired
+	protected AdminRoleServiceImpl adminRoleService;
 	
 	protected Class<T> userDetailClass;
 
@@ -107,10 +109,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		userDetail.setOrganId(user.getOrganId());
 		userDetail.setTenantId(user.getTenantId());
 
-//        AdminUserBinding binding = adminUserService.getBinding(user.getId());
-//        if (binding!=null) {
-//        	userDetail.setBindingUserId(binding.getBindingUserId());
-//        }
+        List<String> roles = adminRoleService.findRoleCodesByUser(user.getId());
+        userDetail.setRoles(roles);
         
 		return userDetail;
 	}

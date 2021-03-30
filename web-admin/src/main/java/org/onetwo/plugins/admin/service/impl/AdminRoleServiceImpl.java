@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
@@ -134,6 +135,25 @@ public class AdminRoleServiceImpl {
 //        adminRole.setStatus(CommonStatus.DELETE.name());
 //        baseEntityManager.update(adminRole);
         baseEntityManager.remove(adminRole);
+    }
+    
+    /***
+     * 查找用户的角色code 
+     * @author weishao zeng
+     * @param userId
+     * @return
+     */
+    public List<String> findRoleCodesByUser(long userId){
+    	return findRolesByUser(userId)
+							.stream()
+							.map(r -> {
+								String code = r.getCode();
+								if (StringUtils.isBlank(code)) {
+									code = r.getName();
+								}
+								return code;
+							})
+							.collect(Collectors.toList());
     }
     
     public List<AdminRole> findRolesByUser(long userId){
