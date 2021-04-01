@@ -166,6 +166,22 @@ public class AdminRoleServiceImpl {
     						 .collect(Collectors.toList());
     }
     
+    @Transactional
+    public List<AdminRole> findListByCodes(String... codes) {
+    	return baseEntityManager.from(AdminRole.class)
+    							.where()
+    								.field("code").is(codes)
+    							.toQuery().list();
+    }
+    
+    @Transactional
+    public List<AdminRole> findListByNames(String... roleName) {
+    	return baseEntityManager.from(AdminRole.class)
+    							.where()
+    								.field("name").is(roleName)
+    							.toQuery().list();
+    }
+    
     public void saveUserRoles(long userId, Long... roleIds){
     	this.adminRoleDao.deleteUserRoles(userId);
     	if(LangUtils.isEmpty(roleIds)){
