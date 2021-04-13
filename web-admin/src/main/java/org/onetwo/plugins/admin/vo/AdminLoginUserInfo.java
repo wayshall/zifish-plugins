@@ -36,6 +36,10 @@ public class AdminLoginUserInfo extends LoginUserDetails {
 	public boolean isAdminRole() {
 		return this.roles!=null && this.roles.contains("ADMIN");
 	}
+	
+	public boolean isRole(String roleCode) {
+		return this.roles!=null && this.roles.contains(roleCode);
+	}
 
 	public Long getOrganId() { 
 		return organId; 
