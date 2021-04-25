@@ -182,12 +182,13 @@ public class AdminRoleServiceImpl {
     							.toQuery().list();
     }
     
-    public void saveUserRoles(long userId, Long... roleIds){
+    public void saveUserRoles(long userId, Long... userRoleIds){
     	this.adminRoleDao.deleteUserRoles(userId);
-    	if(LangUtils.isEmpty(roleIds)){
+    	if(LangUtils.isEmpty(userRoleIds)){
     		return ;
     	}
     	
+    	Set<Long> roleIds = Sets.newHashSet(userRoleIds);
     	UserRoleAssignedEvent event = new UserRoleAssignedEvent();
     	event.setUserId(userId);
     	List<RoleVO> assignedRoles = new ArrayList<>();
@@ -198,7 +199,7 @@ public class AdminRoleServiceImpl {
     	}
     	event.setRoles(assignedRoles);
     	
-    	Stream.of(roleIds).forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
+    	roleIds.forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
     	
     	this.applicationContext.publishEvent(event);
     }
