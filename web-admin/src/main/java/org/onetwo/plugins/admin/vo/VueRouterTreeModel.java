@@ -231,6 +231,12 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	public static class RouteData {
 		String componentViewPath;
 		Map<String, Object> props;
+
+		public RouteData(String componentViewPath) {
+			super();
+			this.componentViewPath = componentViewPath;
+		}
+		
 		public RouteData(String componentViewPath, Map<String, Object> props) {
 			super();
 			this.componentViewPath = componentViewPath;
