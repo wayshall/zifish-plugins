@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.service.impl.AdminUserAuditServiceImpl;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
@@ -30,6 +31,7 @@ public class AdminMeController extends WebAdminBaseController {
 	 * @return
 	 */
 	@GetMapping("me")
+	@ByPermissionClass
 	public AdminUserInfo me(){
 		AdminLoginUserInfo userDetail = this.checkAndGetCurrentLoginUser();
 		AdminUserInfo user = CopyUtils.copyFrom(userDetail)

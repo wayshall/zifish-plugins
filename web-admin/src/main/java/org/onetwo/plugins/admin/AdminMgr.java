@@ -10,7 +10,7 @@ public interface AdminMgr {
 	public interface UserProfile {
 		String name = "修改资料";
 	}
-	
+
 	public static interface ApplicationMgr {
 		String name = "应用管理";
 		int sort = 3;
