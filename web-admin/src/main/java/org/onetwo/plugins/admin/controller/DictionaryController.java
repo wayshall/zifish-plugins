@@ -117,6 +117,7 @@ public class DictionaryController extends WebAdminBaseController implements Date
 	 * @param valueField
 	 * @return
 	 */
+	@ByPermissionClass
 	@RequestMapping(value="combobox/{parentCode}", method=RequestMethod.GET)
 	public ModelAndView combobox(@PathVariable("parentCode")String parentCode, String valueField){
 		/*if(StringUtils.isBlank(parentCode))
@@ -135,7 +136,8 @@ public class DictionaryController extends WebAdminBaseController implements Date
 //		return districtMaps;
 		return responseData(districtMaps);
 	}
-	
+
+	@ByPermissionClass
 	@RequestMapping(value="getOne/{parentCode}/{value}")
 	public ModelAndView getOne(@PathVariable("parentCode") String parentCode, @PathVariable("value")String value){
 		DataDictionary dict = dictionaryServiceImpl.getByTypeAndValue(parentCode, value);
