@@ -125,7 +125,7 @@ public class PermissionController extends WebAdminBaseController {
 		return DataResults.success("删除成功！").build();
 	}
 
-	@ByPermissionClass(PermMgr.class)
+	@ByPermissionClass(PermMgr.Refresh.class)
 	@RequestMapping(value="/refresh", method=RequestMethod.PUT)
 	public Result refresh(){
 		this.permissionManager.refreshSecurityMetadataSource();

@@ -16,7 +16,7 @@ import org.onetwo.dbm.annotation.DbmFieldListeners;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.dbm.mapping.DbmEntityFieldListener;
 import org.onetwo.dbm.mapping.DbmMappedField;
-import org.onetwo.plugins.admin.entity.AdminOrganable.OrganFieldListener;
+import org.onetwo.plugins.admin.entity.AdminTenantable.TenantFieldListener;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,13 +29,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-@DataQueryParamaterEnhancer(OrganFieldListener.class)
-public class AdminOrganable extends BaseEntity implements BeanCloneable {
+@DataQueryParamaterEnhancer(TenantFieldListener.class)
+public class AdminTenantable extends BaseEntity implements BeanCloneable {
     /**
      * 租户Id
      */
-    @DbmFieldListeners(OrganFieldListener.class)
-    Long organId;
+    @DbmFieldListeners(TenantFieldListener.class)
+    Long tenantId;
     
 
     /***
@@ -43,7 +43,7 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
      * @author wayshall
      *
      */
-    public static class OrganFieldListener implements IDataQueryParamterEnhancer, DbmEntityFieldListener {
+    public static class TenantFieldListener implements IDataQueryParamterEnhancer, DbmEntityFieldListener {
     	@Autowired
     	private SessionUserManager<UserDetail> sessionUserManager;
     	
@@ -56,14 +56,14 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
         		newValue = fieldValue;
         	} else {
         		newValue = adminUser.map(d -> {
-        			Long organId = d.getOrganId();
-        			if (organId!=null && organId>0) {
-        				return organId;
+        			Long tenantId = d.getTenantId();
+        			if (tenantId!=null && tenantId>0) {
+        				return tenantId;
         			}
         			return null;
         		}).orElse((Long)fieldValue);
         	}
-        	newValue = newValue==null?0:newValue;
+        	newValue = newValue==null?0L:newValue;
 			return newValue;
 		}
 
@@ -78,11 +78,11 @@ public class AdminOrganable extends BaseEntity implements BeanCloneable {
         	if (!adminUser.isPresent()) {
                 return Collections.emptyMap();
         	}
-        	Long organId = adminUser.get().getOrganId();
-        	if (organId==null || organId==0 || query.getParams().containsKey("organId")) {
+        	Long organId = adminUser.get().getTenantId();
+        	if (organId==null || organId.intValue()==0 || query.getParams().containsKey("tenantId")) {
                 return Collections.emptyMap();
         	}
-            return ImmutableMap.of("organId", adminUser.get().getOrganId());
+            return ImmutableMap.of("tenantId", adminUser.get().getTenantId());
         }
         
         private Optional<AdminLoginUserInfo> getAdminUser() {

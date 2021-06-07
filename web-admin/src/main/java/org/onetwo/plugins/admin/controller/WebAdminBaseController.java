@@ -18,6 +18,10 @@ abstract public class WebAdminBaseController extends PluginBaseController implem
 		return webAdminPlugin;
 	}
 
+	/***
+	 * 注意，这里获取当前登录用户信息的时候写死了类型为AdminLoginUserInfo，
+	 * 如果当前系统自定义了userDetail，会因为类型不一致的问题导致提示没有登录
+	 */
 	protected AdminLoginUserInfo checkAndGetCurrentLoginUser(){
 		return checkAndGetCurrentLoginUser(AdminLoginUserInfo.class, true);
 	}

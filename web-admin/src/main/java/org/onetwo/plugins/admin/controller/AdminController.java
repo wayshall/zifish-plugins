@@ -9,6 +9,7 @@ import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.PermissionManager;
 import org.onetwo.ext.permission.api.IPermission;
+import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.utils.PermissionUtils;
@@ -36,6 +37,7 @@ public class AdminController extends WebAdminBaseController {
 	@Resource
 	private PermissionManager<?> permissionManager;
 	
+	@ByPermissionClass
 	@RequestMapping(value="/index", method=RequestMethod.GET)
 	public ModelAndView index(UserDetail userDetail){
 		List<PermisstionTreeModel> menus = menuItemRepository.findUserMenus(userDetail);
@@ -44,6 +46,7 @@ public class AdminController extends WebAdminBaseController {
 	
 	@RequestMapping(value="/vueRouters", method=RequestMethod.GET)
 	@ResponseBody
+	@ByPermissionClass
 	public List<VueRouterTreeModel> getRoleRouters(UserDetail userDetail){
 		List<VueRouterTreeModel> menus = menuItemRepository.findUserMenus(userDetail, (userPerms, allPerms)->{
 			Function<IPermission, VueRouterTreeModel> treeModelCreater = perm->{
@@ -52,7 +55,7 @@ public class AdminController extends WebAdminBaseController {
 					return null;
 				}*/
 				
-				VueRouterTreeModel tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
+				VueRouterTreeModel tm = new VueRouterTreeModel(adminPerm);
 				/*try {
 					tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
 				} catch (Exception e) {
@@ -67,6 +70,7 @@ public class AdminController extends WebAdminBaseController {
 				tm.addMetas(adminPerm.getMeta());
 				tm.setSort(adminPerm.getSort());
 				tm.setUrl(adminPerm.getUrl());
+//				tm.setComponentViewPath(adminPerm.getComponentViewPath());
 				return tm;
 			};
 			
@@ -75,6 +79,9 @@ public class AdminController extends WebAdminBaseController {
 				if (node.getParentId()==null) {
 					return null;//node;
 				}
+//				if (node.getId().toString().startsWith("OrganBffMgr")) {
+//					System.out.println("for deubg");
+//				}
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
 				if (p==null) {
 					return null;//node;

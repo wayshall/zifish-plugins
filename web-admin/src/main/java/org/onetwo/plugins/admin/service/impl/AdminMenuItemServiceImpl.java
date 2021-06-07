@@ -12,6 +12,7 @@ import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.ext.permission.api.IPermission;
+import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.service.impl.DefaultMenuItemRepository;
 import org.onetwo.ext.permission.utils.PermissionUtils;
@@ -74,6 +75,7 @@ public class AdminMenuItemServiceImpl extends DefaultMenuItemRepository {
 		List<? extends IPermission> permissions = null;
 		if(UserRoot.class.isInstance(loginUser) && ((UserRoot)loginUser).isSystemRootUser()){
 			permissions = permissionManager.findAppPermissions(null);
+			permissions.removeIf(p -> isFullyAuthenticated(p));
 		}else{
 			permissions = this.adminPermissionDao.findAppPermissionsByUserId(null, loginUser.getUserId());
 		}
@@ -85,9 +87,18 @@ public class AdminMenuItemServiceImpl extends DefaultMenuItemRepository {
 	protected Map<String, AdminPermission> getAllPermissions(){
 		List<AdminPermission> allDatas = this.adminPermissionDao.findPermissions(null);
 		Map<String, AdminPermission> allPermissions = allDatas.stream()
-//								.filter(p->PermissionUtils.isMenu(p))
+								.filter(p-> {
+									if (isFullyAuthenticated(p)) {
+										return false;
+									}
+									return true;
+								})
 								.collect(Collectors.toMap(AdminPermission::getCode, p->p));
 		return allPermissions;
+	}
+	
+	protected boolean isFullyAuthenticated(IPermission p) {
+		return p.getAppCode().equalsIgnoreCase(FullyAuthenticated.AUTH_CODE);
 	}
 
 	/****

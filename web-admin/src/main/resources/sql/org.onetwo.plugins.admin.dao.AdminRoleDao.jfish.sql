@@ -4,13 +4,14 @@
  * 
  */
 select 
-    tb.ID
-    , tb.name
-    , tb.status
-    , tb.remark
-    , tb.create_at
-    , tb.update_at
-    , tb.APP_CODE
+    tb.ID, 
+    tb.name, 
+    tb.code,
+    tb.status, 
+    tb.remark, 
+    tb.create_at, 
+    tb.update_at, 
+    tb.APP_CODE
 from 
     admin_role tb
     left join 

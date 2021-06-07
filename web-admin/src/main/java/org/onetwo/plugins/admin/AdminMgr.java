@@ -5,11 +5,12 @@ import org.onetwo.ext.permission.api.PermissionType;
 public interface AdminMgr {
 	String name = "系统管理";
 	String appCode = AdminMgr.class.getSimpleName();
+	int sort = Integer.MAX_VALUE;
 
 	public interface UserProfile {
 		String name = "修改资料";
 	}
-	
+
 	public static interface ApplicationMgr {
 		String name = "应用管理";
 		int sort = 3;
@@ -33,6 +34,11 @@ public interface AdminMgr {
 	public static interface PermMgr {
 		String name = "权限管理";
 		int sort = 4;
+		
+		public interface Refresh {
+			String name = "刷新权限";
+			PermissionType permissionType = PermissionType.FUNCTION;
+		}
 	}
 	
 	public static interface RoleMgr {

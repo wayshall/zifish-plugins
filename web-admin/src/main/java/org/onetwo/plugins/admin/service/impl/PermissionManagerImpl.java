@@ -11,13 +11,13 @@ import javax.annotation.Resource;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
 import org.onetwo.common.db.sqlext.ExtQuery.K.IfNull;
-import org.onetwo.common.exception.BaseException;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
 import org.onetwo.ext.permission.api.DataFrom;
+import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
@@ -25,6 +25,8 @@ import org.onetwo.plugins.admin.entity.AdminApplication;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Lists;
 
 //@Service
 @Transactional
@@ -49,6 +51,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 			parent.setChildrenSize(parent.getChildrenSize()-1);
 			baseEntityManager.update(parent);
 		}
+		adminPermissionDao.deleteRolePermissions(dbPermission.getCode(), false);
 		baseEntityManager.remove(dbPermission);
 		return dbPermission;
 	}
@@ -118,8 +121,18 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 	@Override
 	protected Map<String, AdminPermission> findExistsPermission(String rootCode) {
-		List<AdminPermission> adminPermissions = this.baseEntityManager.findList(AdminPermission.class, "code:like", rootCode+"%");
-		Map<String, AdminPermission> dbPermissions = adminPermissions.stream()
+		List<AdminPermission> permissions = Lists.newArrayList();
+		AdminPermission root = this.baseEntityManager.findById(AdminPermission.class, rootCode);
+		if (root!=null) {
+			permissions.add(root);
+		}
+		// FIX：code后要加下划线区分，并且要要转义
+		List<AdminPermission> adminPermissions = this.baseEntityManager.findList(AdminPermission.class, "code:like", rootCode+"\\_%");
+		if (!adminPermissions.isEmpty()) {
+			permissions.addAll(adminPermissions);
+		}
+		
+		Map<String, AdminPermission> dbPermissions = permissions.stream()
 													.collect(Collectors.toMap(p->p.getCode(), p->p));
 		
 		return dbPermissions;
@@ -138,12 +151,15 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	protected void updatePermissions(AdminPermission rootPermission, Map<String, AdminPermission> dbPermissionMap, Set<AdminPermission> adds, Set<AdminPermission> deletes, Set<AdminPermission> updates) {
 		AdminApplication app = this.baseEntityManager.findById(AdminApplication.class, rootPermission.getAppCode());
 		if(app==null){
-			app = new AdminApplication();
-			app.setCode(rootPermission.getAppCode());
-			app.setName(rootPermission.getName());
-			app.setCreateAt(new Date());
-			app.setUpdateAt(new Date());
-			this.baseEntityManager.persist(app);
+			if (!rootPermission.getAppCode().equals(FullyAuthenticated.AUTH_CODE)) {
+				app = new AdminApplication();
+				app.setCode(rootPermission.getAppCode());
+				app.setName(rootPermission.getName());
+				app.setCreateAt(new Date());
+				app.setUpdateAt(new Date());
+	//			this.baseEntityManager.persist(app);
+				this.baseEntityManager.save(app);
+			}
 		}else{
 			app.setName(rootPermission.getName());
 			app.setUpdateAt(new Date());
@@ -205,7 +221,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	public List<AdminPermission> findAppPermissions(String appCode){
 		List<AdminPermission> permList = baseEntityManager.findList(AdminPermission.class, "appCode", appCode, K.IF_NULL, IfNull.Ignore, K.ASC, "sort");
 		if(permList.isEmpty())
-			throw new BaseException("没有任何权限……");
+			throw new ServiceException("没有任何权限……");
 		return permList;
 	}
 
@@ -222,9 +238,10 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 	@Override
 	public List<AdminPermission> findUserAppMenus(String appCode, UserDetail userDetail) {
-		List<AdminPermission> permList = findUserAppPerms(appCode, userDetail).stream()
-				.filter(p->PermissionUtils.isMenu(p))
-				.collect(Collectors.toList());
+		List<AdminPermission> permList = findUserAppPerms(appCode, userDetail);
+		permList = permList.stream()
+							.filter(p->PermissionUtils.isMenu(p))
+							.collect(Collectors.toList());
 		return permList;
 	}
 

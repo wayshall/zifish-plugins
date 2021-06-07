@@ -26,7 +26,7 @@ public class AdminTenantContextVariable implements QueryGlobalVariable {
     	if (!adminUser.isPresent()) {
             return null;
     	}
-		return adminUser.get().getOrganId();
+		return adminUser.get().getTenantId();
 	}
 	
 	public String getClientId() {

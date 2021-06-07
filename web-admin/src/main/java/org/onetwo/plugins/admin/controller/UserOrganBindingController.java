@@ -23,25 +23,25 @@ public class UserOrganBindingController extends WebAdminBaseController {
 	@Autowired
 	private AdminUserServiceImpl adminUserService;
 
-	@ByPermissionClass(Binding.class)
-	@GetMapping(path="{adminUserId}")
-	public Result getBinding(@PathVariable("adminUserId") Long adminUserId) {
-		UserOrganBindingVO binding = adminUserService.getBindingOrgan(adminUserId);
-		return DataResults.success().data(binding).build();
-	}
-
-	@ByPermissionClass(Binding.class)
-	@PostMapping(path="")
-	public Result binding(@Valid UserOrganBindingRequest bindingRequest) {
-		adminUserService.bindingOrgan(bindingRequest, true);
-		return DataResults.success("绑定成功！").build();
-	}
-
-	@ByPermissionClass(Binding.class)
-	@DeleteMapping(path="{adminUserId}")
-	public Result unbinding(@PathVariable("adminUserId") Long adminUserId) {
-		adminUserService.unBindingOrgan(adminUserId);
-		return DataResults.success("解绑成功！").build();
-	}
+//	@ByPermissionClass(Binding.class)
+//	@GetMapping(path="{adminUserId}")
+//	public Result getBinding(@PathVariable("adminUserId") Long adminUserId) {
+//		UserOrganBindingVO binding = adminUserService.getBindingOrgan(adminUserId);
+//		return DataResults.success().data(binding).build();
+//	}
+//
+//	@ByPermissionClass(Binding.class)
+//	@PostMapping(path="")
+//	public Result binding(@Valid UserOrganBindingRequest bindingRequest) {
+//		adminUserService.bindingOrgan(bindingRequest, true);
+//		return DataResults.success("绑定成功！").build();
+//	}
+//
+//	@ByPermissionClass(Binding.class)
+//	@DeleteMapping(path="{adminUserId}")
+//	public Result unbinding(@PathVariable("adminUserId") Long adminUserId) {
+//		adminUserService.unBindingOrgan(adminUserId);
+//		return DataResults.success("解绑成功！").build();
+//	}
 
 }
