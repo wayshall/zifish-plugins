@@ -53,7 +53,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.google.common.collect.Sets;
 
 
-//@Configuration
+@Configuration
 //@ConditionalOnProperty(name="jfish.plugins.webAdmin.enabled", havingValue="true", matchIfMissing=true)
 //@DbmPackages("org.onetwo.plugins.admin.dao")
 @EnableDbmRepository("org.onetwo.plugins.admin.dao")
