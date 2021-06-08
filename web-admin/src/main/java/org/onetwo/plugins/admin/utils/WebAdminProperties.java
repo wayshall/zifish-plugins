@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class WebAdminProperties {
 	
-	public static final String PREFIX = "jfish.plugin.web-admin";
+	public static final String PREFIX = org.onetwo.boot.core.config.BootJFishConfig.ZIFISH_CONFIG_PREFIX+ ".plugin.web-admin";
 	
 	/****
 	 * 是否强制初始用户修改密码

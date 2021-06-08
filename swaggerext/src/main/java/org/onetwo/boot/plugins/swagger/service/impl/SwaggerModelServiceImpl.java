@@ -70,6 +70,7 @@ public class SwaggerModelServiceImpl {
     				 .where()
     				 	.field("swaggerId").in(swaggerId)
     				 .end()
+    				 .toExecute()
     				 .delete();
     	if(log.isInfoEnabled()){
     		log.info("remove {} models for swagger: {}", deleteCount, swaggerId);
