@@ -167,11 +167,12 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 		}
 		
 		logger.info("adds[{}]: {}", adds.size(), adds);
-		adds.forEach(p->{
-			/*p.setCreateAt(new Date());
-			p.setUpdateAt(new Date());*/
-			this.baseEntityManager.persist(p);
-		});
+//		adds.forEach(p->{
+//			/*p.setCreateAt(new Date());
+//			p.setUpdateAt(new Date());*/
+//			this.baseEntityManager.persist(p);
+//		});
+		this.baseEntityManager.getSessionFactory().getSession().batchInsertOrUpdate(adds, 1000);
 
 		logger.info("deletes[{}]: {}", deletes.size(), deletes);
 		deletes.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
