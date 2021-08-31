@@ -136,6 +136,7 @@ public class SwaggerOperationServiceImpl {
     				 .where()
     				 	.field("swaggerId").is(swaggerId)
     				 .end()
+    				 .toExecute()
     				 .delete();
     	if(log.isInfoEnabled()){
     		log.info("remove {} operations for swagger: {}", deleteCount, swaggerId);

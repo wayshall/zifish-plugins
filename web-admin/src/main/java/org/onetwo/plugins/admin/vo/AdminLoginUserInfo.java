@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.onetwo.ext.security.utils.LoginUserDetails;
+import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.ext.security.utils.GenericLoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
 import lombok.Setter;
@@ -16,7 +17,7 @@ import lombok.Setter;
  * <br/>
  */
 @SuppressWarnings("serial")
-public class AdminLoginUserInfo extends LoginUserDetails {
+public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements UserDetail {
 
 	@Setter
 	private Long bindingUserId;
