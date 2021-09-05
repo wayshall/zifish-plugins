@@ -5,7 +5,7 @@ package org.onetwo.plugins.admin;
  */
 
 import org.junit.Test;
-import org.onetwo.plugins.admin.utils.WebAdminPermissionConfig.RootMenuClassProvider;
+import org.onetwo.ext.permission.RootMenuClassProvider;
 
 public class AdminTest {
 	

@@ -18,6 +18,7 @@ import lombok.Setter;
  */
 @SuppressWarnings("serial")
 public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements UserDetail {
+	public static final String ROLE_ADMIN = "ADMIN";
 
 	@Setter
 	private Long bindingUserId;
@@ -35,7 +36,7 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 	}
 	
 	public boolean isAdminRole() {
-		return this.roles!=null && this.roles.contains("ADMIN");
+		return this.roles!=null && this.roles.contains(ROLE_ADMIN);
 	}
 	
 	public boolean isRole(String roleCode) {
