@@ -158,12 +158,15 @@ public class WebAdminPluginContext implements InitializingBean {
 //		
 	
 	@Bean
-	@Autowired
-	public PermissionManagerImpl permissionManagerImpl(MenuInfoParserFactory<AdminPermission> menuFactory){
+	@Autowired(required = false)
+	public PermissionManagerImpl permissionManagerImpl(){
+//	public PermissionManagerImpl permissionManagerImpl(MenuInfoParserFactory<AdminPermission> menuFactory){
 		PermissionManagerImpl manager = new PermissionManagerImpl();
 //		Set<Class<?>> menuClasses = Sets.newHashSetWithExpectedSize(configs.size());
-		List<MenuInfoParser<AdminPermission>> parsers = menuFactory.getMnuInfoPrarseList();
-		manager.setParsers(parsers);
+//		if (menuFactory!=null) {
+//			List<MenuInfoParser<AdminPermission>> parsers = menuFactory.getMnuInfoPrarseList();
+//			manager.setParsers(parsers);
+//		}
 		return manager;
 	}
 	
