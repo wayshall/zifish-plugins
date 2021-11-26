@@ -7,6 +7,7 @@ import org.onetwo.dbm.ui.core.DefaultUIEntityMetaService;
 import org.onetwo.dbm.ui.vo.SearchableFieldVO;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/dbm/uientitymeta")
+@ConditionalOnBean(DefaultUIEntityMetaService.class)
 public class UIEntityMetaController extends AbstractBaseController {
 	
 	@Autowired
