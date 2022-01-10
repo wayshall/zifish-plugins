@@ -3,6 +3,7 @@ package org.onetwo.plugins.admin.utils;
 import java.util.Optional;
 
 import org.onetwo.common.db.spi.QueryContextVariable.QueryGlobalVariable;
+import org.onetwo.common.web.userdetails.GenericUserDetail;
 import org.onetwo.common.web.userdetails.SessionUserManager;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AdminTenantContextVariable implements QueryGlobalVariable {
 	private static final String NAME = "_tenant";
 	@Autowired
-	private SessionUserManager<UserDetail> sessionUserManager;
+	private SessionUserManager<GenericUserDetail<?>> sessionUserManager;
 	@Override
 	public String varName() {
 		return NAME;
@@ -35,7 +36,7 @@ public class AdminTenantContextVariable implements QueryGlobalVariable {
 	}
 
     private Optional<AdminLoginUserInfo> getAdminUser() {
-    	UserDetail user = sessionUserManager.getCurrentUser();
+    	UserDetail user = (UserDetail)sessionUserManager.getCurrentUser();
     	if (user==null || !(user instanceof AdminLoginUserInfo)) {
             return Optional.empty();
     	}

@@ -46,8 +46,8 @@ public class DictionaryController extends WebAdminBaseController implements Date
 			}
 		);
 	}
-	
-	@ByPermissionClass(DictMgr.class)
+
+	@ByPermissionClass(value = DictMgr.class, overrideMenuUrl = false)
 	@GetMapping(path="tree")
 	@ResponseBody
 	public List<DefaultTreeModel> tree(){
@@ -55,7 +55,7 @@ public class DictionaryController extends WebAdminBaseController implements Date
 		return trees;
 	}
 	
-	@ByPermissionClass(DictMgr.class)
+	@ByPermissionClass(value = DictMgr.class, overrideMenuUrl = false)
 	@RequestMapping(value="children", method=RequestMethod.GET)
 	public ModelAndView children(String parentCode){
 		List<DataDictionary> datalist = dictionaryServiceImpl.findChildren(parentCode);

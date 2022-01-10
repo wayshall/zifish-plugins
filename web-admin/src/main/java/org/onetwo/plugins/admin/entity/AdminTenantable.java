@@ -10,8 +10,8 @@ import org.onetwo.common.db.filter.DataQueryParamaterEnhancer;
 import org.onetwo.common.db.filter.IDataQueryParamterEnhancer;
 import org.onetwo.common.db.sqlext.ExtQuery;
 import org.onetwo.common.spring.copier.BeanCloneable;
+import org.onetwo.common.web.userdetails.GenericUserDetail;
 import org.onetwo.common.web.userdetails.SessionUserManager;
-import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.dbm.annotation.DbmFieldListeners;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.dbm.mapping.DbmEntityFieldListener;
@@ -45,7 +45,7 @@ public class AdminTenantable extends BaseEntity implements BeanCloneable {
      */
     public static class TenantFieldListener implements IDataQueryParamterEnhancer, DbmEntityFieldListener {
     	@Autowired
-    	private SessionUserManager<UserDetail> sessionUserManager;
+    	private SessionUserManager<GenericUserDetail<?>> sessionUserManager;
     	
     	
         @Override
@@ -86,7 +86,7 @@ public class AdminTenantable extends BaseEntity implements BeanCloneable {
         }
         
         private Optional<AdminLoginUserInfo> getAdminUser() {
-        	UserDetail user = sessionUserManager.getCurrentUser();
+        	GenericUserDetail<?> user = sessionUserManager.getCurrentUser();
         	if (user==null || !(user instanceof AdminLoginUserInfo)) {
                 return Optional.empty();
         	}

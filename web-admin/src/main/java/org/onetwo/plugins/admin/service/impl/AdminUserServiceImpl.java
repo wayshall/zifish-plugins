@@ -17,8 +17,8 @@ import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.dbm.dialet.DBDialect.LockInfo;
-import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
@@ -78,7 +78,7 @@ public class AdminUserServiceImpl {
     public void findPage(Page<AdminUser> page, AdminUser adminUser){
         Querys.from(baseEntityManager, AdminUser.class)
         		.where()
-	        		.field("id").notEqualTo(LoginUserDetails.ROOT_USER_ID)
+	        		.field("id").notEqualTo(UserRoot.ROOT_USER_ID)
 	        		.field("userName").like(adminUser.getUserName())
 	        		.field("nickName").like(adminUser.getNickName())
 	        		.field("email").like(adminUser.getEmail())

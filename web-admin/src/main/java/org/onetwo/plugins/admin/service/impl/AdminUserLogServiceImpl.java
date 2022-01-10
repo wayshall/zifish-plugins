@@ -69,7 +69,7 @@ public class AdminUserLogServiceImpl {
 		log.setRequestUrl(operatorLog.getUrl());
 		log.setUserIp(operatorLog.getRemoteAddr());
 		log.setUserName(operatorLog.getOperatorName());
-		log.setUserId(operatorLog.getOperatorId());
+		log.setUserId((Long)operatorLog.getOperatorId());
 		log.setIsSuccess(operatorLog.isSuccess());
 		log.setRequestParameters(operatorLog.getParameters());
 		return log;

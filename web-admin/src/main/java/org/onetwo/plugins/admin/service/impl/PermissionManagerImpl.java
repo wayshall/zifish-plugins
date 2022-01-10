@@ -16,6 +16,7 @@ import org.onetwo.common.spring.copier.CopyUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
+import org.onetwo.ext.permission.MenuInfoParserFactory;
 import org.onetwo.ext.permission.api.DataFrom;
 import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
@@ -37,8 +38,19 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	
 	@Resource
 	private AdminPermissionDao adminPermissionDao;
+	@Autowired(required = false)
+	private MenuInfoParserFactory<AdminPermission> menuFactory;
 	
 	public PermissionManagerImpl() {
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (menuFactory!=null) {
+			List<MenuInfoParser<AdminPermission>> parsers = menuFactory.getMnuInfoPrarseList();
+			setParsers(parsers);
+		}
+		super.afterPropertiesSet();
 	}
 	
 	public AdminPermission delete(String code) {
@@ -167,11 +179,12 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 		}
 		
 		logger.info("adds[{}]: {}", adds.size(), adds);
-		adds.forEach(p->{
-			/*p.setCreateAt(new Date());
-			p.setUpdateAt(new Date());*/
-			this.baseEntityManager.persist(p);
-		});
+//		adds.forEach(p->{
+//			/*p.setCreateAt(new Date());
+//			p.setUpdateAt(new Date());*/
+//			this.baseEntityManager.persist(p);
+//		});
+		this.baseEntityManager.getSessionFactory().getSession().batchInsertOrUpdate(adds, 1000);
 
 		logger.info("deletes[{}]: {}", deletes.size(), deletes);
 		deletes.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
