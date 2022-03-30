@@ -3,6 +3,7 @@ package org.onetwo.plugins.admin.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.onetwo.boot.captcha.CaptchaProps;
 import org.onetwo.common.web.captcha.CaptchaChecker.CaptchaSignedResult;
 import org.onetwo.common.web.captcha.SimpleCaptchaGenerator;
 import org.onetwo.common.web.captcha.SimpleCaptchaGenerator.CaptchaResult;
@@ -10,7 +11,6 @@ import org.onetwo.common.web.captcha.SimpleCaptchaGenerator.CaptchaSettings;
 import org.onetwo.common.web.utils.ResponseUtils;
 import org.onetwo.ext.security.utils.SecurityConfig;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
-import org.onetwo.plugins.admin.utils.WebAdminProperties.CaptchaProps;
 import org.onetwo.plugins.admin.vo.CaptchaResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,13 +1,10 @@
 package org.onetwo.plugins.admin;
 
-import java.util.List;
-
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.dbm.spring.EnableDbmRepository;
 import org.onetwo.ext.permission.MenuInfoParserFactory;
 import org.onetwo.ext.permission.RootMenuClassProvider;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
-import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.service.impl.DefaultMenuItemRepository;
 import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
@@ -25,7 +22,6 @@ import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
 import org.onetwo.plugins.admin.utils.AdminTenantContextVariable;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
-import org.onetwo.plugins.admin.utils.WebAdminProperties.CaptchaProps;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -217,7 +213,7 @@ public class WebAdminPluginContext implements InitializingBean {
 	}
 	
 	@Configuration
-	@ConditionalOnProperty(name=CaptchaProps.ENABLED_KEY, matchIfMissing=true)
+	@ConditionalOnProperty(name=WebAdminProperties.CAPTCHA_ENABLED_KEY, matchIfMissing=true)
 	protected static class CaptchaConfiguration {
 		@Autowired
 		WebAdminProperties webAdminProperties;
