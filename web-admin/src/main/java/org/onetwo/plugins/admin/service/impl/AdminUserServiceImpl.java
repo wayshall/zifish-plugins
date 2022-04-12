@@ -153,10 +153,16 @@ public class AdminUserServiceImpl {
         
         String newPwd = adminUser.getPassword();
         //不允许修改
-        adminUser.setPassword(null);
-        adminUser.setId(null);
-        adminUser.setUserName(null);
-        ReflectUtils.copyIgnoreBlank(adminUser, dbAdminUser);
+//        adminUser.setPassword(null);
+//        adminUser.setId(null);
+//        adminUser.setUserName(null);
+        
+        dbAdminUser.setAvatar(adminUser.getAvatar());
+        dbAdminUser.setNickName(adminUser.getNickName());
+        dbAdminUser.setMobile(adminUser.getMobile());
+        dbAdminUser.setStatus(adminUser.getStatus());
+        dbAdminUser.setBirthday(adminUser.getBirthday());
+        dbAdminUser.setGender(adminUser.getGender());
         
         Date now = new Date();
         //如果密码不为空，修改密码
