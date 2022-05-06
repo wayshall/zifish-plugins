@@ -17,18 +17,25 @@ import lombok.Setter;
  * <br/>
  */
 @SuppressWarnings("serial")
-public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements UserDetail {
+public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements UserDetail, Cloneable {
 	public static final String ROLE_ADMIN = "ADMIN";
 
-	@Setter
-	private Long bindingUserId;
-	
+//	@Setter
+//	private Long bindingUserId;
+
 	@Setter
 	private Long organId;
 	@Setter
 	private Long tenantId;
 	
 	private List<String> roles;
+	
+	protected AdminLoginUserInfo(AdminLoginUserInfo loginUser) {
+		super(loginUser.getUserId(), loginUser.getUserName(), loginUser.getPassword(), loginUser.getAuthorities());
+		this.organId = loginUser.getOrganId();
+		this.tenantId = loginUser.getTenantId();
+		this.roles = loginUser.getRoles();
+	}
 	
 	public AdminLoginUserInfo(long userId, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
@@ -47,9 +54,13 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 		return organId; 
 	}
 
-	public Long getBindingUserId() {
-		return bindingUserId;
-	}
+//	public Long getBindingUserId() {
+//		return bindingUserId;
+//	}
+//	
+//	public void setBindingUserId(Long bindingUserId) {
+//		this.bindingUserId = bindingUserId;
+//	}
 
 	public Long getTenantId() {
 		return tenantId;
@@ -62,6 +73,6 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
 	}
-
+	
 }
 

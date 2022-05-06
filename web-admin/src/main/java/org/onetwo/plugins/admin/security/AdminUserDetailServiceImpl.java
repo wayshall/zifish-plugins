@@ -1,4 +1,4 @@
-package org.onetwo.plugins.admin.service.impl;
+package org.onetwo.plugins.admin.security;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,9 +10,13 @@ import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
+import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.OrderComparator;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("unchecked")
-public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDetailsService {
+public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDetailsService, InitializingBean {
 
     @Autowired
     protected BaseEntityManager baseEntityManager;
@@ -34,6 +38,9 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	protected AdminRoleServiceImpl adminRoleService;
 	
 	protected Class<T> userDetailClass;
+	
+	@Autowired(required = false)
+	private List<UserDetailEnhancer> enhancerList;
 
 	public AdminUserDetailServiceImpl() {
 		super();
@@ -43,6 +50,22 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	public AdminUserDetailServiceImpl(Class<T> userDetailClass) {
 		super();
 		this.userDetailClass = userDetailClass;
+	}
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (enhancerList!=null) {
+			OrderComparator.sort(enhancerList);
+		} else {
+			enhancerList = Collections.emptyList();
+		}
+	}
+	
+	protected UserDetails enhanceUserDetails(UserDetails userDetail) {
+		for (UserDetailEnhancer enhancer : enhancerList) {
+			userDetail = enhancer.enhance(userDetail);
+		}
+		return userDetail;
 	}
 
 	@Override
@@ -54,7 +77,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		}
 		
 		List<GrantedAuthority> authes = fetchUserGrantedAuthorities(user);
-		AdminLoginUserInfo userDetail = buildUserDetail(user, authes);
+		UserDetails userDetail = buildUserDetail(user, authes);
+		userDetail = enhanceUserDetails(userDetail);
 		return userDetail;
 	}
 	
@@ -114,5 +138,6 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
         
 		return userDetail;
 	}
+
 	
 }
