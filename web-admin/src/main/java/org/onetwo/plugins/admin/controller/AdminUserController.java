@@ -8,6 +8,7 @@ import org.onetwo.plugins.admin.AdminMgr.UserMgr;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
 import org.onetwo.plugins.admin.view.PageRequest;
+import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,9 +65,9 @@ public class AdminUserController extends WebAdminBaseController {
     
     @ByPermissionClass(UserMgr.Update.class)
     @RequestMapping(value="{id}", method=RequestMethod.PUT)
-    public Result update(@PathVariable("id") Long id, AdminUser adminUser){
-        adminUser.setId(id);
-        adminUserServiceImpl.update(getCurrentLoginUser(), adminUser);
+    public Result update(@PathVariable("id") Long id, UpdateAdminUserRequest updateAdminUserRequest){
+//        adminUser.setId(id);
+        adminUserServiceImpl.update(getCurrentLoginUser(), updateAdminUserRequest);
         return DataResults.success("更新成功！").build();
     }
     

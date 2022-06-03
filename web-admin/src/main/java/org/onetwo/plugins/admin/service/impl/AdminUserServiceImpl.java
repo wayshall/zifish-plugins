@@ -11,8 +11,6 @@ import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
-import org.onetwo.common.reflect.ReflectUtils;
-import org.onetwo.common.utils.Assert;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
@@ -24,6 +22,7 @@ import org.onetwo.plugins.admin.dao.AdminUserDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.vo.CreateOrUpdateAdminUserRequest;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
+import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -144,25 +143,29 @@ public class AdminUserServiceImpl {
     				.unique();
     }
     
-    public void update(UserDetail loginUser, AdminUser adminUser){
-        Assert.notNull(adminUser.getId(), "参数不能为null");
-        AdminUser dbAdminUser = loadById(adminUser.getId());
+    public void update(UserDetail loginUser, UpdateAdminUserRequest updateAdminUserRequest){
+//        Assert.notNull(adminUser.getId(), "参数不能为null");
+        AdminUser dbAdminUser = loadById(loginUser.getUserId());
         if(dbAdminUser==null){
-            throw new ServiceException("找不到数据：" + adminUser.getId());
+            throw new ServiceException("找不到数据：" + loginUser.getUserName());
         }
         
-        String newPwd = adminUser.getPassword();
+        String newPwd = updateAdminUserRequest.getPassword();
         //不允许修改
 //        adminUser.setPassword(null);
 //        adminUser.setId(null);
 //        adminUser.setUserName(null);
         
-        dbAdminUser.setAvatar(adminUser.getAvatar());
-        dbAdminUser.setNickName(adminUser.getNickName());
-        dbAdminUser.setMobile(adminUser.getMobile());
-        dbAdminUser.setStatus(adminUser.getStatus());
-        dbAdminUser.setBirthday(adminUser.getBirthday());
-        dbAdminUser.setGender(adminUser.getGender());
+//        dbAdminUser.setAvatar(updateAdminUserRequest.getAvatar());
+        dbAdminUser.setNickName(updateAdminUserRequest.getNickName());
+        dbAdminUser.setMobile(updateAdminUserRequest.getMobile());
+        if (StringUtils.isNotBlank(updateAdminUserRequest.getStatus())) {
+        	dbAdminUser.setStatus(updateAdminUserRequest.getStatus());
+        }
+//        dbAdminUser.setBirthday(adminUser.getBirthday());
+        if (StringUtils.isNotBlank(updateAdminUserRequest.getGender())) {
+            dbAdminUser.setGender(updateAdminUserRequest.getGender());
+        }
         
         Date now = new Date();
         //如果密码不为空，修改密码
