@@ -1,5 +1,7 @@
 package org.onetwo.plugins.admin.controller;
 
+import java.util.List;
+
 import org.onetwo.common.data.Result;
 import org.onetwo.common.spring.mvc.utils.DataResults;
 import org.onetwo.common.utils.Page;
@@ -11,6 +13,7 @@ import org.onetwo.plugins.admin.view.PageRequest;
 import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -77,5 +80,13 @@ public class AdminUserController extends WebAdminBaseController {
     public Result deleteBatch(Long[] ids){
         adminUserServiceImpl.deleteByIds(ids);
         return DataResults.success("删除成功！").build();
+    }
+    
+
+    @ByPermissionClass
+    @GetMapping("/findListByField")
+    public Result findListByField(String field, String[] values){
+        List<AdminUser> list = adminUserServiceImpl.findListByField(field, values);
+        return DataResults.data(list).build();
     }
 }

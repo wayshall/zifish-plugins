@@ -1,6 +1,7 @@
 
 package org.onetwo.plugins.admin.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -87,6 +88,7 @@ public class AdminUserServiceImpl {
         		.end()
         		.toQuery()
         		.page(page);
+        fillPasswordNull(page.getResult());
     }
     
     public void save(AdminUser adminUser, MultipartFile avatarFile){
@@ -320,4 +322,36 @@ public class AdminUserServiceImpl {
 		}
 		return dbUser;
 	}
+
+    @Transactional(readOnly=true)
+    public List<AdminUser> findListByField(String fieldName, String[] values) {
+    	if (LangUtils.isEmpty(values)) {
+    		return Collections.emptyList();
+    	}
+    	List<AdminUser> users = baseEntityManager.from(AdminUser.class)
+    						.where()
+								.field(fieldName).is(values)
+    						.toQuery()
+    						.list();
+    	fillPasswordNull(users);
+    	return users;
+    }
+
+    @Transactional(readOnly=true)
+    public List<AdminUser> findListByKeyword(String keyword) {
+    	List<AdminUser> users = baseEntityManager.from(AdminUser.class)
+    						.where()
+    							.field("userName", "nickName", "mobile", "email").like(keyword)
+    						.toQuery()
+    						.list();
+    	fillPasswordNull(users);
+    	return users;
+    }
+    
+    private void fillPasswordNull(List<AdminUser> users) {
+    	users.forEach(u -> {
+    		// 设置密码为null，避免泄漏
+    		u.setPassword(null);
+    	});
+    }
 }
