@@ -2,22 +2,21 @@
 
 package org.onetwo.plugins.admin.controller;
 
-import org.onetwo.boot.core.web.view.XResponseView;
+import org.onetwo.common.data.Result;
+import org.onetwo.common.spring.mvc.utils.DataResults;
 import org.onetwo.common.utils.Page;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.RoleMgr;
 import org.onetwo.plugins.admin.entity.AdminRole;
 import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
 import org.onetwo.plugins.admin.view.EasyDataGrid;
-import org.onetwo.plugins.admin.view.EasyViews.EasyGridView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("role")
 public class AdminRoleController extends WebAdminBaseController {
 
@@ -27,42 +26,39 @@ public class AdminRoleController extends WebAdminBaseController {
     
     @ByPermissionClass(RoleMgr.class)
     @RequestMapping(method=RequestMethod.GET)
-    @XResponseView(value="easyui", wrapper=EasyGridView.class)
-    public ModelAndView index(EasyDataGrid<AdminRole> easyPage, AdminRole adminRole){
-        return responsePageOrData("/admin-role-index", ()->{
-        			Page<AdminRole> page = Page.create(easyPage.getPage(), easyPage.getPageSize());
-                    adminRoleServiceImpl.findPage(page, adminRole);
-//                    return EasyDataGrid.create(page);
-                    return page;
-                });
+//    @XResponseView(value="easyui", wrapper=EasyGridView.class)
+    public Page<AdminRole> index(EasyDataGrid<AdminRole> easyPage, AdminRole adminRole){
+    	Page<AdminRole> page = Page.create(easyPage.getPage(), easyPage.getPageSize());
+        adminRoleServiceImpl.findPage(page, adminRole);
+        return page;
     }
     
     @ByPermissionClass(RoleMgr.Create.class)
     @RequestMapping(method=RequestMethod.POST)
-    public ModelAndView create(AdminRole adminRole){
+    public Result create(AdminRole adminRole){
         adminRoleServiceImpl.save(adminRole);
-        return messageMv("保存成功！");
+        return DataResults.success("保存成功！").build();
     }
     @ByPermissionClass(RoleMgr.class)
     @RequestMapping(value="{id}", method=RequestMethod.GET)
-    public ModelAndView show(@PathVariable("id") Long id){
+    public AdminRole show(@PathVariable("id") Long id){
         AdminRole adminRole = adminRoleServiceImpl.loadById(id);
-        return responseData(adminRole);
+        return adminRole;
     }
     
     @ByPermissionClass(RoleMgr.Update.class)
     @RequestMapping(value="{id}", method=RequestMethod.PUT)
-    public ModelAndView update(@PathVariable("id") Long id, AdminRole adminRole){
+    public Result update(@PathVariable("id") Long id, AdminRole adminRole){
         adminRole.setId(id);
         adminRoleServiceImpl.update(adminRole);
-        return messageMv("更新成功！");
+        return DataResults.success("更新成功！").build();
     }
     
     
     @ByPermissionClass(RoleMgr.Delete.class)
     @RequestMapping(method=RequestMethod.DELETE)
-    public ModelAndView deleteBatch(Long[] ids){
+    public Result deleteBatch(Long[] ids){
         adminRoleServiceImpl.deleteByIds(ids);
-        return messageMv("删除成功！");
+        return DataResults.success("删除成功！").build();
     }
 }
