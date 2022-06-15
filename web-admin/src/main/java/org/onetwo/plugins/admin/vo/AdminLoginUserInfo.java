@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.common.web.userdetails.UserTypes;
 import org.onetwo.ext.security.utils.GenericLoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -73,6 +74,11 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
 	}
+
+	public UserTypes getUserType() {
+		return UserTypes.ADMIN_USER;
+	}
+	
 	
 }
 
