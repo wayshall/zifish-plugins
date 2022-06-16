@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.onetwo.common.web.userdetails.SimpleUserDetail;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.common.web.userdetails.UserTypes;
 import org.onetwo.ext.security.utils.GenericLoginUserDetails;
@@ -79,6 +80,11 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 		return UserTypes.ADMIN_USER;
 	}
 	
-	
+	public SimpleUserDetail toSimpleUserDetail() {
+		SimpleUserDetail user = new SimpleUserDetail(getUserId(), getUserName());
+		user.setUserType(getUserType());
+		user.setNickName(getNickname());
+		return user;
+	}
 }
 
