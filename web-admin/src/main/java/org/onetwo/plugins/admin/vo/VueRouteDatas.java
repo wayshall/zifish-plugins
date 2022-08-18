@@ -4,6 +4,11 @@ import org.onetwo.common.utils.CUtils;
 import org.onetwo.plugins.admin.vo.VueRouterTreeModel.RouteData;
 
 /**
+interface MenuClass {
+ 	\@PermissionMetaData
+   	RouteData router = VueRouteDatas.componentView("plugin/componentPath");
+}
+   
  * @author weishao zeng
  * <br/>
  */
