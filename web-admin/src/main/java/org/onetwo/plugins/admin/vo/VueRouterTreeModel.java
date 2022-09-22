@@ -75,6 +75,11 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		getMeta().put("title", title);
 	}
 	
+	@JsonIgnore
+	public boolean isMenuNode() {
+		return PermissionUtils.isMenu(permission);
+	}
+	
 
 	@Override
 	public void addChild(VueRouterTreeModel node) {

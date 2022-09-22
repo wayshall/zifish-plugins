@@ -88,7 +88,11 @@ public class AdminController extends WebAdminBaseController {
 				}
 				return treeModelCreater.apply(p);
 			});
-			return treebuilder.getRootNodes();
+			return treebuilder.doIfChildrenIsEmpty(false, node -> {
+				if (node.isMenuNode()) {
+					node.setHidden(true);
+				}
+			}).getRootNodes();
 		});
 		
 		return menus;
