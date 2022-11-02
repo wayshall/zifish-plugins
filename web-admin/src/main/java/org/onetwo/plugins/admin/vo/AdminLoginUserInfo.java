@@ -76,13 +76,13 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 		this.roles = roles;
 	}
 
-	public UserTypes getUserType() {
+	public UserTypes getMallUserType() {
 		return UserTypes.ADMIN_USER;
 	}
 	
 	public SimpleUserDetail toSimpleUserDetail() {
 		SimpleUserDetail user = new SimpleUserDetail(getUserId(), getUserName());
-		user.setUserType(getUserType());
+		user.setUserType(getMallUserType());
 		user.setNickName(getNickname());
 		return user;
 	}
