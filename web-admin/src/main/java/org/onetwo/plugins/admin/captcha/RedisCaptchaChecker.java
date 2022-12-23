@@ -1,8 +1,10 @@
 package org.onetwo.plugins.admin.captcha;
 
 import org.onetwo.boot.module.redis.RedisOperationService;
+import org.onetwo.common.log.JFishLoggerFactory;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.web.captcha.CaptchaChecker;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -23,8 +25,16 @@ public class RedisCaptchaChecker implements CaptchaChecker {
 	}
 	
 	public boolean check(String code, String redisKey){
+		return check(code, redisKey, false);
+	}
+	
+	public boolean check(String code, String redisKey, boolean debug){
 		String key = getCaptchaKey(redisKey);
 		String value = this.redisOperationService.getString(key);
+		if (debug) {
+			Logger logger = JFishLoggerFactory.getCommonLogger();
+			logger.info("request code: {}, redis code: {}, key: {}", code, value, value);
+		}
 		return code.equalsIgnoreCase(value);
 	}
 	
