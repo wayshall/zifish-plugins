@@ -19,6 +19,7 @@ import org.onetwo.plugins.admin.vo.DictionaryList;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 //@Service
 @Transactional
@@ -27,12 +28,11 @@ abstract public class AbstractDictionaryServiceImpl implements DictionaryImportS
 	private final ResourcesScanner classScaner = ResourcesScanner.CLASS_CANNER;
 	
 //	@Override
-	public int importDatas(String dataPath) {
+	public int importDatas(MultipartFile dataFile) {
 		int totalCount = 0;
 		
-		//xml "/data/dict.xml"
-		org.springframework.core.io.Resource dictResource = SpringUtils.newClassPathResource(dataPath);
-		DictionaryList datas = DataUtils.readDictResource(dictResource);
+//		org.springframework.core.io.Resource dictResource = SpringUtils.newClassPathResource(dataPath);
+		DictionaryList datas = DataUtils.readDictFile(dataFile);
 		totalCount = importDatas(datas);
 		
 		//enum
