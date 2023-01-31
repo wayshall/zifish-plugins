@@ -242,6 +242,11 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			this.componentViewPath = componentViewPath;
 		}
 		
+		/***
+		 * 
+		 * @param componentViewPath
+		 * @param props 这里的map对象会生成前端路由的props属性
+		 */
 		public RouteData(String componentViewPath, Map<String, Object> props) {
 			super();
 			this.componentViewPath = componentViewPath;
