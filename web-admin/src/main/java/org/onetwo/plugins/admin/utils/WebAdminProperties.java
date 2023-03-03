@@ -35,6 +35,8 @@ public class WebAdminProperties {
 	CaptchaProps captcha = new CaptchaProps();
 	UserLogProps userlog = new UserLogProps();
 	
+	LoginUserProps loginUser = new LoginUserProps();
+	
 	CaptchaChecker captchaChecker;
 	
 	public CaptchaChecker getCaptchaChecker(){
@@ -43,6 +45,15 @@ public class WebAdminProperties {
 			captchaChecker = captcha.coder.createChecker(captcha);
 		}
 		return captchaChecker;
+	}
+	
+
+	@Data
+	public static class LoginUserProps {
+		/***
+		 * 是否导出权限
+		 */
+		boolean exposeAuthorities;
 	}
 
 	@Data

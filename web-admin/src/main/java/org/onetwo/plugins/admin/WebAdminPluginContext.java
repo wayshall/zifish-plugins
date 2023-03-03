@@ -1,13 +1,10 @@
 package org.onetwo.plugins.admin;
 
-import java.util.List;
-
 import org.onetwo.boot.plugin.core.JFishWebPlugin;
 import org.onetwo.dbm.spring.EnableDbmRepository;
 import org.onetwo.ext.permission.MenuInfoParserFactory;
 import org.onetwo.ext.permission.RootMenuClassProvider;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
-import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.service.impl.DefaultMenuItemRepository;
 import org.onetwo.ext.security.provider.CaptchaAuthenticationProvider;
@@ -20,8 +17,10 @@ import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
 import org.onetwo.plugins.admin.listener.LoginSuccessListener;
+import org.onetwo.plugins.admin.service.AdminLoginUserResponseProcessor;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
 import org.onetwo.plugins.admin.service.impl.AdminUserDetailServiceImpl;
+import org.onetwo.plugins.admin.service.impl.DefaultAdminLoginUserResponseProcessor;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
 import org.onetwo.plugins.admin.utils.AdminTenantContextVariable;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
@@ -95,6 +94,11 @@ public class WebAdminPluginContext implements InitializingBean {
 		return new KindeditorController();
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean(AdminLoginUserResponseProcessor.class)
+	public AdminLoginUserResponseProcessor adminLoginUserResponseProcessor() {
+		return new DefaultAdminLoginUserResponseProcessor();
+	}
 	
 
 	/*@Configuration
