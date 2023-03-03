@@ -43,6 +43,8 @@ jfish:
 	CaptchaProps captcha = new CaptchaProps();
 	UserLogProps userlog = new UserLogProps();
 	
+	LoginUserProps loginUser = new LoginUserProps();
+	
 	CaptchaChecker captchaChecker;
 	
 	public CaptchaChecker getCaptchaChecker(){
@@ -51,6 +53,15 @@ jfish:
 			captchaChecker = captcha.getCoder().createChecker(captcha);
 		}
 		return captchaChecker;
+	}
+	
+
+	@Data
+	public static class LoginUserProps {
+		/***
+		 * 是否导出权限
+		 */
+		boolean exposeAuthorities;
 	}
 
 	@Data

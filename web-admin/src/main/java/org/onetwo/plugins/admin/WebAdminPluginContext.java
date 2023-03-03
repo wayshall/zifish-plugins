@@ -18,7 +18,9 @@ import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.event.CreateOrUpdateAdminUserListenner;
 import org.onetwo.plugins.admin.listener.LoginSuccessListener;
 import org.onetwo.plugins.admin.security.AdminUserDetailServiceImpl;
+import org.onetwo.plugins.admin.service.AdminLoginUserResponseProcessor;
 import org.onetwo.plugins.admin.service.DictionaryImportService;
+import org.onetwo.plugins.admin.service.impl.DefaultAdminLoginUserResponseProcessor;
 import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
 import org.onetwo.plugins.admin.utils.AdminTenantContextVariable;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
@@ -91,6 +93,11 @@ public class WebAdminPluginContext implements InitializingBean {
 		return new KindeditorController();
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean(AdminLoginUserResponseProcessor.class)
+	public AdminLoginUserResponseProcessor adminLoginUserResponseProcessor() {
+		return new DefaultAdminLoginUserResponseProcessor();
+	}
 	
 
 	/*@Configuration
