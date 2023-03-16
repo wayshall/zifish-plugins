@@ -2,8 +2,10 @@ package org.onetwo.plugins.admin.vo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.onetwo.common.tree.AbstractTreeModel;
+import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.utils.RequestUtils;
@@ -54,6 +56,8 @@ meta: {
 @SuppressWarnings("serial")
 @JsonIgnoreProperties({"id", "parent", "parentId", "sort", "level", "index", "leafage", "first", "last"})
 public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
+	public static final String LAYOUT_NODE = "Layout";
+	
 	@Getter
 	@Setter
 	@JsonIgnore
@@ -128,6 +132,20 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * https://cn.vuejs.org/v2/style-guide/index.html#%E6%A8%A1%E6%9D%BF%E4%B8%AD%E7%9A%84%E7%BB%84%E4%BB%B6%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99-%E5%BC%BA%E7%83%88%E6%8E%A8%E8%8D%90
 	 */
 	public String getName() {
+		String componentName = null;
+		String componentViewPath = getComponentViewPath();
+		if (StringUtils.isBlank(componentViewPath) || LAYOUT_NODE.equals(componentViewPath)) {
+			componentName = componentName();
+		} else {
+			List<String> strs = GuavaUtils.splitAsStream(componentViewPath, "/")
+						.map(str -> StringUtils.capitalize(str))
+						.collect(Collectors.toList());
+			componentName = StringUtils.join(strs, "");
+		}
+		return componentName;
+	}
+
+	private String componentName() {
 		if (StringUtils.isNotBlank(url)) {
 			String componentName = StringUtils.toCamelWithoutConvert2LowerCase(url, '/', true);
 			componentName = StringUtils.toCamelWithoutConvert2LowerCase(componentName, '-', true);
@@ -167,7 +185,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			return null;
 		}
 		if(!getChildren().isEmpty()) {
-			return "Layout";
+			return LAYOUT_NODE;
 		}
 		String viewPath = StringUtils.toCamelWithoutConvert2LowerCase(url, '-', false);
 		viewPath = StringUtils.trimStartWith(viewPath, "/");
@@ -185,7 +203,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			return null;
 		}
 		if(!getChildren().isEmpty()) {
-			return "Layout";
+			return LAYOUT_NODE;
 		}
 		
 		List<String> viewPaths = GuavaUtils.splitAsStream((String) getId(), "_")
