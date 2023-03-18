@@ -1,12 +1,10 @@
 package org.onetwo.plugins.admin.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.dbm.annotation.SnowflakeId;
 import org.onetwo.plugins.admin.utils.Enums.CommonStatus;
 
 import lombok.Data;
@@ -18,8 +16,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=true)
 public class AdminRole extends AdminTenantable {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SnowflakeId
     private Long id;
 
     private String name;

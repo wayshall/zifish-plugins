@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -15,6 +12,7 @@ import org.onetwo.common.jackson.JsonMapper;
 import org.onetwo.common.spring.validator.annotation.Mobile;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserRoot;
+import org.onetwo.dbm.annotation.SnowflakeId;
 import org.onetwo.plugins.admin.utils.DataUtils;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.utils.WebConstant.DictKeys;
@@ -39,9 +37,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("serial")
 public class AdminUser extends AdminTenantable implements UserRoot {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	@Id
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SnowflakeId
     private Long id;
 	
 	@NotBlank(groups=ValidWhenNew.class)
