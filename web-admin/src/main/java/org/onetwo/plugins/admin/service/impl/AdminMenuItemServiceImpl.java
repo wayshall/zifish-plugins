@@ -51,6 +51,9 @@ public class AdminMenuItemServiceImpl extends DefaultMenuItemRepository {
 			TreeBuilder<DefaultTreeModel> treebuilder = PermissionUtils.createMenuTreeBuilder(userPerms, treeModelCreater);
 			treebuilder.buidTree(node->{
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
+				if (p==null) {
+					return null;
+				}
 				return treeModelCreater.apply(p);
 			});
 			return treebuilder.getRootNodes();
