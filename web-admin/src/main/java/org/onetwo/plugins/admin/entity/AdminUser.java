@@ -94,7 +94,7 @@ public class AdminUser extends AdminTenantable implements UserRoot {
     }
 
 	@Override
-	public boolean isSystemRootUser() {
+	public Boolean isSystemRootUser() {
 		return getId()!=null && getId().equals(ROOT_USER_ID);
 	}
 
