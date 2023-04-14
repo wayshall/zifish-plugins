@@ -136,6 +136,9 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		String componentViewPath = getComponentViewPath();
 		if (StringUtils.isBlank(componentViewPath) || LAYOUT_NODE.equals(componentViewPath)) {
 			componentName = componentName();
+		}else if (componentViewPath.contains("dsqlMgr/dsqlTablePage")) {
+			// 特殊处理，避免重复组件名称
+			componentName = getId().toString();
 		} else {
 			List<String> strs = GuavaUtils.splitAsStream(componentViewPath, "/")
 						.map(str -> StringUtils.capitalize(str))
