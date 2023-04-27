@@ -124,6 +124,15 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return "/"+path;
 		*/
 		path = "/" + StringUtils.replaceEach(path, "_", "/");
+		if (router!=null && router.isParamsAsProps()) {
+			String[] paramNames = (String[])router.getProps();
+			if (LangUtils.isEmpty(paramNames)) {
+				return path;
+			}
+			for (String paramName : paramNames) {
+				path += "/:" + paramName;
+			}
+		}
 		return path; 
 	}
 
@@ -195,8 +204,14 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return viewPath;
 	}
 	
-	public Map<String, Object> getProps() {
-		return router==null?null:router.getProps();
+	public Object getProps() {
+		if (router==null) {
+			return null;
+		}
+		if (router.isParamsAsProps()) {
+			return true;
+		}
+		return router.getProps();
 	}
 	
 	
@@ -256,7 +271,8 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	@NoArgsConstructor
 	public static class RouteData {
 		String componentViewPath;
-		Map<String, Object> props;
+		Object props;
+		boolean paramsAsProps;
 
 		public RouteData(String componentViewPath) {
 			super();
@@ -267,6 +283,12 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 			super();
 			this.componentViewPath = componentViewPath;
 			this.props = props;
+		}
+		
+		public RouteData(boolean paramsAsProps, String... paramNames) {
+			super();
+			this.paramsAsProps = paramsAsProps;
+			this.props = paramNames;
 		}
 	}
 	

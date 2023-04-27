@@ -46,5 +46,22 @@ abstract public class VueRouteDatas {
 	final public static RouteData componentView(String componentViewPath, Object...props) {
 		return new RouteData(componentViewPath, CUtils.asMap(props));
 	}
+	
+	final public static RouteData props(Object...props) {
+		return new RouteData(null, CUtils.asMap(props));
+	}
+	
+	/***
+	 * 当 props 设置为 true 时，route.params 将被设置为组件的 props。
+	 * {
+	 * 	  path: /path/:paramName1/:paramName2
+	 * 	  props: true
+	 * }
+	 * https://router.vuejs.org/zh/guide/essentials/passing-props.html
+	 * @return
+	 */
+	final public static RouteData paramsAsProps(String... paramNames) {
+		return new RouteData(true, paramNames);
+	}
 
 }
