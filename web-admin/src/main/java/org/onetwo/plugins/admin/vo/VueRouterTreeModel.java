@@ -83,7 +83,6 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	public boolean isMenuNode() {
 		return PermissionUtils.isMenu(permission);
 	}
-	
 
 	@Override
 	public void addChild(VueRouterTreeModel node) {
@@ -132,6 +131,9 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * https://cn.vuejs.org/v2/style-guide/index.html#%E6%A8%A1%E6%9D%BF%E4%B8%AD%E7%9A%84%E7%BB%84%E4%BB%B6%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99-%E5%BC%BA%E7%83%88%E6%8E%A8%E8%8D%90
 	 */
 	public String getName() {
+		if (router!=null && StringUtils.isNotBlank(router.getComonentName())) {
+			return router.getComonentName();
+		}
 		String componentName = null;
 		String componentViewPath = getComponentViewPath();
 		if (StringUtils.isBlank(componentViewPath) || LAYOUT_NODE.equals(componentViewPath)) {
@@ -252,6 +254,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	@Data
 	@NoArgsConstructor
 	public static class RouteData {
+		String comonentName;
 		String componentViewPath;
 		Map<String, Object> props;
 

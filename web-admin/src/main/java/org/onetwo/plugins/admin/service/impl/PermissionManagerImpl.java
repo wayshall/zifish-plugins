@@ -18,7 +18,6 @@ import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.AbstractPermissionManager;
 import org.onetwo.ext.permission.MenuInfoParserFactory;
 import org.onetwo.ext.permission.api.DataFrom;
-import org.onetwo.ext.permission.api.annotation.FullyAuthenticated;
 import org.onetwo.ext.permission.parser.MenuInfoParser;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
@@ -163,7 +162,8 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 	protected void updatePermissions(AdminPermission rootPermission, Map<String, AdminPermission> dbPermissionMap, Set<AdminPermission> adds, Set<AdminPermission> deletes, Set<AdminPermission> updates) {
 		AdminApplication app = this.baseEntityManager.findById(AdminApplication.class, rootPermission.getAppCode());
 		if(app==null){
-			if (!rootPermission.getAppCode().equals(FullyAuthenticated.AUTH_CODE)) {
+//			if (!rootPermission.getAppCode().equals(FullyAuthenticated.AUTH_CODE)) {
+			if (!PermissionUtils.isReservePermissioin(rootPermission.getAppCode())) {
 				app = new AdminApplication();
 				app.setCode(rootPermission.getAppCode());
 				app.setName(rootPermission.getName());
