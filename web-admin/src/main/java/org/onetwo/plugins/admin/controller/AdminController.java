@@ -51,6 +51,9 @@ public class AdminController extends WebAdminBaseController {
 		List<VueRouterTreeModel> menus = menuItemRepository.findUserMenus(userDetail, (userPerms, allPerms)->{
 			Function<IPermission, VueRouterTreeModel> treeModelCreater = perm->{
 				AdminPermission adminPerm = (AdminPermission) perm;
+//				if (adminPerm.getName().equals("部门管理")) {
+//					System.out.println("test");
+//				}
 				/*if(!PermissionUtils.isMenu(adminPerm)) {
 					return null;
 				}*/

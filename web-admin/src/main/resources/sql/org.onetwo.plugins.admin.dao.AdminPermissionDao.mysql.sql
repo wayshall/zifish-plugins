@@ -92,7 +92,8 @@
       ap.hidden,
       ap.children_size,
       ap.app_code,
-      ap.resources_pattern
+      ap.resources_pattern,
+      ap.meta
     from 
         admin_permission ap
     left join 

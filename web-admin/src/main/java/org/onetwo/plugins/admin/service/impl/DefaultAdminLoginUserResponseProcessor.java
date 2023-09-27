@@ -44,6 +44,7 @@ public class DefaultAdminLoginUserResponseProcessor implements AdminLoginUserRes
 		/*if (userDetail instanceof UserRoot) {
 			user.setSystemRootUser(((UserRoot)userDetail).isSystemRootUser());
 		}*/
+		user.setSystemRootUser(userDetail.isSystemRootUser());
 		return user;
 	}
 
