@@ -6,17 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.onetwo.dbm.annotation.DbmIdGenerator;
 import org.onetwo.dbm.id.SnowflakeGenerator;
 import org.onetwo.dbm.jpa.BaseEntity;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /***
  * swagger参数表
@@ -40,7 +39,6 @@ public class SwaggerParameterEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=200)
-    @SafeHtml
     String jsonType;
     
     /***
@@ -48,7 +46,6 @@ public class SwaggerParameterEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=50)
-    @SafeHtml
     String name;
     
     /***
@@ -56,7 +53,6 @@ public class SwaggerParameterEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=500)
-    @SafeHtml
     String description;
     
     /***
@@ -69,7 +65,6 @@ public class SwaggerParameterEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=2000)
-    @SafeHtml
     String jsonData;
     /***
      * 所属swagger文档
