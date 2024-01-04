@@ -3,7 +3,7 @@ package org.onetwo.plugins.admin.controller;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;

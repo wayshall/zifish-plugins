@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.MappedSuperclass;
 
 import org.onetwo.common.db.filter.DataQueryParamaterEnhancer;
 import org.onetwo.common.db.filter.IDataQueryParamterEnhancer;

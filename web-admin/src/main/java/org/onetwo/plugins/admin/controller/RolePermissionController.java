@@ -3,7 +3,7 @@ package org.onetwo.plugins.admin.controller;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;

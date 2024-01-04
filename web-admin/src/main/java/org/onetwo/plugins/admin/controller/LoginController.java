@@ -1,6 +1,6 @@
 package org.onetwo.plugins.admin.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.onetwo.boot.plugin.mvc.annotation.WebPluginContext;
 import org.onetwo.common.spring.mvc.utils.DataResults;

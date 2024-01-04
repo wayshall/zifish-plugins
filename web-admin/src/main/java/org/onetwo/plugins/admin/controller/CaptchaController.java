@@ -1,7 +1,7 @@
 package org.onetwo.plugins.admin.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.onetwo.boot.captcha.CaptchaProps;
 import org.onetwo.common.web.captcha.CaptchaChecker.CaptchaSignedResult;

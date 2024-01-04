@@ -1,6 +1,6 @@
 package org.onetwo.plugins.admin.vo;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 

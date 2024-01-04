@@ -3,11 +3,11 @@ package org.onetwo.plugins.admin.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
-import javax.validation.groups.Default;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.groups.Default;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.onetwo.common.db.TimeRecordableEntity;

@@ -3,9 +3,9 @@ package org.onetwo.plugins.admin.entity;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 import org.onetwo.boot.utils.ImageUrlJsonSerializer;
 import org.onetwo.common.jackson.JsonMapper;

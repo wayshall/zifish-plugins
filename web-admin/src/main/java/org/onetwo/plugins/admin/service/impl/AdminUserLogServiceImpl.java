@@ -3,7 +3,7 @@ package org.onetwo.plugins.admin.service.impl;
 
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.onetwo.boot.core.web.mvc.log.OperatorLogInfo;
 import org.onetwo.common.db.spi.BaseEntityManager;

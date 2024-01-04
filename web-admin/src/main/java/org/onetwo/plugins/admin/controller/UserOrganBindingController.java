@@ -1,6 +1,6 @@
 package org.onetwo.plugins.admin.controller;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.onetwo.common.data.Result;
 import org.onetwo.common.spring.mvc.utils.DataResults;

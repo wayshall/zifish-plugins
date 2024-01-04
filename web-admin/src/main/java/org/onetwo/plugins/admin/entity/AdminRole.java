@@ -1,7 +1,7 @@
 package org.onetwo.plugins.admin.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.dbm.annotation.DbmTableIdGenerator;

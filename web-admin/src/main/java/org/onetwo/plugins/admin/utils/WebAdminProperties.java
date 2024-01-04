@@ -5,7 +5,7 @@ import java.util.List;
 import org.onetwo.boot.captcha.CaptchaProps;
 import org.onetwo.common.web.captcha.CaptchaChecker;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
+import org.onetwo.common.utils.Assert;
 
 import com.google.common.collect.Lists;
 
