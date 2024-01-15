@@ -1,8 +1,5 @@
 package org.onetwo.plugins.admin.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.onetwo.boot.captcha.CaptchaProps;
 import org.onetwo.common.web.captcha.CaptchaChecker.CaptchaSignedResult;
 import org.onetwo.common.web.captcha.SimpleCaptchaGenerator;
@@ -16,8 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-//@RestController
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@RestController
 @RequestMapping("/captcha")
 public class CaptchaController extends WebAdminBaseController {
 	@Autowired
