@@ -21,6 +21,7 @@ import org.onetwo.dbm.dialet.DBDialect.LockInfo;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.vo.CreateOrUpdateAdminUserRequest;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
 import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
@@ -54,6 +55,13 @@ public class AdminUserServiceImpl {
 	private AdminRoleServiceImpl adminRoleService;
 	@Autowired
 	private AdminUserAuditServiceImpl adminAuditService;
+	@Autowired
+	private AdminUserBindingService adminUserBindingService;
+	
+
+    public AdminUserBinding getBinding(Long adminUserId) {
+    	return adminUserBindingService.getBinding(adminUserId);
+    }
 	
 	/****
 	 * 根据用户id查找用户数据
@@ -313,6 +321,9 @@ public class AdminUserServiceImpl {
 //			binding.setBindingUserName(dbUser.getUserName());
 //			binding.setBindingUserId(adminUser.getBindingUserId());
 //			bindingUser(binding, true);
+			if (adminUser.getBindingUserId()!=null) {
+				adminUserBindingService.createOrUpdateAdminUser(adminUser, dbUser);
+			}
 		} else {
 			log.info("admin user[{}] has exists!", adminUser.getUserName());
 //			continue;

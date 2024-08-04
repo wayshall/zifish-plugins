@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.onetwo.boot.plugins.swagger.util.SwaggerUtils;
 import org.onetwo.dbm.annotation.DbmJsonField;
 import org.onetwo.dbm.jpa.BaseEntity;
@@ -68,7 +67,6 @@ public class SwaggerOperationEntity extends BaseEntity  {
      * api说明摘要
      */
     @Length(max=1000)
-    @SafeHtml
     String summary;
     /***
      * 接口描述
@@ -84,14 +82,12 @@ public class SwaggerOperationEntity extends BaseEntity  {
      * 请求方法
      */
     @Length(max=10)
-    @SafeHtml
     String requestMethod;
     
     /***
      * 访问协议（json）
      */
     @Length(max=200)
-    @SafeHtml
     @DbmJsonField
     List<Scheme> schemes;
     
@@ -99,7 +95,6 @@ public class SwaggerOperationEntity extends BaseEntity  {
      * 外部文档（json）
      */
     @Length(max=500)
-    @SafeHtml
     @DbmJsonField
     ExternalDocs externaldocs;
     
@@ -107,7 +102,6 @@ public class SwaggerOperationEntity extends BaseEntity  {
      * 标签（json）
      */
     @Length(max=200)
-    @SafeHtml
     @DbmJsonField
     List<String> tags;
     
@@ -115,14 +109,12 @@ public class SwaggerOperationEntity extends BaseEntity  {
      * 请求路径
      */
     @Length(max=200)
-    @SafeHtml
     String path;
     
     /***
      * 
      */
     @Length(max=500)
-    @SafeHtml
     String security;
     
     /***
