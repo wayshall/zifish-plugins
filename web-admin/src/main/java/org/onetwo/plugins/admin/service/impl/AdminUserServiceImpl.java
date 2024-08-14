@@ -1,6 +1,7 @@
 
 package org.onetwo.plugins.admin.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -11,19 +12,19 @@ import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
-import org.onetwo.common.reflect.ReflectUtils;
-import org.onetwo.common.utils.Assert;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.dbm.dialet.DBDialect.LockInfo;
-import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.dao.AdminRoleDao;
 import org.onetwo.plugins.admin.dao.AdminUserDao;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.entity.AdminUserBinding;
 import org.onetwo.plugins.admin.vo.CreateOrUpdateAdminUserRequest;
 import org.onetwo.plugins.admin.vo.FindUserByRoleQuery;
+import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class AdminUserServiceImpl {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AdminRoleDao adminRoleDao;
-    @Autowired
+    @Autowired(required=false)
     private BootCommonService bootCommonService;
     @Autowired
     private AdminUserDao adminUserDao;
@@ -54,6 +55,13 @@ public class AdminUserServiceImpl {
 	private AdminRoleServiceImpl adminRoleService;
 	@Autowired
 	private AdminUserAuditServiceImpl adminAuditService;
+	@Autowired
+	private AdminUserBindingService adminUserBindingService;
+	
+
+    public AdminUserBinding getBinding(Long adminUserId) {
+    	return adminUserBindingService.getBinding(adminUserId);
+    }
 	
 	/****
 	 * 根据用户id查找用户数据
@@ -78,7 +86,7 @@ public class AdminUserServiceImpl {
     public void findPage(Page<AdminUser> page, AdminUser adminUser){
         Querys.from(baseEntityManager, AdminUser.class)
         		.where()
-	        		.field("id").notEqualTo(LoginUserDetails.ROOT_USER_ID)
+	        		.field("id").notEqualTo(UserRoot.ROOT_USER_ID)
 	        		.field("userName").like(adminUser.getUserName())
 	        		.field("nickName").like(adminUser.getNickName())
 	        		.field("email").like(adminUser.getEmail())
@@ -88,6 +96,7 @@ public class AdminUserServiceImpl {
         		.end()
         		.toQuery()
         		.page(page);
+        fillPasswordNull(page.getResult());
     }
     
     public void save(AdminUser adminUser, MultipartFile avatarFile){
@@ -144,19 +153,29 @@ public class AdminUserServiceImpl {
     				.unique();
     }
     
-    public void update(UserDetail loginUser, AdminUser adminUser){
-        Assert.notNull(adminUser.getId(), "参数不能为null");
-        AdminUser dbAdminUser = loadById(adminUser.getId());
+    public void update(UserDetail loginUser, UpdateAdminUserRequest updateAdminUserRequest){
+//        Assert.notNull(adminUser.getId(), "参数不能为null");
+        AdminUser dbAdminUser = loadById(loginUser.getUserId());
         if(dbAdminUser==null){
-            throw new ServiceException("找不到数据：" + adminUser.getId());
+            throw new ServiceException("找不到数据：" + loginUser.getUserName());
         }
         
-        String newPwd = adminUser.getPassword();
+        String newPwd = updateAdminUserRequest.getPassword();
         //不允许修改
-        adminUser.setPassword(null);
-        adminUser.setId(null);
-        adminUser.setUserName(null);
-        ReflectUtils.copyIgnoreBlank(adminUser, dbAdminUser);
+//        adminUser.setPassword(null);
+//        adminUser.setId(null);
+//        adminUser.setUserName(null);
+        
+//        dbAdminUser.setAvatar(updateAdminUserRequest.getAvatar());
+        dbAdminUser.setNickName(updateAdminUserRequest.getNickName());
+        dbAdminUser.setMobile(updateAdminUserRequest.getMobile());
+        if (StringUtils.isNotBlank(updateAdminUserRequest.getStatus())) {
+        	dbAdminUser.setStatus(updateAdminUserRequest.getStatus());
+        }
+//        dbAdminUser.setBirthday(adminUser.getBirthday());
+        if (StringUtils.isNotBlank(updateAdminUserRequest.getGender())) {
+            dbAdminUser.setGender(updateAdminUserRequest.getGender());
+        }
         
         Date now = new Date();
         //如果密码不为空，修改密码
@@ -302,6 +321,9 @@ public class AdminUserServiceImpl {
 //			binding.setBindingUserName(dbUser.getUserName());
 //			binding.setBindingUserId(adminUser.getBindingUserId());
 //			bindingUser(binding, true);
+			if (adminUser.getBindingUserId()!=null) {
+				adminUserBindingService.createOrUpdateAdminUser(adminUser, dbUser);
+			}
 		} else {
 			log.info("admin user[{}] has exists!", adminUser.getUserName());
 //			continue;
@@ -311,4 +333,36 @@ public class AdminUserServiceImpl {
 		}
 		return dbUser;
 	}
+
+    @Transactional(readOnly=true)
+    public List<AdminUser> findListByField(String fieldName, String[] values) {
+    	if (LangUtils.isEmpty(values)) {
+    		return Collections.emptyList();
+    	}
+    	List<AdminUser> users = baseEntityManager.from(AdminUser.class)
+    						.where()
+								.field(fieldName).is(values)
+    						.toQuery()
+    						.list();
+    	fillPasswordNull(users);
+    	return users;
+    }
+
+    @Transactional(readOnly=true)
+    public List<AdminUser> findListByKeyword(String keyword) {
+    	List<AdminUser> users = baseEntityManager.from(AdminUser.class)
+    						.where()
+    							.field("userName", "nickName", "mobile", "email").like(keyword)
+    						.toQuery()
+    						.list();
+    	fillPasswordNull(users);
+    	return users;
+    }
+    
+    private void fillPasswordNull(List<AdminUser> users) {
+    	users.forEach(u -> {
+    		// 设置密码为null，避免泄漏
+    		u.setPassword(null);
+    	});
+    }
 }

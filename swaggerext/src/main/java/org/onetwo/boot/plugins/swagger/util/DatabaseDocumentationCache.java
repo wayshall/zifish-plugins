@@ -38,7 +38,8 @@ public class DatabaseDocumentationCache extends DocumentationCache {
 		public DatabaseDocumentation(Long moduleId, String groupName) {
 			super(groupName, "FakeDocumentation_basePath", Collections.emptySet(), 
 					null, null, null,
-					Collections.emptySet(), "FakeDocumentation_host", Collections.emptySet(), Collections.emptyList());
+					Collections.emptySet(), "FakeDocumentation_host", Collections.emptySet(), Collections.emptyList(), 
+					null, null);
 			this.moduleId = moduleId;
 		}
 		public Long getModuleId() {

@@ -9,6 +9,7 @@ import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.PermissionManager;
 import org.onetwo.ext.permission.api.IPermission;
+import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.service.MenuItemRepository;
 import org.onetwo.ext.permission.utils.PermissionUtils;
@@ -36,6 +37,7 @@ public class AdminController extends WebAdminBaseController {
 	@Resource
 	private PermissionManager<?> permissionManager;
 	
+	@ByPermissionClass
 	@RequestMapping(value="/index", method=RequestMethod.GET)
 	public ModelAndView index(UserDetail userDetail){
 		List<PermisstionTreeModel> menus = menuItemRepository.findUserMenus(userDetail);
@@ -44,10 +46,14 @@ public class AdminController extends WebAdminBaseController {
 	
 	@RequestMapping(value="/vueRouters", method=RequestMethod.GET)
 	@ResponseBody
+	@ByPermissionClass
 	public List<VueRouterTreeModel> getRoleRouters(UserDetail userDetail){
 		List<VueRouterTreeModel> menus = menuItemRepository.findUserMenus(userDetail, (userPerms, allPerms)->{
 			Function<IPermission, VueRouterTreeModel> treeModelCreater = perm->{
 				AdminPermission adminPerm = (AdminPermission) perm;
+//				if (adminPerm.getName().equals("部门管理")) {
+//					System.out.println("test");
+//				}
 				/*if(!PermissionUtils.isMenu(adminPerm)) {
 					return null;
 				}*/
@@ -85,7 +91,11 @@ public class AdminController extends WebAdminBaseController {
 				}
 				return treeModelCreater.apply(p);
 			});
-			return treebuilder.getRootNodes();
+			return treebuilder.doIfChildrenIsEmpty(false, node -> {
+				if (node.isMenuNode()) {
+					node.setHidden(true);
+				}
+			}).getRootNodes();
 		});
 		
 		return menus;

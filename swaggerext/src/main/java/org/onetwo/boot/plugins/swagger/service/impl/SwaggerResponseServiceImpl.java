@@ -60,6 +60,7 @@ public class SwaggerResponseServiceImpl {
     				 .where()
     				 	.field("operationId").in(operationId)
     				 .end()
+    				 .toExecute()
     				 .delete();
     	if(log.isInfoEnabled()){
     		log.info("remove {} parameters for operation: {}", deleteCount, operationId);
@@ -73,6 +74,7 @@ public class SwaggerResponseServiceImpl {
     				 .where()
     				 	.field("swaggerId").is(swaggerId)
     				 .end()
+    				 .toExecute()
     				 .delete();
     	if(log.isInfoEnabled()){
     		log.info("remove {} parameters for swagger: {}", deleteCount, swaggerId);

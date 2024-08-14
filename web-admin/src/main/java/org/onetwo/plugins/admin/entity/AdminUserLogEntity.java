@@ -3,14 +3,12 @@ package org.onetwo.plugins.admin.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.onetwo.dbm.annotation.DbmJsonField;
 import org.onetwo.dbm.annotation.SnowflakeId;
 import org.onetwo.dbm.ui.annotation.DUIEntity;
@@ -43,7 +41,6 @@ public class AdminUserLogEntity implements Serializable {
      * 用户ip
      */
     @Length(max=50)
-    @SafeHtml
     @DUIField(label = "用户ip", order = 1)
     String userIp;
     
@@ -58,7 +55,6 @@ public class AdminUserLogEntity implements Serializable {
      * 错误信息
      */
     @Length(max=500)
-    @SafeHtml
     @DUIInput(type=DUIInput.InputTypes.TEXTAREA)
     @DUIField(label = "错误信息", order = 3)
     String errorMsg;
@@ -67,7 +63,6 @@ public class AdminUserLogEntity implements Serializable {
      * 用户名称
      */
     @Length(max=50)
-    @SafeHtml
     @DUIField(label = "用户名称", order = 4)
     String userName;
     
@@ -75,7 +70,6 @@ public class AdminUserLogEntity implements Serializable {
      * 操作名称
      */
     @Length(max=50)
-    @SafeHtml
     @DUIField(label = "操作名称", order = 5)
     String operationName;
     
@@ -83,7 +77,6 @@ public class AdminUserLogEntity implements Serializable {
      * 操作代码
      */
     @Length(max=10)
-    @SafeHtml
     @DUIField(label = "操作代码", order = 5)
     String operationCode;
     
@@ -91,7 +84,6 @@ public class AdminUserLogEntity implements Serializable {
      * 操作方法
      */
     @Length(max=10)
-    @SafeHtml
     @DUIField(label = "操作方法", order = 6)
     String requestMethod;
     
@@ -106,7 +98,6 @@ public class AdminUserLogEntity implements Serializable {
      * 操作的url
      */
     @Length(max=200)
-    @SafeHtml
     @DUIField(label = "操作的url", order = 8)
     String requestUrl;
     
@@ -122,7 +113,6 @@ public class AdminUserLogEntity implements Serializable {
      * 用户昵称
      */
     @Length(max=50)
-    @SafeHtml
     @DUIField(label = "用户昵称", order = 10)
     String nickName;
     
@@ -130,7 +120,6 @@ public class AdminUserLogEntity implements Serializable {
      * 用户浏览器
      */
     @Length(max=20)
-    @SafeHtml
     @DUIField(label = "用户浏览器", order = 11)
     String browser;
     
@@ -141,6 +130,6 @@ public class AdminUserLogEntity implements Serializable {
     String userAgent;
     
     @DbmJsonField
-    Map<String, ?> requestParameters;
+    Object requestParameters;
     
 }

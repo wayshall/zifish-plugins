@@ -1,15 +1,19 @@
 package org.onetwo.plugins.admin.controller;
 
-import org.onetwo.boot.core.web.view.XResponseView;
+import java.util.List;
+
+import org.onetwo.common.data.Result;
+import org.onetwo.common.spring.mvc.utils.DataResults;
 import org.onetwo.common.utils.Page;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.plugins.admin.AdminMgr.UserMgr;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
-import org.onetwo.plugins.admin.view.EasyViews.EasyGridView;
 import org.onetwo.plugins.admin.view.PageRequest;
+import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,14 +30,18 @@ public class AdminUserController extends WebAdminBaseController {
 
     @ByPermissionClass(UserMgr.class)
     @RequestMapping(method=RequestMethod.GET)
-    @XResponseView(value="easyui", wrapper=EasyGridView.class)
-    public ModelAndView index(PageRequest easyPage, AdminUser adminUser){
-        return responsePageOrData("/admin-user-index", ()->{
-        			Page<AdminUser> page = easyPage.toPageObject();//Page.create(easyPage.getPage(), easyPage.getPageSize());
-        			adminUserServiceImpl.findPage(page, adminUser);
-        			return page;
-                });
+//    @XResponseView(value="easyui", wrapper=EasyGridView.class)
+    public Result index(PageRequest easyPage, AdminUser adminUser){
+//        return responsePageOrData("/admin-user-index", ()->{
+//        			Page<AdminUser> page = easyPage.toPageObject();//Page.create(easyPage.getPage(), easyPage.getPageSize());
+//        			adminUserServiceImpl.findPage(page, adminUser);
+//        			return page;
+//                });
+    	Page<AdminUser> page = easyPage.toPageObject();//Page.create(easyPage.getPage(), easyPage.getPageSize());
+		adminUserServiceImpl.findPage(page, adminUser);
+		return DataResults.success().data(page).build();
     }
+    
     @ByPermissionClass(value=UserMgr.class, overrideMenuUrl=false)
     @RequestMapping(value="export", method=RequestMethod.GET)
     public ModelAndView export(PageRequest easyPage, AdminUser adminUser){
@@ -45,32 +53,40 @@ public class AdminUserController extends WebAdminBaseController {
     
     @ByPermissionClass(UserMgr.Create.class)
     @RequestMapping(method=RequestMethod.POST)
-    public ModelAndView create(AdminUser adminUser, MultipartFile avatarFile){
+    public Result create(AdminUser adminUser, MultipartFile avatarFile){
         adminUserServiceImpl.save(adminUser, avatarFile);
-        return messageMv("保存成功！");
+        return DataResults.success("保存成功！").build();
     }
     
     @ByPermissionClass(UserMgr.class)
     @RequestMapping(value="{id}", method=RequestMethod.GET)
-    public ModelAndView show(@PathVariable("id") Long id){
+    public Result show(@PathVariable("id") Long id){
         AdminUser adminUser = adminUserServiceImpl.loadById(id);
         adminUser.setPassword("");
-        return responseData(adminUser);
+        return DataResults.success().data(adminUser).build();
     }
     
     @ByPermissionClass(UserMgr.Update.class)
     @RequestMapping(value="{id}", method=RequestMethod.PUT)
-    public ModelAndView update(@PathVariable("id") Long id, AdminUser adminUser){
-        adminUser.setId(id);
-        adminUserServiceImpl.update(getCurrentLoginUser(), adminUser);
-        return messageMv("更新成功！");
+    public Result update(@PathVariable("id") Long id, UpdateAdminUserRequest updateAdminUserRequest){
+//        adminUser.setId(id);
+        adminUserServiceImpl.update(getCurrentLoginUser(), updateAdminUserRequest);
+        return DataResults.success("更新成功！").build();
     }
     
     
     @ByPermissionClass(UserMgr.Delete.class)
     @RequestMapping(method=RequestMethod.DELETE)
-    public ModelAndView deleteBatch(Long[] ids){
+    public Result deleteBatch(Long[] ids){
         adminUserServiceImpl.deleteByIds(ids);
-        return messageMv("删除成功！");
+        return DataResults.success("删除成功！").build();
+    }
+    
+
+    @ByPermissionClass
+    @GetMapping("/findListByField")
+    public Result findListByField(String field, String[] values){
+        List<AdminUser> list = adminUserServiceImpl.findListByField(field, values);
+        return DataResults.data(list).build();
     }
 }

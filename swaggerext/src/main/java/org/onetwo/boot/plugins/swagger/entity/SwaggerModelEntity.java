@@ -6,18 +6,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.onetwo.dbm.annotation.DbmIdGenerator;
 import org.onetwo.dbm.annotation.DbmJsonField;
 import org.onetwo.dbm.id.SnowflakeGenerator;
 import org.onetwo.dbm.jpa.BaseEntity;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /***
  * swagger model表
@@ -45,7 +44,6 @@ public class SwaggerModelEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=200)
-    @SafeHtml
     String refPath;
     
     /***
@@ -53,7 +51,6 @@ public class SwaggerModelEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=200)
-    @SafeHtml
     String jsonType;
     
     /***
@@ -66,7 +63,6 @@ public class SwaggerModelEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=100)
-    @SafeHtml
     String name;
     
     /***
@@ -74,7 +70,6 @@ public class SwaggerModelEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=500)
-    @SafeHtml
     String description;
     
     /***
@@ -82,7 +77,6 @@ public class SwaggerModelEntity extends BaseEntity  {
      */
     @NotBlank
     @Length(max=2000)
-    @SafeHtml
     @DbmJsonField
     String jsonData;
     

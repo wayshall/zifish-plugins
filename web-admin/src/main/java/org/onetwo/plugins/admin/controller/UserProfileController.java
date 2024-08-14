@@ -2,13 +2,13 @@ package org.onetwo.plugins.admin.controller;
 
 import org.onetwo.boot.core.web.controller.AbstractBaseController;
 import org.onetwo.common.spring.validator.ValidatorUtils;
+import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
-import org.onetwo.ext.security.utils.LoginUserDetails;
 import org.onetwo.plugins.admin.AdminMgr.UserProfile;
 import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
-import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidAnyTime;
-import org.onetwo.plugins.admin.utils.WebConstant.ValidGroup.ValidWhenEdit;
+import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
+import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -27,7 +27,7 @@ public class UserProfileController extends AbstractBaseController {
 
     @ByPermissionClass(UserProfile.class)
     @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView showProfile(LoginUserDetails loginUser){
+    public ModelAndView showProfile(UserDetail loginUser){
         return responsePageOrData("user-profile", ()->{
         	AdminUser adminUser = adminUserServiceImpl.loadById(loginUser.getUserId());
             adminUser.setPassword("");
@@ -39,12 +39,12 @@ public class UserProfileController extends AbstractBaseController {
     
     @ByPermissionClass(UserProfile.class)
     @RequestMapping(method=RequestMethod.PUT)
-    public ModelAndView update(@Validated({ValidAnyTime.class, ValidWhenEdit.class}) AdminUser adminUser, BindingResult br){
+    public ModelAndView update(@Validated UpdateAdminUserRequest updateAdminUserRequest, BindingResult br){
     	ValidatorUtils.throwIfHasErrors(br, true);
-    	LoginUserDetails loginUser = checkAndGetCurrentLoginUser(LoginUserDetails.class, true);
-        adminUser.setId(loginUser.getUserId());
-        adminUser.setUserName(loginUser.getUserName());
-        adminUserServiceImpl.update(loginUser, adminUser);
+    	UserDetail loginUser = checkAndGetCurrentLoginUser(AdminLoginUserInfo.class, true);
+//    	updateAdminUserRequest.setId(loginUser.getUserId());
+//    	updateAdminUserRequest.setUserName(loginUser.getUserName());
+        adminUserServiceImpl.update(loginUser, updateAdminUserRequest);
         return messageMv("更新成功！");
     }
     

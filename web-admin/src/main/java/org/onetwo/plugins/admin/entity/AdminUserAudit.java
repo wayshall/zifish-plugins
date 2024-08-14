@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.onetwo.dbm.annotation.SnowflakeId;
 import org.onetwo.dbm.ui.annotation.DUIEntity;
 import org.onetwo.dbm.ui.annotation.DUIField;
@@ -38,7 +37,6 @@ public class AdminUserAudit implements Serializable {
      */
     @NotNull
     @Length(max=50)
-    @SafeHtml
     @DUIField(label = "用户名", order = 3)
     String userName;
     

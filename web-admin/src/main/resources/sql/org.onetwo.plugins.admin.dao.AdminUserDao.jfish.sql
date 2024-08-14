@@ -20,6 +20,7 @@ where
  * @name: findUserByIds
  */
 select
+ u.id,
  u.user_Name,
  u.nick_Name,
  u.mobile,

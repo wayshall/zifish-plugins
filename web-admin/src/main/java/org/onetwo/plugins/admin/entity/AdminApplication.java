@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 
-import org.hibernate.validator.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 import org.onetwo.common.db.TimeRecordableEntity;
 import org.onetwo.common.db.spi.CrudEntityManager;
 import org.onetwo.dbm.core.BaseModel;

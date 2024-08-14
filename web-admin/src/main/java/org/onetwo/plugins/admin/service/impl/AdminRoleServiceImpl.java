@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.db.sqlext.ExtQuery.K;
@@ -136,6 +137,25 @@ public class AdminRoleServiceImpl {
         baseEntityManager.remove(adminRole);
     }
     
+    /***
+     * 查找用户的角色code 
+     * @author weishao zeng
+     * @param userId
+     * @return
+     */
+    public List<String> findRoleCodesByUser(long userId){
+    	return findRolesByUser(userId)
+							.stream()
+							.map(r -> {
+								String code = r.getCode();
+								if (StringUtils.isBlank(code)) {
+									code = r.getName();
+								}
+								return code;
+							})
+							.collect(Collectors.toList());
+    }
+    
     public List<AdminRole> findRolesByUser(long userId){
     	return this.adminRoleDao.findRolesByUser(userId);
     }
@@ -146,12 +166,29 @@ public class AdminRoleServiceImpl {
     						 .collect(Collectors.toList());
     }
     
-    public void saveUserRoles(long userId, Long... roleIds){
+    @Transactional
+    public List<AdminRole> findListByCodes(String... codes) {
+    	return baseEntityManager.from(AdminRole.class)
+    							.where()
+    								.field("code").is(codes)
+    							.toQuery().list();
+    }
+    
+    @Transactional
+    public List<AdminRole> findListByNames(String... roleName) {
+    	return baseEntityManager.from(AdminRole.class)
+    							.where()
+    								.field("name").is(roleName)
+    							.toQuery().list();
+    }
+    
+    public void saveUserRoles(long userId, Long... userRoleIds){
     	this.adminRoleDao.deleteUserRoles(userId);
-    	if(LangUtils.isEmpty(roleIds)){
+    	if(LangUtils.isEmpty(userRoleIds)){
     		return ;
     	}
     	
+    	Set<Long> roleIds = Sets.newHashSet(userRoleIds);
     	UserRoleAssignedEvent event = new UserRoleAssignedEvent();
     	event.setUserId(userId);
     	List<RoleVO> assignedRoles = new ArrayList<>();
@@ -162,7 +199,7 @@ public class AdminRoleServiceImpl {
     	}
     	event.setRoles(assignedRoles);
     	
-    	Stream.of(roleIds).forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
+    	roleIds.forEach(roleId->adminRoleDao.insertUserRole(userId, roleId));
     	
     	this.applicationContext.publishEvent(event);
     }
