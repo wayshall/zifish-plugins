@@ -15,6 +15,7 @@ import org.onetwo.common.file.FileStoredMeta;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.utils.StringUtils;
+import org.onetwo.common.web.userdetails.SimpleUserDetail;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.common.web.userdetails.UserRoot;
 import org.onetwo.dbm.dialet.DBDialect.LockInfo;
@@ -153,13 +154,24 @@ public class AdminUserServiceImpl {
     				.unique();
     }
     
+    public void update(Long userId, UpdateAdminUserRequest updateAdminUserRequest){
+        AdminUser dbAdminUser = loadById(userId);
+        if(dbAdminUser==null){
+            throw new ServiceException("找不到数据：" + userId);
+        }
+        this.update(dbAdminUser, updateAdminUserRequest);
+    }
+    
     public void update(UserDetail loginUser, UpdateAdminUserRequest updateAdminUserRequest){
-//        Assert.notNull(adminUser.getId(), "参数不能为null");
         AdminUser dbAdminUser = loadById(loginUser.getUserId());
         if(dbAdminUser==null){
             throw new ServiceException("找不到数据：" + loginUser.getUserName());
         }
-        
+        this.update(dbAdminUser, updateAdminUserRequest);
+    }
+    
+    public void update(AdminUser dbAdminUser, UpdateAdminUserRequest updateAdminUserRequest){
+    	UserDetail loginUser = new SimpleUserDetail(dbAdminUser.getId(), dbAdminUser.getUserName());
         String newPwd = updateAdminUserRequest.getPassword();
         //不允许修改
 //        adminUser.setPassword(null);

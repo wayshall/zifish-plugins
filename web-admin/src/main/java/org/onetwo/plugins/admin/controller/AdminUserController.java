@@ -12,15 +12,15 @@ import org.onetwo.plugins.admin.service.impl.AdminUserServiceImpl;
 import org.onetwo.plugins.admin.view.PageRequest;
 import org.onetwo.plugins.admin.vo.UpdateAdminUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping("user")
 public class AdminUserController extends WebAdminBaseController {
 
@@ -69,8 +69,7 @@ public class AdminUserController extends WebAdminBaseController {
     @ByPermissionClass(UserMgr.Update.class)
     @RequestMapping(value="{id}", method=RequestMethod.PUT)
     public Result update(@PathVariable("id") Long id, UpdateAdminUserRequest updateAdminUserRequest){
-//        adminUser.setId(id);
-        adminUserServiceImpl.update(getCurrentLoginUser(), updateAdminUserRequest);
+        adminUserServiceImpl.update(id, updateAdminUserRequest);
         return DataResults.success("更新成功！").build();
     }
     
