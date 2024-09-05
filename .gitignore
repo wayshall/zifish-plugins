@@ -58,3 +58,5 @@ rebel.xml
 /core/modules/common/src/test/java/org/onetwo/common/project
 /deploy-microcloud.bat
 /deploy-all.bat
+/**/.apt_generated/
+/**/.apt_generated_tests/
