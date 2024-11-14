@@ -7,6 +7,7 @@ import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.utils.Page;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.dbm.core.internal.DbmCrudServiceImpl;
+import org.onetwo.plugins.admin.entity.AdminUser;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.entity.AdminUserLogEntity;
 import org.onetwo.plugins.admin.utils.AdminOperationCodes;
@@ -26,18 +27,19 @@ public class AdminUserAuditServiceImpl extends DbmCrudServiceImpl<AdminUserAudit
         super(baseEntityManager);
     }
     
-    public void saveChangePwdAudit(UserDetail loginUser) {
-    	AdminUserAudit userAuit = this.findById(loginUser.getUserId());
+    public void saveChangePwdAudit(AdminUser adminUser, UserDetail operator) {
+		AdminUserLogEntity log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, operator);
+		adminLoginLogService.save(log);
+
+    	AdminUserAudit userAuit = this.findById(adminUser.getId());
     	if (userAuit==null) {
     		userAuit = new AdminUserAudit();
-    		userAuit.setUserId(loginUser.getUserId());
-    		userAuit.setUserName(loginUser.getUserName());
+    		userAuit.setUserId(adminUser.getId());
+    		userAuit.setUserName(adminUser.getUserName());
     	}
     	userAuit.setLastChangePwdAt(new Date());
+    	userAuit.setLastLoginLogId(log.getId());
     	save(userAuit);
-    	
-		AdminUserLogEntity log = AdminUserLogServiceImpl.buildLog(AdminOperationCodes.CHANGE_PWD, loginUser);
-		adminLoginLogService.save(log);
     }
     
     public void saveUserLoginAudit(AdminUserLogEntity log) {

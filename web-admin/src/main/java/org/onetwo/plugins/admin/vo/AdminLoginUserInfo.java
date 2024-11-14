@@ -24,7 +24,7 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 	private Long bindingUserId;
 	
 	@Setter
-	private Long organId;
+	private String organId;
 	@Setter
 	private Long tenantId;
 	
@@ -43,8 +43,12 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 		return this.roles!=null && this.roles.contains(roleCode);
 	}
 
-	public Long getOrganId() { 
+	public String getOrganId() { 
 		return organId; 
+	}
+
+	public Long getOrganIdAsLong() { 
+		return Long.valueOf(organId); 
 	}
 
 	public Long getBindingUserId() {

@@ -1,4 +1,4 @@
-package org.onetwo.plugins.admin.service.impl;
+package org.onetwo.plugins.admin.security;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,9 +10,13 @@ import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.dao.AdminPermissionDao;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 import org.onetwo.plugins.admin.entity.AdminUser;
+import org.onetwo.plugins.admin.service.impl.AdminRoleServiceImpl;
+import org.onetwo.plugins.admin.service.impl.PermissionManagerImpl;
 import org.onetwo.plugins.admin.utils.Enums.UserStatus;
 import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.OrderComparator;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("unchecked")
-public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDetailsService {
+public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDetailsService, InitializingBean {
 
     @Autowired
     protected BaseEntityManager baseEntityManager;
@@ -34,6 +38,10 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	protected AdminRoleServiceImpl adminRoleService;
 	
 	protected Class<T> userDetailClass;
+	
+	@Autowired(required = false)
+	private List<UserDetailEnhancer> enhancerList;
+	private boolean enhanceUserDetailAfterLoadUser = true;
 
 	public AdminUserDetailServiceImpl() {
 		super();
@@ -45,6 +53,23 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		this.userDetailClass = userDetailClass;
 	}
 
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (enhancerList!=null) {
+			OrderComparator.sort(enhancerList);
+		} else {
+			enhancerList = Collections.emptyList();
+		}
+	}
+	
+	protected UserDetails enhanceUserDetails(UserDetails userDetail) {
+		for (UserDetailEnhancer enhancer : enhancerList) {
+			userDetail = enhancer.enhance(userDetail);
+		}
+		return userDetail;
+	}
+	
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -54,7 +79,10 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		}
 		
 		List<GrantedAuthority> authes = fetchUserGrantedAuthorities(user);
-		AdminLoginUserInfo userDetail = buildUserDetail(user, authes);
+		UserDetails userDetail = buildUserDetail(user, authes);
+		if (this.enhanceUserDetailAfterLoadUser) {
+			userDetail = enhanceUserDetails(userDetail);
+		}
 		return userDetail;
 	}
 	
@@ -97,7 +125,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		return user;
 	}
 	
-	protected AdminLoginUserInfo buildUserDetail(T user, List<GrantedAuthority> authes){
+	protected UserDetails buildUserDetail(T user, List<GrantedAuthority> authes){
 		AdminLoginUserInfo userDetail = new AdminLoginUserInfo(user.getId(), user.getUserName(), user.getPassword(), authes);
 		userDetail.setNickname(user.getNickName());
 		userDetail.setAvatar(user.getAvatar());
@@ -106,13 +134,19 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 //			userDetail.setOrganId(organ.getId());
 //			userDetail.setTenantId(organ.getTenantId());
 //		}
-		userDetail.setOrganId(user.getOrganId());
+		if (user.getOrganId()!=null) {
+			userDetail.setOrganId(user.getOrganId().toString());
+		}
 		userDetail.setTenantId(user.getTenantId());
 
         List<String> roles = adminRoleService.findRoleCodesByUser(user.getId());
         userDetail.setRoles(roles);
         
 		return userDetail;
+	}
+
+	public void setEnhanceUserDetailAfterLoadUser(boolean enhanceUserDetailAfterLoadUser) {
+		this.enhanceUserDetailAfterLoadUser = enhanceUserDetailAfterLoadUser;
 	}
 	
 }

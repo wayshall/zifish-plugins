@@ -11,7 +11,6 @@ import org.onetwo.common.db.builder.Querys;
 import org.onetwo.common.db.spi.BaseEntityManager;
 import org.onetwo.common.exception.ServiceException;
 import org.onetwo.common.file.FileStoredMeta;
-import org.onetwo.common.reflect.ReflectUtils;
 import org.onetwo.common.utils.Assert;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.Page;
@@ -169,7 +168,7 @@ public class AdminUserServiceImpl {
     	if(StringUtils.isNotBlank(newPwd)){
     		dbAdminUser.setPassword(passwordEncoder.encode(newPwd));
 //    		dbAdminUser.setLastChangePwdAt(now);
-    		this.adminAuditService.saveChangePwdAudit(loginUser);
+    		this.adminAuditService.saveChangePwdAudit(dbAdminUser, loginUser);
     	}
     	
         dbAdminUser.setUpdateAt(now);
