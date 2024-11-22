@@ -174,7 +174,7 @@ public class AdminUserServiceImpl {
     	if(StringUtils.isNotBlank(newPwd)){
     		dbAdminUser.setPassword(passwordEncoder.encode(newPwd));
 //    		dbAdminUser.setLastChangePwdAt(now);
-    		this.adminAuditService.saveChangePwdAudit(loginUser);
+    		this.adminAuditService.saveChangePwdAudit(dbAdminUser, loginUser);
     	}
     	
         dbAdminUser.setUpdateAt(now);

@@ -41,6 +41,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 	
 	@Autowired(required = false)
 	private List<UserDetailEnhancer> enhancerList;
+	private boolean enhanceUserDetailAfterLoadUser = true;
 
 	public AdminUserDetailServiceImpl() {
 		super();
@@ -78,7 +79,10 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		
 		List<GrantedAuthority> authes = fetchUserGrantedAuthorities(user);
 		UserDetails userDetail = buildUserDetail(user, authes);
-		userDetail = enhanceUserDetails(userDetail);
+		
+		if (this.enhanceUserDetailAfterLoadUser) {
+			userDetail = enhanceUserDetails(userDetail);
+		}
 		return userDetail;
 	}
 	
@@ -139,5 +143,8 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 		return userDetail;
 	}
 
+	public void setEnhanceUserDetailAfterLoadUser(boolean enhanceUserDetailAfterLoadUser) {
+		this.enhanceUserDetailAfterLoadUser = enhanceUserDetailAfterLoadUser;
+	}
 	
 }
