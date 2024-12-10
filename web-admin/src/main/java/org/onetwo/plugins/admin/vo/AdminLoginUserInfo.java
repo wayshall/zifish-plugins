@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.security.utils.GenericLoginUserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,7 +48,10 @@ public class AdminLoginUserInfo extends GenericLoginUserDetails<Long> implements
 		return organId; 
 	}
 
-	public Long getOrganIdAsLong() { 
+	public Long getOrganIdAsLong() {
+		if (StringUtils.isBlank(organId)) {
+			return null;
+		}
 		return Long.valueOf(organId); 
 	}
 
