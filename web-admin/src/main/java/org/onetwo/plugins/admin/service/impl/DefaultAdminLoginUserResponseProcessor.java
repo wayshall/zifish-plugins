@@ -3,11 +3,11 @@ package org.onetwo.plugins.admin.service.impl;
 import java.util.stream.Collectors;
 
 import org.onetwo.common.spring.copier.CopyUtils;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 import org.onetwo.plugins.admin.entity.AdminUserAudit;
 import org.onetwo.plugins.admin.service.AdminLoginUserResponseProcessor;
 import org.onetwo.plugins.admin.utils.WebAdminProperties;
 import org.onetwo.plugins.admin.utils.WebAdminProperties.LoginUserProps;
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.onetwo.plugins.admin.vo.AdminLoginUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
