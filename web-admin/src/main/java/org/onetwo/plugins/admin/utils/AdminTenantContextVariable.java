@@ -6,7 +6,7 @@ import org.onetwo.common.db.spi.QueryContextVariable.QueryGlobalVariable;
 import org.onetwo.common.web.userdetails.GenericUserDetail;
 import org.onetwo.common.web.userdetails.SessionUserManager;
 import org.onetwo.common.web.userdetails.UserDetail;
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

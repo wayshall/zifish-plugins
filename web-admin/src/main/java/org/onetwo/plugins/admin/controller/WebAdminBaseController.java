@@ -4,8 +4,8 @@ import org.onetwo.boot.core.web.controller.DateInitBinder;
 import org.onetwo.boot.plugin.core.WebPlugin;
 import org.onetwo.boot.plugin.mvc.PluginBaseController;
 import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 import org.onetwo.plugins.admin.WebAdminPlugin;
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 

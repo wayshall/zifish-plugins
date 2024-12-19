@@ -1,6 +1,6 @@
 package org.onetwo.plugins.admin.service;
 
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 
 /**
  * @author weishao zeng

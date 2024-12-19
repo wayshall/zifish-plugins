@@ -2,8 +2,8 @@ package org.onetwo.plugins.admin.controller;
 
 import org.onetwo.boot.core.web.view.XResponseView;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 import org.onetwo.plugins.admin.service.AdminLoginUserResponseProcessor;
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

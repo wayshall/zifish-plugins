@@ -16,8 +16,8 @@ import org.onetwo.dbm.annotation.DbmFieldListeners;
 import org.onetwo.dbm.jpa.BaseEntity;
 import org.onetwo.dbm.mapping.DbmEntityFieldListener;
 import org.onetwo.dbm.mapping.DbmMappedField;
+import org.onetwo.ext.security.utils.AdminLoginUserInfo;
 import org.onetwo.plugins.admin.entity.AdminTenantable.TenantFieldListener;
-import org.onetwo.plugins.admin.vo.AdminLoginUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
