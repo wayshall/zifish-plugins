@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 见：https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html#%E9%85%8D%E7%BD%AE%E9%A1%B9
@@ -59,6 +60,7 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	public static final String LAYOUT_NODE = "Layout";
 	
 	@Getter
+	@Setter
 	@JsonIgnore
 	private String url;
 	//menu is false, permission is true

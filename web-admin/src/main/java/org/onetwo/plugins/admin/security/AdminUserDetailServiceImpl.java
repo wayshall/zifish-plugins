@@ -134,7 +134,7 @@ public class AdminUserDetailServiceImpl<T extends AdminUser> implements UserDeta
 //			userDetail.setOrganId(organ.getId());
 //			userDetail.setTenantId(organ.getTenantId());
 //		}
-		userDetail.setOrganId(user.getOrganId());
+		userDetail.setOrganId(user.getOrganId()==null?null:user.getOrganId().toString());
 		userDetail.setTenantId(user.getTenantId());
 
         List<String> roles = adminRoleService.findRoleCodesByUser(user.getId());
