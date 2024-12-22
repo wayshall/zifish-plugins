@@ -9,6 +9,7 @@ import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.utils.RequestUtils;
+import org.onetwo.ext.permission.api.PermissionType;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 
@@ -19,7 +20,6 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 见：https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html#%E9%85%8D%E7%BD%AE%E9%A1%B9
@@ -59,7 +59,6 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	public static final String LAYOUT_NODE = "Layout";
 	
 	@Getter
-	@Setter
 	@JsonIgnore
 	private String url;
 	//menu is false, permission is true
@@ -84,6 +83,10 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 		return PermissionUtils.isMenu(permission);
 	}
 	
+	@JsonIgnore
+	public PermissionType getPermissionType() {
+		return PermissionUtils.getPermissionType(permission);
+	}
 
 	@Override
 	public void addChild(VueRouterTreeModel node) {
@@ -192,10 +195,6 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * @return
 	 */
 	public String getComponentViewPath() {
-		String title = (String)getMeta().get("title");
-		if (title.contains("系统异常日志")) {
-			System.out.println("test");
-		}
 		String componentViewPath = router==null?"":router.getComponentViewPath();
 		if (StringUtils.isNotBlank(componentViewPath)) {
 			return componentViewPath;
