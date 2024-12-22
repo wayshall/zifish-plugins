@@ -9,6 +9,7 @@ import org.onetwo.common.utils.GuavaUtils;
 import org.onetwo.common.utils.LangUtils;
 import org.onetwo.common.utils.StringUtils;
 import org.onetwo.common.web.utils.RequestUtils;
+import org.onetwo.ext.permission.api.PermissionType;
 import org.onetwo.ext.permission.utils.PermissionUtils;
 import org.onetwo.plugins.admin.entity.AdminPermission;
 
@@ -82,6 +83,11 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	@JsonIgnore
 	public boolean isMenuNode() {
 		return PermissionUtils.isMenu(permission);
+	}
+	
+	@JsonIgnore
+	public PermissionType getPermissionType() {
+		return PermissionUtils.getPermissionType(permission);
 	}
 
 	@Override
@@ -178,6 +184,9 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * @return
 	 */
 	public String getComponentViewPath() {
+		if (getMeta().get("title").equals("部门管理")) {
+			System.out.println("test");
+		}
 		String componentViewPath = router==null?"":router.getComponentViewPath();
 		if (StringUtils.isNotBlank(componentViewPath)) {
 			return componentViewPath;

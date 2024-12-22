@@ -9,6 +9,7 @@ import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
 import org.onetwo.ext.permission.PermissionManager;
 import org.onetwo.ext.permission.api.IPermission;
+import org.onetwo.ext.permission.api.PermissionType;
 import org.onetwo.ext.permission.api.annotation.ByPermissionClass;
 import org.onetwo.ext.permission.entity.PermisstionTreeModel;
 import org.onetwo.ext.permission.service.MenuItemRepository;
@@ -56,6 +57,9 @@ public class AdminController extends WebAdminBaseController {
 				}*/
 				
 				VueRouterTreeModel tm = new VueRouterTreeModel(adminPerm);
+//				if (adminPerm.getName().equals("部门管理")) {
+//					System.out.println("test");
+//				}
 				/*try {
 					tm = new VueRouterTreeModel(perm.getCode(), perm.getName(), perm.getParentCode());
 				} catch (Exception e) {
@@ -82,10 +86,17 @@ public class AdminController extends WebAdminBaseController {
 //				if (node.getId().toString().startsWith("OrganBffMgr")) {
 //					System.out.println("for deubg");
 //				}
+				if (node.getPermissionType()==PermissionType.RESOURCE) {
+					// 如果是资源类型，则不查找父节点
+					return null;
+				}
 				AdminPermission p = (AdminPermission)allPerms.get(node.getParentId());
 				if (p==null) {
 					return null;//node;
 				}
+//				if (p.getName().equals("部门管理")) {
+//					System.out.println("test");
+//				}
 				return treeModelCreater.apply(p);
 			});
 			return treebuilder.doIfChildrenIsEmpty(false, node -> {

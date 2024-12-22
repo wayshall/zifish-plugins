@@ -48,6 +48,7 @@
     select 
       ap.code,
       ap.ptype,
+      ap.meta,
       ap.data_from,
       case 
         when ap.url is not null then concat(ifnull(aa.base_url, ''), ap.url)
@@ -80,6 +81,7 @@
   select 
       ap.code,
       ap.ptype,
+      ap.meta,
       ap.data_from,
       case 
         when ap.url is not null then concat(ifnull(aa.base_url, ''), ap.url)
