@@ -184,9 +184,6 @@ public class VueRouterTreeModel extends AbstractTreeModel<VueRouterTreeModel> {
 	 * @return
 	 */
 	public String getComponentViewPath() {
-		if (getMeta().get("title").equals("部门管理")) {
-			System.out.println("test");
-		}
 		String componentViewPath = router==null?"":router.getComponentViewPath();
 		if (StringUtils.isNotBlank(componentViewPath)) {
 			return componentViewPath;
