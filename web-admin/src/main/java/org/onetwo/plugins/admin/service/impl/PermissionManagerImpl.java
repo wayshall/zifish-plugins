@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -159,7 +160,7 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 
 
 	@Override
-	protected void updatePermissions(AdminPermission rootPermission, Map<String, AdminPermission> dbPermissionMap, Set<AdminPermission> adds, Set<AdminPermission> deletes, Set<AdminPermission> updates) {
+	protected void updatePermissions(AdminPermission rootPermission, Map<String, AdminPermission> dbPermissionMap, Set<AdminPermission> adds, Set<AdminPermission> deletes, Set<AdminPermission> updates, boolean syncAll) {
 		AdminApplication app = this.baseEntityManager.findById(AdminApplication.class, rootPermission.getAppCode());
 		if(app==null){
 //			if (!rootPermission.getAppCode().equals(FullyAuthenticated.AUTH_CODE)) {
@@ -185,16 +186,25 @@ public class PermissionManagerImpl extends AbstractPermissionManager<AdminPermis
 //			this.baseEntityManager.persist(p);
 //		});
 		this.baseEntityManager.getSessionFactory().getSession().batchInsertOrUpdate(adds, 1000);
-
+		
+		
+		Predicate<AdminPermission> updateFilter = p -> {
+			if (syncAll) {
+				// 同步所有
+				return true;
+			}
+			return p.getDataFrom()==DataFrom.SYNC;
+		};
+		
 		logger.info("deletes[{}]: {}", deletes.size(), deletes);
-		deletes.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
+		deletes.stream().filter(updateFilter).forEach(p->{
 			/*this.adminPermissionDao.deleteRolePermissions(p.getCode());
 			this.baseEntityManager.remove(p);*/
 			this.removePermission(p.getCode(), false);
 		});
 
 		logger.info("updates[{}]: {}", updates.size(), updates);
-		updates.stream().filter(p->p.getDataFrom()==DataFrom.SYNC).forEach(p->{
+		updates.stream().filter(updateFilter).forEach(p->{
 //			this.adminPermissionMapper.updateByPrimaryKey(p.getAdminPermission());
 			AdminPermission dbPermission = dbPermissionMap.get(p.getCode());
 			CopyUtils.copier().from(p).ignoreNullValue().ignoreBlankString().to(dbPermission);

@@ -35,8 +35,18 @@ public interface AdminMgr {
 		String name = "权限管理";
 		int sort = 4;
 		
+		public interface List {
+			String name = "列表";
+			PermissionType permissionType = PermissionType.FUNCTION;
+		}
+		
 		public interface Refresh {
 			String name = "刷新权限";
+			PermissionType permissionType = PermissionType.FUNCTION;
+		}
+		
+		public interface Sync2DB {
+			String name = "同步菜单";
 			PermissionType permissionType = PermissionType.FUNCTION;
 		}
 	}

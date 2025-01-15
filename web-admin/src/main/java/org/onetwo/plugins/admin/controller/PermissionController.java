@@ -18,6 +18,7 @@ import org.onetwo.common.spring.mvc.utils.DataResults;
 import org.onetwo.common.tree.DefaultTreeModel;
 import org.onetwo.common.tree.TreeBuilder;
 import org.onetwo.common.web.userdetails.UserDetail;
+import org.onetwo.ext.permission.PermissionHandlerMappingListener;
 import org.onetwo.ext.permission.api.DataFrom;
 import org.onetwo.ext.permission.api.IPermission;
 import org.onetwo.ext.permission.api.PermissionType;
@@ -45,6 +46,8 @@ public class PermissionController extends WebAdminBaseController {
 	private MenuItemRepository<PermisstionTreeModel> menuItemRepository;
 	@Autowired
 	private PermissionManagerImpl permissionManager;
+	@Autowired
+	private PermissionHandlerMappingListener permissionHandlerMappingListener;
 
 	@ByPermissionClass(PermMgr.class)
 	@RequestMapping(method=RequestMethod.GET)
@@ -130,6 +133,13 @@ public class PermissionController extends WebAdminBaseController {
 	public Result refresh(){
 		this.permissionManager.refreshSecurityMetadataSource();
 		return DataResults.success("刷新权限缓存成功！").build();
+	}
+
+	@ByPermissionClass(PermMgr.Sync2DB.class)
+	@RequestMapping(value="/sync2db", method=RequestMethod.PUT)
+	public Result sync2db(boolean syncAll){
+		this.permissionHandlerMappingListener.sync2db(syncAll);
+		return DataResults.success("同步菜单成功！").build();
 	}
 	
 }
